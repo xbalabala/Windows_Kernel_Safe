@@ -6,25 +6,25 @@
 
 #include <ntddk.h>
 	
-// Ìá¹©Ò»¸öUnloadº¯ÊýÖ»ÊÇÎªÁË
+// æä¾›ä¸€ä¸ªUnloadå‡½æ•°åªæ˜¯ä¸ºäº†
 VOID DriverUnload(PDRIVER_OBJECT driver)
 {
-	// µ«ÊÇÊµ¼ÊÉÏÎÒÃÇÊ²Ã´¶¼²»×ö£¬Ö»´òÓ¡Ò»¾ä»°:
-	DbgPrint("first: Our driver is unloading¡­\r\n");
+	// ä½†æ˜¯å®žé™…ä¸Šæˆ‘ä»¬ä»€ä¹ˆéƒ½ä¸åšï¼Œåªæ‰“å°ä¸€å¥è¯:
+	DbgPrint("first: Our driver is unloadingâ€¦\r\n");
 }
 
-// DriverEntry£¬Èë¿Úº¯Êý¡£Ïàµ±ÓÚmain¡£
+// DriverEntryï¼Œå…¥å£å‡½æ•°ã€‚ç›¸å½“äºŽmainã€‚
 NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path)
 {
 #if DBG
 //       _asm int 3
 #endif
-	// ÕâÊÇÎÒÃÇµÄÄÚºËÄ£¿éµÄÈë¿Ú£¬¿ÉÒÔÔÚÕâÀïÐ´ÈëÎÒÃÇÏëÐ´µÄ¶«Î÷¡£
-	// ÎÒÔÚÕâÀï´òÓ¡Ò»¾ä»°¡£ÒòÎª¡±Hello,world¡± ³£³£±»¸ßÊÖ³ÜÐ¦£¬ËùÒÔ
-	// ÎÒÃÇ´òÓ¡Ò»µã±ðµÄ¡£
+	// è¿™æ˜¯æˆ‘ä»¬çš„å†…æ ¸æ¨¡å—çš„å…¥å£ï¼Œå¯ä»¥åœ¨è¿™é‡Œå†™å…¥æˆ‘ä»¬æƒ³å†™çš„ä¸œè¥¿ã€‚
+	// æˆ‘åœ¨è¿™é‡Œæ‰“å°ä¸€å¥è¯ã€‚å› ä¸ºâ€Hello,worldâ€ å¸¸å¸¸è¢«é«˜æ‰‹è€»ç¬‘ï¼Œæ‰€ä»¥
+	// æˆ‘ä»¬æ‰“å°ä¸€ç‚¹åˆ«çš„ã€‚
 	DbgPrint("first: Hello, my salary!");
 
-	// ÉèÖÃÒ»¸öÐ¶ÔØº¯Êý±ãÓÚÕâ¸öº¯ÊýÄÜÍË³ö¡£
+	// è®¾ç½®ä¸€ä¸ªå¸è½½å‡½æ•°ä¾¿äºŽè¿™ä¸ªå‡½æ•°èƒ½é€€å‡ºã€‚
 	driver->DriverUnload = DriverUnload;
 	return STATUS_SUCCESS;
 }

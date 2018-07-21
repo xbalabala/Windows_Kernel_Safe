@@ -393,7 +393,7 @@ typedef enum
 } PASSSTHRU_EVENT_CODE, *PPASTHRU_EVENT_CODE; 
 
 // 
-// ¹ýÂË½á¹û±äÁ¿
+// è¿‡æ»¤ç»“æžœå˜é‡
 //
 typedef enum{
 	STATUS_PASS,
@@ -417,14 +417,14 @@ typedef NTSTATUS
 (*AddDeviceFunc)(
 				 IN PDRIVER_OBJECT  DriverObject,
 				 IN PDEVICE_OBJECT  PhysicalDeviceObject 
-				 );// ¶¨ÒåAddDeviceº¯ÊýÖ¸Õë±äÁ¿ÀàÐÍ
+				 );// å®šä¹‰AddDeviceå‡½æ•°æŒ‡é’ˆå˜é‡ç±»åž‹
 
-// ¶¨ÒåÒ»¸öº¯ÊýÖ¸Õë±äÁ¿ÀàÐÍ
+// å®šä¹‰ä¸€ä¸ªå‡½æ•°æŒ‡é’ˆå˜é‡ç±»åž‹
 typedef NTSTATUS 
 (*DispatchFunc)(
 				IN PDEVICE_OBJECT DeviceObject, 
 				IN PIRP Irp
-				);// ¶¨Òå·Ö·¢º¯ÊýÖ¸Õë±äÁ¿ÀàÐÍ
+				);// å®šä¹‰åˆ†å‘å‡½æ•°æŒ‡é’ˆå˜é‡ç±»åž‹
 
 extern AddDeviceFunc systemAddDevice; 
 extern DispatchFunc systemCreate;

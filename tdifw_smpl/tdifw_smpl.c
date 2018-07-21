@@ -2,11 +2,11 @@
 /// @file         tdifw_smpl.c
 /// @author    crazy_chu
 /// @date       2009-4-11
-/// @brief      Ê¹ÓÃtdi_fw.libµÄÒ»¸öÀý×Ó¡£ 
+/// @brief      ä½¿ç”¨tdi_fw.libçš„ä¸€ä¸ªä¾‹å­ã€‚ 
 /// 
-/// ÃâÔðÉùÃ÷
-/// ±¾´úÂëÎªÊ¾Àý´úÂë¡£Î´¾­Ïê¾¡²âÊÔ£¬²»±£Ö¤¿É¿¿ÐÔ¡£×÷Õß¶Ô
-/// ÈÎºÎÈËÊ¹ÓÃ´Ë´úÂëµ¼ÖÂµÄÖ±½ÓºÍ¼ä½ÓËðÊ§²»¸ºÔðÈÎ¡£
+/// å…è´£å£°æ˜Ž
+/// æœ¬ä»£ç ä¸ºç¤ºä¾‹ä»£ç ã€‚æœªç»è¯¦å°½æµ‹è¯•ï¼Œä¸ä¿è¯å¯é æ€§ã€‚ä½œè€…å¯¹
+/// ä»»ä½•äººä½¿ç”¨æ­¤ä»£ç å¯¼è‡´çš„ç›´æŽ¥å’Œé—´æŽ¥æŸå¤±ä¸è´Ÿè´£ä»»ã€‚
 /// 
 
 #include "..\inc\tdi_fw\tdi_fw_lib.h"
@@ -16,7 +16,7 @@ tdifw_driver_entry(
 			IN PDRIVER_OBJECT theDriverObject,
             IN PUNICODE_STRING theRegistryPath)
 {
-    // Ö±½Ó·µ»Ø³É¹¦¼´¿É¡£
+    // ç›´æŽ¥è¿”å›žæˆåŠŸå³å¯ã€‚
     return STATUS_SUCCESS;
 }
 
@@ -24,14 +24,14 @@ VOID
 tdifw_driver_unload(
 			IN PDRIVER_OBJECT DriverObject)
 {
-    // Ã»ÓÐ×ÊÔ´ÐèÒªÊÍ·Å¡£
+    // æ²¡æœ‰èµ„æºéœ€è¦é‡Šæ”¾ã€‚
     return;
 }
 
 NTSTATUS tdifw_user_device_dispatch(
 	IN PDEVICE_OBJECT DeviceObject, IN PIRP irp)
 {
-    // ²»»áÓÐÈÎºÎÇëÇóµ½´ïÕâÀï¡£ÎÒÃÇÃ»ÓÐ×¢²á¹ý×Ô¶¨ÒåÉè±¸¡£
+    // ä¸ä¼šæœ‰ä»»ä½•è¯·æ±‚åˆ°è¾¾è¿™é‡Œã€‚æˆ‘ä»¬æ²¡æœ‰æ³¨å†Œè¿‡è‡ªå®šä¹‰è®¾å¤‡ã€‚
     return STATUS_UNSUCCESSFUL;
 }
 
@@ -52,12 +52,12 @@ int tdifw_filter(struct flt_request *request)
         struct sockaddr_in* from = (struct sockaddr_in*)&request->addr.from;
         struct sockaddr_in* to = (struct sockaddr_in*)&request->addr.to;
 
-        // È»ºó´òÓ¡Ð­ÒéÀàÐÍ
+        // ç„¶åŽæ‰“å°åè®®ç±»åž‹
         DbgPrint("tdifw_smpl: protocol type = TCP\r\n");
-        // ´òÓ¡µ±Ç°½ø³ÌµÄPID¡£
+        // æ‰“å°å½“å‰è¿›ç¨‹çš„PIDã€‚
         DbgPrint("tdifw_smpl: currect process = %d\r\n",request->pid);
 
-        // ´òÓ¡ÊÂ¼þÀàÐÍ
+        // æ‰“å°äº‹ä»¶ç±»åž‹
         switch(request->type)
         {
         case TYPE_CONNECT:
@@ -92,8 +92,8 @@ int tdifw_filter(struct flt_request *request)
         }
   
 
-        // Èç¹ûÊÇTCP£¬ÎÒÃÇ´òÓ¡¸ü¶àµÄÄÚÈÝ¡£°üÀ¨·½Ïò£¬À´Ô´IPµØÖ·
-        // Ä¿µÄIPµØÖ·£¬µÈµÈ¡£µ«ÊÇ¶ÔÓÚÆäËûÐ­Òé¾Í²»´òÓ¡ÁË¡£
+        // å¦‚æžœæ˜¯TCPï¼Œæˆ‘ä»¬æ‰“å°æ›´å¤šçš„å†…å®¹ã€‚åŒ…æ‹¬æ–¹å‘ï¼Œæ¥æºIPåœ°å€
+        // ç›®çš„IPåœ°å€ï¼Œç­‰ç­‰ã€‚ä½†æ˜¯å¯¹äºŽå…¶ä»–åè®®å°±ä¸æ‰“å°äº†ã€‚
         DbgPrint("tdifw_smpl: direction = %d\r\n",request->direction);
         DbgPrint("tdifw_smpl: src port = %d\r\n",tdifw_ntohs(from->sin_port));
         DbgPrint("tdifw_smpl: src ip = %d.%d.%d.%d\r\n",

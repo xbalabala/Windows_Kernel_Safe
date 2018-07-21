@@ -2,23 +2,23 @@
 /// @file         cf_file_irp.c
 /// @author    crazy_chu
 /// @date       2009-1-29
-/// @brief       ¶ÔÎÄ¼þµÄ²Ù×÷£¬Ö±½Ó·¢ËÍirpÀ´±ÜÃâÖØÈë
+/// @brief       å¯¹æ–‡ä»¶çš„æ“ä½œï¼Œç›´æŽ¥å‘é€irpæ¥é¿å…é‡å…¥
 /// 
-/// ÃâÔðÉùÃ÷
-/// ±¾´úÂëÎªÊ¾Àý´úÂë¡£Î´¾­Ïê¾¡²âÊÔ£¬²»±£Ö¤¿É¿¿ÐÔ¡£×÷Õß¶Ô
-/// ÈÎºÎÈËÊ¹ÓÃ´Ë´úÂëµ¼ÖÂµÄÖ±½ÓºÍ¼ä½ÓËðÊ§²»¸ºÔðÈÎ¡£
+/// å…è´£å£°æ˜Ž
+/// æœ¬ä»£ç ä¸ºç¤ºä¾‹ä»£ç ã€‚æœªç»è¯¦å°½æµ‹è¯•ï¼Œä¸ä¿è¯å¯é æ€§ã€‚ä½œè€…å¯¹
+/// ä»»ä½•äººä½¿ç”¨æ­¤ä»£ç å¯¼è‡´çš„ç›´æŽ¥å’Œé—´æŽ¥æŸå¤±ä¸è´Ÿè´£ä»»ã€‚
 /// 
-/// ÊÚÈ¨Ð­Òé
-/// ±¾´úÂë´ÓÊôÓÚ¹¤³Ìcrypt_file.ÊÇ³þ¿ñÈËÓëwowocockÎª¡¶º®½­¶À
-/// µö¡ª¡ªWindowsÄÚºË±à³ÌÓëÐÅÏ¢°²È«¡·Ëù±àÐ´µÄÎÄ¼þÍ¸Ã÷¼ÓÃÜ
-/// Ê¾Àý¡£±¾¹¤³Ì½ö½öÖ§³ÖWindowsXPÏÂ£¬FastFatÎÄ¼þÏµÍ³ÏÂ¼ÇÊÂ
-/// ±¾µÄ¼ÓÃÜ¡£Î´²âÊÔÓëÉ±¶¾Èí¼þ»òÕßÆäËûÎÄ¼þ¹ýÂËÇý¶¯²¢´æµÄ
-/// Çé¿ö¡£±¾´úÂëÈ«²¿È¨ÀûÎª×÷Õß±£Áô£¬½ö¹©¶ÁÕßÑ§Ï°ºÍÔÄ¶ÁÊ¹
-/// ÓÃ¡£Î´¾­Á½Î»×÷ÕßÊéÃæÊÚÈ¨£¬²»µÃÖ±½Ó¸´ÖÆ¡¢»òÕß»ùÓÚ´Ë´ú
-/// Âë½øÐÐÐÞ¸Ä¡¢ÀûÓÃ´Ë´úÂëÌá¹©µÄÈ«²¿»òÕß²¿·Ö¼¼ÊõÓÃÓÚÉÌÒµ
-/// µÄÈí¼þ¿ª·¢¡¢»òÕßÆäËûµÄ»ñÀûÐÐÎª¡£ÈçÓÐÎ¥·´£¬×÷Õß±£ÁôÆð
-/// ËßºÍ»ñÈ¡Åâ³¥Ö®È¨Á¦¡£ÔÄ¶Á´Ë´úÂë£¬Ôò×Ô¶¯ÊÓÎª½ÓÊÜÒÔÉÏÊÚ
-/// È¨Ð­Òé¡£Èç²»½ÓÊÜ´ËÐ­ÒéÕß£¬Çë²»ÒªÔÄ¶Á´Ë´úÂë¡£
+/// æŽˆæƒåè®®
+/// æœ¬ä»£ç ä»Žå±žäºŽå·¥ç¨‹crypt_file.æ˜¯æ¥šç‹‚äººä¸Žwowocockä¸ºã€Šå¯’æ±Ÿç‹¬
+/// é’“â€”â€”Windowså†…æ ¸ç¼–ç¨‹ä¸Žä¿¡æ¯å®‰å…¨ã€‹æ‰€ç¼–å†™çš„æ–‡ä»¶é€æ˜ŽåŠ å¯†
+/// ç¤ºä¾‹ã€‚æœ¬å·¥ç¨‹ä»…ä»…æ”¯æŒWindowsXPä¸‹ï¼ŒFastFatæ–‡ä»¶ç³»ç»Ÿä¸‹è®°äº‹
+/// æœ¬çš„åŠ å¯†ã€‚æœªæµ‹è¯•ä¸Žæ€æ¯’è½¯ä»¶æˆ–è€…å…¶ä»–æ–‡ä»¶è¿‡æ»¤é©±åŠ¨å¹¶å­˜çš„
+/// æƒ…å†µã€‚æœ¬ä»£ç å…¨éƒ¨æƒåˆ©ä¸ºä½œè€…ä¿ç•™ï¼Œä»…ä¾›è¯»è€…å­¦ä¹ å’Œé˜…è¯»ä½¿
+/// ç”¨ã€‚æœªç»ä¸¤ä½ä½œè€…ä¹¦é¢æŽˆæƒï¼Œä¸å¾—ç›´æŽ¥å¤åˆ¶ã€æˆ–è€…åŸºäºŽæ­¤ä»£
+/// ç è¿›è¡Œä¿®æ”¹ã€åˆ©ç”¨æ­¤ä»£ç æä¾›çš„å…¨éƒ¨æˆ–è€…éƒ¨åˆ†æŠ€æœ¯ç”¨äºŽå•†ä¸š
+/// çš„è½¯ä»¶å¼€å‘ã€æˆ–è€…å…¶ä»–çš„èŽ·åˆ©è¡Œä¸ºã€‚å¦‚æœ‰è¿åï¼Œä½œè€…ä¿ç•™èµ·
+/// è¯‰å’ŒèŽ·å–èµ”å¿ä¹‹æƒåŠ›ã€‚é˜…è¯»æ­¤ä»£ç ï¼Œåˆ™è‡ªåŠ¨è§†ä¸ºæŽ¥å—ä»¥ä¸ŠæŽˆ
+/// æƒåè®®ã€‚å¦‚ä¸æŽ¥å—æ­¤åè®®è€…ï¼Œè¯·ä¸è¦é˜…è¯»æ­¤ä»£ç ã€‚
 ///
 
 #include <ntifs.h>
@@ -37,7 +37,7 @@ static NTSTATUS cfFileIrpComp(
     return STATUS_MORE_PROCESSING_REQUIRED;
 }
 
-// ×Ô·¢ËÍSetInformationÇëÇó.
+// è‡ªå‘é€SetInformationè¯·æ±‚.
 NTSTATUS 
 cfFileSetInformation( 
     DEVICE_OBJECT *dev, 
@@ -54,12 +54,12 @@ cfFileSetInformation(
 
     KeInitializeEvent(&event, SynchronizationEvent, FALSE);
 
-	// ·ÖÅäirp
+	// åˆ†é…irp
     irp = IoAllocateIrp(dev->StackSize, FALSE);
     if(irp == NULL)
         return STATUS_INSUFFICIENT_RESOURCES;
 
-	// ÌîÐ´irpµÄÖ÷Ìå
+	// å¡«å†™irpçš„ä¸»ä½“
     irp->AssociatedIrp.SystemBuffer = buf;
     irp->UserEvent = &event;
     irp->UserIosb = &IoStatusBlock;
@@ -68,7 +68,7 @@ cfFileSetInformation(
     irp->RequestorMode = KernelMode;
     irp->Flags = 0;
 
-	// ÉèÖÃirpsp
+	// è®¾ç½®irpsp
     ioStackLocation = IoGetNextIrpStackLocation(irp);
     ioStackLocation->MajorFunction = IRP_MJ_SET_INFORMATION;
     ioStackLocation->DeviceObject = dev;
@@ -77,10 +77,10 @@ cfFileSetInformation(
     ioStackLocation->Parameters.SetFile.Length = buf_len;
     ioStackLocation->Parameters.SetFile.FileInformationClass = infor_class;
 
-	// ÉèÖÃ½áÊøÀý³Ì
+	// è®¾ç½®ç»“æŸä¾‹ç¨‹
     IoSetCompletionRoutine(irp, cfFileIrpComp, 0, TRUE, TRUE, TRUE);
 
-	// ·¢ËÍÇëÇó²¢µÈ´ý½áÊø
+	// å‘é€è¯·æ±‚å¹¶ç­‰å¾…ç»“æŸ
     (void) IoCallDriver(dev, irp);
     KeWaitForSingleObject(&event, Executive, KernelMode, TRUE, 0);
     return IoStatusBlock.Status;
@@ -99,16 +99,16 @@ cfFileQueryInformation(
     IO_STATUS_BLOCK IoStatusBlock;
     PIO_STACK_LOCATION ioStackLocation;
 
-    // ÒòÎªÎÒÃÇ´òËãÈÃÕâ¸öÇëÇóÍ¬²½Íê³É£¬ËùÒÔ³õÊ¼»¯Ò»¸öÊÂ¼þ
-    // ÓÃÀ´µÈ´ýÇëÇóÍê³É¡£
+    // å› ä¸ºæˆ‘ä»¬æ‰“ç®—è®©è¿™ä¸ªè¯·æ±‚åŒæ­¥å®Œæˆï¼Œæ‰€ä»¥åˆå§‹åŒ–ä¸€ä¸ªäº‹ä»¶
+    // ç”¨æ¥ç­‰å¾…è¯·æ±‚å®Œæˆã€‚
     KeInitializeEvent(&event, SynchronizationEvent, FALSE);
 
-	// ·ÖÅäirp
+	// åˆ†é…irp
     irp = IoAllocateIrp(dev->StackSize, FALSE);
     if(irp == NULL)
         return STATUS_INSUFFICIENT_RESOURCES;
 
-	// ÌîÐ´irpµÄÖ÷Ìå
+	// å¡«å†™irpçš„ä¸»ä½“
     irp->AssociatedIrp.SystemBuffer = buf;
     irp->UserEvent = &event;
     irp->UserIosb = &IoStatusBlock;
@@ -117,7 +117,7 @@ cfFileQueryInformation(
     irp->RequestorMode = KernelMode;
     irp->Flags = 0;
 
-	// ÉèÖÃirpsp
+	// è®¾ç½®irpsp
     ioStackLocation = IoGetNextIrpStackLocation(irp);
     ioStackLocation->MajorFunction = IRP_MJ_QUERY_INFORMATION;
     ioStackLocation->DeviceObject = dev;
@@ -125,10 +125,10 @@ cfFileQueryInformation(
     ioStackLocation->Parameters.QueryFile.Length = buf_len;
     ioStackLocation->Parameters.QueryFile.FileInformationClass = infor_class;
 
-	// ÉèÖÃ½áÊøÀý³Ì
+	// è®¾ç½®ç»“æŸä¾‹ç¨‹
     IoSetCompletionRoutine(irp, cfFileIrpComp, 0, TRUE, TRUE, TRUE);
 
-	// ·¢ËÍÇëÇó²¢µÈ´ý½áÊø
+	// å‘é€è¯·æ±‚å¹¶ç­‰å¾…ç»“æŸ
     (void) IoCallDriver(dev, irp);
     KeWaitForSingleObject(&event, Executive, KernelMode, TRUE, 0);
     return IoStatusBlock.Status;
@@ -196,16 +196,16 @@ cfFileReadWrite(
 
     KeInitializeEvent(&event, SynchronizationEvent, FALSE);
 
-	// ·ÖÅäirp.
+	// åˆ†é…irp.
     irp = IoAllocateIrp(dev->StackSize, FALSE);
     if(irp == NULL) {
         return STATUS_INSUFFICIENT_RESOURCES;
     }
   
-	// ÌîÐ´Ö÷Ìå¡£
+	// å¡«å†™ä¸»ä½“ã€‚
     irp->AssociatedIrp.SystemBuffer = NULL;
-	// ÔÚpaging ioµÄÇé¿öÏÂ£¬ËÆºõ±ØÐëÒªÊ¹ÓÃMDL²ÅÄÜÕý³£½øÐÐ¡£²»ÄÜÊ¹ÓÃUserBuffer.
-	// µ«ÊÇÎÒ²¢²»¿Ï¶¨ÕâÒ»µã¡£ËùÒÔÕâÀï¼ÓÒ»¸ö¶ÏÑÔ¡£ÒÔ±ãÎÒ¿ÉÒÔ¸ú×Ù´íÎó¡£
+	// åœ¨paging ioçš„æƒ…å†µä¸‹ï¼Œä¼¼ä¹Žå¿…é¡»è¦ä½¿ç”¨MDLæ‰èƒ½æ­£å¸¸è¿›è¡Œã€‚ä¸èƒ½ä½¿ç”¨UserBuffer.
+	// ä½†æ˜¯æˆ‘å¹¶ä¸è‚¯å®šè¿™ä¸€ç‚¹ã€‚æ‰€ä»¥è¿™é‡ŒåŠ ä¸€ä¸ªæ–­è¨€ã€‚ä»¥ä¾¿æˆ‘å¯ä»¥è·Ÿè¸ªé”™è¯¯ã€‚
     irp->MdlAddress = NULL;
     irp->UserBuffer = buffer;
     irp->UserEvent = &event;
@@ -218,7 +218,7 @@ cfFileReadWrite(
 	else
 		irp->Flags = IRP_DEFER_IO_COMPLETION|IRP_WRITE_OPERATION|IRP_NOCACHE;
 
-	// ÌîÐ´irpsp
+	// å¡«å†™irpsp
     ioStackLocation = IoGetNextIrpStackLocation(irp);
 	if(read_write)
 		ioStackLocation->MajorFunction = IRP_MJ_READ;
@@ -238,7 +238,7 @@ cfFileReadWrite(
 		ioStackLocation->Parameters.Write.Length = *length;
 	}
 
-	// ÉèÖÃÍê³É
+	// è®¾ç½®å®Œæˆ
     IoSetCompletionRoutine(irp, cfFileIrpComp, 0, TRUE, TRUE, TRUE);
     (void) IoCallDriver(dev, irp);
     KeWaitForSingleObject(&event, Executive, KernelMode, TRUE, 0);
@@ -246,7 +246,7 @@ cfFileReadWrite(
     return IoStatusBlock.Status;
 }
 
-// ÇåÀí»º³å
+// æ¸…ç†ç¼“å†²
 void cfFileCacheClear(PFILE_OBJECT pFileObject)
 {
    PFSRTL_COMMON_FCB_HEADER pFcb;
@@ -275,11 +275,11 @@ void cfFileCacheClear(PFILE_OBJECT pFileObject)
        bNeedReleaseResource = FALSE;
        bNeedReleasePagingIoResource = FALSE;
 
-	   // µ½fcbÖÐÈ¥ÄÃËø¡£
+	   // åˆ°fcbä¸­åŽ»æ‹¿é”ã€‚
        if (pFcb->PagingIoResource)
            bLockedPagingIoResource = ExIsResourceAcquiredExclusiveLite(pFcb->PagingIoResource);
 
-	   // ×ÜÖ®Ò»¶¨ÒªÄÃµ½Õâ¸öËø¡£
+	   // æ€»ä¹‹ä¸€å®šè¦æ‹¿åˆ°è¿™ä¸ªé”ã€‚
        if (pFcb->Resource)
        {
            bLockedResource = TRUE;

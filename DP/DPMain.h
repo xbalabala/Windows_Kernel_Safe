@@ -6,52 +6,52 @@
 #define FS_FAT32	2
 #define FS_NTFS		3
 
-//�����洢һ�������е������Ϣ�����ݽṹ�����ڹ����豸���豸��չ��
+//用来存储一个卷所有的相关信息的数据结构，放在过滤设备的设备扩展中
 typedef struct _DP_FILTER_DEV_EXTENSION_ 
 {
-	//�������֣�����"C:,D:"���е���ĸ����
+	//卷的名字，例如"C:,D:"等中的字母部分
 	WCHAR					VolumeLetter;
-	//������Ƿ��ڱ���״̬
+	//这个卷是否在保护状态
 	BOOL					Protect;
-	//��������ܴ�С����byteΪ��λ
+	//这个卷的总大小，以byte为单位
 	LARGE_INTEGER			TotalSizeInByte;
-	//��������ļ�ϵͳ��ÿ�ش�С����byteΪ��λ
+	//这个卷上文件系统的每簇大小，以byte为单位
 	DWORD					ClusterSizeInByte;
-	//�������ÿ��������С����byteΪ��λ
+	//这个卷的每个扇区大小，以byte为单位
 	DWORD					SectorSizeInByte;
-	//������豸��Ӧ�Ĺ����豸���豸����
+	//这个卷设备对应的过滤设备的设备对象
 	PDEVICE_OBJECT			FltDevObj;
-	//������豸��Ӧ�Ĺ����豸���²��豸����
+	//这个卷设备对应的过滤设备的下层设备对象
 	PDEVICE_OBJECT			LowerDevObj;
-	//������豸��Ӧ�������豸���豸����
+	//这个卷设备对应的物理设备的设备对象
 	PDEVICE_OBJECT			PhyDevObj;
-	//������ݽṹ�Ƿ��Ѿ�����ʼ�������
+	//这个数据结构是否已经被初始化完毕了
 	BOOL					InitializeCompleted;
-	//������ϵı���ϵͳʹ�õ�λͼ�ľ��
+	//这个卷上的保护系统使用的位图的句柄
 	PDP_BITMAP		Bitmap;	
-	//����ת�����ļ����
+	//用来转储的文件句柄
 	HANDLE					TempFile;
-	//������ϵı���ϵͳʹ�õ��������
+	//这个卷上的保护系统使用的请求队列
 	LIST_ENTRY				ReqList;
-	//������ϵı���ϵͳʹ�õ�������е���
+	//这个卷上的保护系统使用的请求队列的锁
 	KSPIN_LOCK				ReqLock;
-	//������ϵı���ϵͳʹ�õ�������е�ͬ���¼�
+	//这个卷上的保护系统使用的请求队列的同步事件
 	KEVENT					ReqEvent;
-	//������ϵı���ϵͳʹ�õ�������еĴ����߳�֮�߳̾��
+	//这个卷上的保护系统使用的请求队列的处理线程之线程句柄
 	PVOID					ThreadHandle;
-	//������ϵı���ϵͳʹ�õ�������еĴ����߳�֮������־
+	//这个卷上的保护系统使用的请求队列的处理线程之结束标志
 	BOOLEAN					ThreadTermFlag;
-	//������ϵı���ϵͳ�Ĺػ���ҳ��Դ����ļ����¼�
+	//这个卷上的保护系统的关机分页电源请求的计数事件
 	KEVENT					PagingPathCountEvent;
-	//������ϵı���ϵͳ�Ĺػ���ҳ��Դ����ļ���
+	//这个卷上的保护系统的关机分页电源请求的计数
 	LONG					PagingPathCount;
 } DP_FILTER_DEV_EXTENSION, *PDP_FILTER_DEV_EXTENSION;
 
 typedef struct _VOLUME_ONLINE_CONTEXT_
 {
-	//��volume_online��DeviceIoControl�д�����ɺ������豸��չ
+	//在volume_online的DeviceIoControl中传给完成函数的设备扩展
 	PDP_FILTER_DEV_EXTENSION	DevExt;
-	//��volume_online��DeviceIoControl�д�����ɺ�����ͬ���¼�
+	//在volume_online的DeviceIoControl中传给完成函数的同步事件
 	PKEVENT						Event;
 }VOLUME_ONLINE_CONTEXT, *PVOLUME_ONLINE_CONTEXT;
 

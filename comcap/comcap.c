@@ -16,11 +16,11 @@
 #endif
 #define CCP_MAX_COM_ID 32
 
-// �����豸����ʵ�豸
+// 过滤设备和真实设备
 static PDEVICE_OBJECT s_fltobj[CCP_MAX_COM_ID] = { 0 };
 static PDEVICE_OBJECT s_nextobj[CCP_MAX_COM_ID] = { 0 };
 
-// ��һ���˿��豸
+// 打开一个端口设备
 PDEVICE_OBJECT ccpOpenCom(ULONG id,NTSTATUS *status)
 {
 	UNICODE_STRING name_str;
@@ -28,14 +28,14 @@ PDEVICE_OBJECT ccpOpenCom(ULONG id,NTSTATUS *status)
 	PFILE_OBJECT fileobj = NULL;
 	PDEVICE_OBJECT devobj = NULL;
 
-	// �����ַ�����
+	// 输入字符串。
 	memset(name,0,sizeof(WCHAR)*32);
 	RtlStringCchPrintfW(
 		name,32,
 		L"\\Device\\Serial%d",id);
 	RtlInitUnicodeString(&name_str,name);
 
-	// ���豸����
+	// 打开设备对象
 	*status = IoGetDeviceObjectPointer(&name_str, FILE_ALL_ACCESS, &fileobj, &devobj);
 	if (*status == STATUS_SUCCESS)
 		ObDereferenceObject(fileobj);
@@ -53,7 +53,7 @@ ccpAttachDevice(
 	NTSTATUS status;
 	PDEVICE_OBJECT topdev = NULL;
 
-	// �����豸��Ȼ���֮��
+	// 生成设备，然后绑定之。
 	status = IoCreateDevice(driver,
 							0,
 							NULL,
@@ -65,7 +65,7 @@ ccpAttachDevice(
 	if (status != STATUS_SUCCESS)
 		return status;
 
-	// ������Ҫ��־λ��
+	// 拷贝重要标志位。
 	if(oldobj->Flags & DO_BUFFERED_IO)
 		(*fltobj)->Flags |= DO_BUFFERED_IO;
 	if(oldobj->Flags & DO_DIRECT_IO)
@@ -75,11 +75,11 @@ ccpAttachDevice(
 	if(oldobj->Characteristics & FILE_DEVICE_SECURE_OPEN)
 		(*fltobj)->Characteristics |= FILE_DEVICE_SECURE_OPEN;
 	(*fltobj)->Flags |=  DO_POWER_PAGABLE;
-	// ��һ���豸����һ���豸��
+	// 绑定一个设备到另一个设备上
 	topdev = IoAttachDeviceToDeviceStack(*fltobj,oldobj);
 	if (topdev == NULL)
 	{
-		// �����ʧ���ˣ������豸������������
+		// 如果绑定失败了，销毁设备，重新来过。
 		IoDeleteDevice(*fltobj);
 		*fltobj = NULL;
 		status = STATUS_UNSUCCESSFUL;
@@ -87,12 +87,12 @@ ccpAttachDevice(
 	}
 	*next = topdev;
 
-	// ��������豸�Ѿ�������
+	// 设置这个设备已经启动。
 	(*fltobj)->Flags = (*fltobj)->Flags & ~DO_DEVICE_INITIALIZING;
 	return STATUS_SUCCESS;
 }
 
-// ������������еĴ��ڡ�
+// 这个函数绑定所有的串口。
 void ccpAttachAllComs(PDRIVER_OBJECT driver)
 {
 	ULONG i;
@@ -100,13 +100,13 @@ void ccpAttachAllComs(PDRIVER_OBJECT driver)
 	NTSTATUS status;
 	for(i = 0;i<CCP_MAX_COM_ID;i++)
 	{
-		// ���object���á�
+		// 获得object引用。
 		com_ob = ccpOpenCom(i,&status);
 		if(com_ob == NULL)
 			continue;
-		// ������󶨡������ܰ��Ƿ�ɹ���
+		// 在这里绑定。并不管绑定是否成功。
 		ccpAttachDevice(driver,com_ob,&s_fltobj[i],&s_nextobj[i]);
-		// ȡ��object���á�
+		// 取消object引用。
 	}
 }
 
@@ -119,18 +119,18 @@ void ccpUnload(PDRIVER_OBJECT drv)
 	ULONG i;
 	LARGE_INTEGER interval;
 
-	// ���Ƚ����
+	// 首先解除绑定
 	for(i=0;i<CCP_MAX_COM_ID;i++)
 	{
 		if(s_nextobj[i] != NULL)
 			IoDetachDevice(s_nextobj[i]);
 	}
 
-	// ˯��5�롣�ȴ�����irp��������
+	// 睡眠5秒。等待所有irp处理结束
 	interval.QuadPart = (5*1000 * DELAY_ONE_MILLISECOND);		
 	KeDelayExecutionThread(KernelMode,FALSE,&interval);
 
-	// ɾ����Щ�豸
+	// 删除这些设备
 	for(i=0;i<CCP_MAX_COM_ID;i++)
 	{
 		if(s_fltobj[i] != NULL)
@@ -144,27 +144,27 @@ NTSTATUS ccpDispatch(PDEVICE_OBJECT device,PIRP irp)
     NTSTATUS status;
     ULONG i,j;
 
-    // ���ȵ�֪�����͸����ĸ��豸���豸һ�����CCP_MAX_COM_ID
-    // ������ǰ��Ĵ��뱣��õģ�����s_fltobj�С�
+    // 首先得知道发送给了哪个设备。设备一共最多CCP_MAX_COM_ID
+    // 个，是前面的代码保存好的，都在s_fltobj中。
     for(i=0;i<CCP_MAX_COM_ID;i++)
     {
         if(s_fltobj[i] == device)
         {			
-            // ���е�Դ������ȫ��ֱ�ӷŹ���
+            // 所有电源操作，全部直接放过。
             if(irpsp->MajorFunction == IRP_MJ_POWER)
             {
-                // ֱ�ӷ��ͣ�Ȼ�󷵻�˵�Ѿ��������ˡ�
+                // 直接发送，然后返回说已经被处理了。
                 PoStartNextPowerIrp(irp);
                 IoSkipCurrentIrpStackLocation(irp);
                 return PoCallDriver(s_nextobj[i],irp);
             }
-            // ��������ֻ����д����д����Ļ�����û������Լ��䳤�ȡ�
-            // Ȼ���ӡһ�¡�
+            // 此外我们只过滤写请求。写请求的话，获得缓冲区以及其长度。
+            // 然后打印一下。
             if(irpsp->MajorFunction == IRP_MJ_WRITE)
             {
-                // �����д���Ȼ�ó���
+                // 如果是写，先获得长度
                 ULONG len = irpsp->Parameters.Write.Length;
-                // Ȼ���û�����
+                // 然后获得缓冲区
                 PUCHAR buf = NULL;
                 if(irp->MdlAddress != NULL)
                     buf = 
@@ -175,7 +175,7 @@ NTSTATUS ccpDispatch(PDEVICE_OBJECT device,PIRP irp)
                 if(buf == NULL)
                     buf = (PUCHAR)irp->AssociatedIrp.SystemBuffer;
 
-                // ��ӡ����
+                // 打印内容
                 for(j=0;j<len;++j)
                 {
                     DbgPrint("comcap: Send Data: %2x\r\n",
@@ -183,13 +183,13 @@ NTSTATUS ccpDispatch(PDEVICE_OBJECT device,PIRP irp)
                 }
             }
 
-            // ��Щ����ֱ���·�ִ�м��ɡ����ǲ�����ֹ���߸ı�����
+            // 这些请求直接下发执行即可。我们并不禁止或者改变它。
             IoSkipCurrentIrpStackLocation(irp);
             return IoCallDriver(s_nextobj[i],irp);
         }
     }
 
-    // ��������Ͳ��ڱ��󶨵��豸�У�����������ģ�ֱ�ӷ��ز�������
+    // 如果根本就不在被绑定的设备中，那是有问题的，直接返回参数错误。
     irp->IoStatus.Information = 0;
     irp->IoStatus.Status = STATUS_INVALID_PARAMETER;
     IoCompleteRequest(irp,IO_NO_INCREMENT);
@@ -199,19 +199,19 @@ NTSTATUS ccpDispatch(PDEVICE_OBJECT device,PIRP irp)
 NTSTATUS DriverEntry(PDRIVER_OBJECT driver, PUNICODE_STRING reg_path)
 {
     size_t i;
-    // ���еķַ����������ó�һ���ġ�
+    // 所有的分发函数都设置成一样的。
     for(i=0;i<IRP_MJ_MAXIMUM_FUNCTION;i++)
     {
         driver->MajorFunction[i] = ccpDispatch;
     }
 
-    // ֧�ֶ�̬ж�ء�
+    // 支持动态卸载。
     driver->DriverUnload = ccpUnload;
 
-    // �����еĴ��ڡ�
+    // 绑定所有的串口。
     ccpAttachAllComs(driver);
 
-    // ֱ�ӷ��سɹ����ɡ�
+    // 直接返回成功即可。
     return STATUS_SUCCESS;
 }
 

@@ -31,14 +31,14 @@ typedef struct IP_HEADER
 #define PROT_UDP                                0x11 
 
 
-// ���������
-//	Packet�� ��������NDIS��������
-//	bRecOrSend: ����ǽ��հ���ΪTRUE;���Ϊ���Ͱ���ΪFALSE��
-// ����ֵ��
-//	���������£�������ͨ������ֵ�Ծ�����δ���NDIS����������ʧ�ܡ�ת��
+// 输入参数：
+//	Packet： 被分析的NDIS包描述符
+//	bRecOrSend: 如果是接收包，为TRUE;如果为发送包，为FALSE。
+// 返回值：
+//	理想的情况下，调用者通过返回值以决定如何处理NDIS包：续传、失败、转发
 FILTER_STATUS AnalysisPacket(PNDIS_PACKET Packet,  BOOLEAN bRecOrSend)
 {
-	FILTER_STATUS status = STATUS_PASS; // Ĭ��ȫ��ͨ��
+	FILTER_STATUS status = STATUS_PASS; // 默认全部通过
 	PNDIS_BUFFER NdisBuffer ;
 	UINT TotalPacketLength = 0;
 	UINT copysize = 0;
@@ -60,42 +60,42 @@ FILTER_STATUS AnalysisPacket(PNDIS_PACKET Packet,  BOOLEAN bRecOrSend)
 
 		NdisZeroMemory( pPacketContent, 2048 ) ;
 
-		// �ҵ���һ��Ndis_Buffer��Ȼ��ͨ��ͨ��NdisGetNextBuffer����ú�����NDIS_BUFFER��
-		// ���ֻ���ҵ�һ���ڵ㣬�����ҷ���ķ����ǵ���NdisGetFirstBufferFromPacket��
+		// 找到第一个Ndis_Buffer。然后通过通过NdisGetNextBuffer来获得后续的NDIS_BUFFER。
+		// 如果只是找第一个节点，更快且方便的方法是调用NdisGetFirstBufferFromPacket。
 		NdisQueryPacket(Packet,  // NDIS_PACKET        
-			&PhysicalBufferCount,// �ڴ��е���������
-			&BufferCount,		 // ���ٸ�NDIS_BUFFER��
-			&NdisBuffer,         // �����ص�һ����
-			&TotalPacketLength	 // �ܹ��İ����ݳ���
+			&PhysicalBufferCount,// 内存中的物理块数
+			&BufferCount,		 // 多少个NDIS_BUFFER包
+			&NdisBuffer,         // 将返回第一个包
+			&TotalPacketLength	 // 总共的包数据长度
 			);
 
 		while(TRUE){
 
-			// ȡ��Ndis_Buffer�д洢�������������ַ��
-			// �����������һ���汾��NdisQueryBuffer��
-			// ������ϵͳ��Դ�ͻ��������ľ���ʱ�򣬻����Bug Check������������
+			// 取得Ndis_Buffer中存储缓冲区的虚拟地址。
+			// 这个函数的另一个版本是NdisQueryBuffer。
+			// 后者在系统资源低或者甚至耗尽的时候，会产生Bug Check，导致蓝屏。
 			NdisQueryBufferSafe(NdisBuffer,
-				&tembuffer,// ��������ַ
-				&copysize, // ��������С
+				&tembuffer,// 缓冲区地址
+				&copysize, // 缓冲区大小
 				NormalPagePriority
 				);
 
-			// ���tembufferΪNULL��˵����ǰϵͳ��Դ�ѷ���
+			// 如果tembuffer为NULL，说明当前系统资源匮乏。
 			if(tembuffer != NULL){
 				NdisMoveMemory( pPacketContent + DataOffset , tembuffer, copysize) ;			
 				DataOffset += copysize;
 			}
 
-			// �����һ��NDIS_BUFFER��
-			// ����õ�����һ��NULLָ�룬˵���Ѿ�������ʽ��������ĩβ�����ǵ�ѭ��Ӧ�ý����ˡ�
+			// 获得下一个NDIS_BUFFER。
+			// 如果得到的是一个NULL指针，说明已经到了链式缓冲区的末尾，我们的循环应该结束了。
 			NdisGetNextBuffer(NdisBuffer , &NdisBuffer ) ;
 
 			if( NdisBuffer == NULL )
 				break ;
 		}
 
-		// ȡ�����ݰ����ݺ����潫�������ݽ��й��ˡ�
-		// ��������������е�ʵ�֣������򵥵ش�ӡһЩ�ɶ���Log��Ϣ��
+		// 取得数据包内容后，下面将对其内容进行过滤。
+		// 我们在这个函数中的实现，仅仅简单地打印一些可读的Log信息。
 		if(pPacketContent[12] == 8 &&  pPacketContent[13] == 0 )  //is ip packet
 		{	
 			PIP_HEADER pIPHeader = (PIP_HEADER)(pPacketContent + IP_OFFSET);
@@ -108,7 +108,7 @@ FILTER_STATUS AnalysisPacket(PNDIS_PACKET Packet,  BOOLEAN bRecOrSend)
 					DbgPrint("Send ICMP packet");
 
 				//
-				// ȡ��ICMPͷ��������Ĺ����жϡ�
+				// 取得ICMP头，做出你的过滤判断。
 				// 
 
 				break;
@@ -119,7 +119,7 @@ FILTER_STATUS AnalysisPacket(PNDIS_PACKET Packet,  BOOLEAN bRecOrSend)
 					DbgPrint("Send UDP packet");
 
 				//
-				// ȡ��UDPͷ��������Ĺ����жϡ�
+				// 取得UDP头，做出你的过滤判断。
 				//
 
 				break;
@@ -130,7 +130,7 @@ FILTER_STATUS AnalysisPacket(PNDIS_PACKET Packet,  BOOLEAN bRecOrSend)
 					DbgPrint("Send TCP packet");
 
 				//
-				// ȡ��TCPͷ��������Ĺ����жϡ�
+				// 取得TCP头，做出你的过滤判断。
 				//
 
 				break;
@@ -147,8 +147,8 @@ FILTER_STATUS AnalysisPacket(PNDIS_PACKET Packet,  BOOLEAN bRecOrSend)
 				DbgPrint("Send unknown packet");
 		}
 
-		// �򵥴�ӡ������������
-		status = NdisAllocateMemoryWithTag( &tcsPrintBuf, 2048*3, TAG);  //�����ڴ��
+		// 简单打印出包数据内容
+		status = NdisAllocateMemoryWithTag( &tcsPrintBuf, 2048*3, TAG);  //分配内存块
 		if( status != NDIS_STATUS_SUCCESS ){
 			status = NDIS_STATUS_FAILURE ;
 			__leave;

@@ -2,98 +2,98 @@
 #include "ntstrsafe.h"
 PDEVICE_OBJECT gDeviceObject = NULL;
 
-// ÕâÊÇÎÒÃÇ×Ô¼º´¦ÀíIRP_MJ_CREATEµÄ·½·¨
+// è¿™æ˜¯æˆ‘ä»¬è‡ªå·±å¤„ç†IRP_MJ_CREATEçš„æ–¹æ³•
 NTSTATUS 
 myCreate(
 		 IN PDEVICE_OBJECT DeviceObject, 
 		 IN PIRP Irp
 		 )
 {
-	// Èç¹û´´½¨ÎÒÃÇµÄÉè±¸£¬Ö±½Ó·µ»Ø³É¹¦
+	// å¦‚æžœåˆ›å»ºæˆ‘ä»¬çš„è®¾å¤‡ï¼Œç›´æŽ¥è¿”å›žæˆåŠŸ
 	if(DeviceObject == gDeviceObject)
 		return STATUS_SUCCESS;
 
-	// ²»ÒªÍüÁËÏµÍ³¹ý³Ì
+	// ä¸è¦å¿˜äº†ç³»ç»Ÿè¿‡ç¨‹
 	return systemCreate(DeviceObject, Irp);
 }
 
 
-// ÕâÊÇÎÒÃÇ×Ô¼º´¦ÀíIRP_MJ_WRITEµÄ·½·¨
+// è¿™æ˜¯æˆ‘ä»¬è‡ªå·±å¤„ç†IRP_MJ_WRITEçš„æ–¹æ³•
 NTSTATUS 
 myWrite(
 		IN PDEVICE_OBJECT DeviceObject, 
 		IN PIRP Irp
 		)
 {
-	// ÅÐ¶ÏÊÇ²»ÊÇÎÒÃÇµÄÉè±¸
+	// åˆ¤æ–­æ˜¯ä¸æ˜¯æˆ‘ä»¬çš„è®¾å¤‡
 	if(DeviceObject == gDeviceObject){
 		// 
 		NTSTATUS status = STATUS_SUCCESS;
 
 		//
-		// ÕâÀï×ö´¦Àí£¬Òª¶ÔIRPÖÐµÄÊý¾Ý½øÐÐÏàÓ¦µÄ±£´æ¡¢½âÎö
+		// è¿™é‡Œåšå¤„ç†ï¼Œè¦å¯¹IRPä¸­çš„æ•°æ®è¿›è¡Œç›¸åº”çš„ä¿å­˜ã€è§£æž
 		//
 
-		// Ö±½Ó·µ»Ø
+		// ç›´æŽ¥è¿”å›ž
 		return status;
 	}
 
-	// ²»ÒªÍüÁËÏµÍ³¹ý³Ì
+	// ä¸è¦å¿˜äº†ç³»ç»Ÿè¿‡ç¨‹
 	return systemWrite(DeviceObject, Irp);
 }
 
 
-// ÕâÊÇÎÒÃÇ×Ô¼º´¦ÀíIRP_MJ_READµÄ·½·¨
+// è¿™æ˜¯æˆ‘ä»¬è‡ªå·±å¤„ç†IRP_MJ_READçš„æ–¹æ³•
 NTSTATUS 
 myRead(
 	   IN PDEVICE_OBJECT DeviceObject, 
 	   IN PIRP Irp
 	   )
 {
-	// ÅÐ¶ÏÊÇ²»ÊÇÎÒÃÇµÄÉè±¸
+	// åˆ¤æ–­æ˜¯ä¸æ˜¯æˆ‘ä»¬çš„è®¾å¤‡
 	if(DeviceObject == gDeviceObject){
 		// 
 		NTSTATUS status = STATUS_SUCCESS;
 
 		//
-		// ÕâÀï×ö´¦Àí£¬Òª°ÑÒ»Ð©Êý¾ÝÌî³äµ½IRPÖÐµÄÊý¾Ý»º³åÇøÖÐ
+		// è¿™é‡Œåšå¤„ç†ï¼Œè¦æŠŠä¸€äº›æ•°æ®å¡«å……åˆ°IRPä¸­çš„æ•°æ®ç¼“å†²åŒºä¸­
 		//
 
-		// Ö±½Ó·µ»Ø
+		// ç›´æŽ¥è¿”å›ž
 		return status;
 	}
 
-	// ²»ÒªÍüÁËÏµÍ³¹ý³Ì
+	// ä¸è¦å¿˜äº†ç³»ç»Ÿè¿‡ç¨‹
 	return systemRead(DeviceObject, Irp);
 }
 
 
-// ÕâÊÇÎÒÃÇ×Ô¼º´¦ÀíIRP_MJ_DEVICE_CONTROLµÄ·½·¨
+// è¿™æ˜¯æˆ‘ä»¬è‡ªå·±å¤„ç†IRP_MJ_DEVICE_CONTROLçš„æ–¹æ³•
 NTSTATUS 
 myDeviceControl(
 				IN PDEVICE_OBJECT DeviceObject, 
 				IN PIRP Irp
 				)
 {
-	// ÅÐ¶ÏÊÇ²»ÊÇÎÒÃÇµÄÉè±¸
+	// åˆ¤æ–­æ˜¯ä¸æ˜¯æˆ‘ä»¬çš„è®¾å¤‡
 	if(DeviceObject == gDeviceObject){
 		// 
 		NTSTATUS status = STATUS_SUCCESS;
 
 		//
-		// ÕâÀï×ö´¦Àí£¬Òª»ñÈ¡Device IO ControlºÅ£¬´¦ÀíËü
+		// è¿™é‡Œåšå¤„ç†ï¼Œè¦èŽ·å–Device IO Controlå·ï¼Œå¤„ç†å®ƒ
 		//
 
-		// Ö±½Ó·µ»Ø
+		// ç›´æŽ¥è¿”å›ž
 		return status;
 	}
 
-	// ²»ÒªÍüÁËÏµÍ³¹ý³Ì
+	// ä¸è¦å¿˜äº†ç³»ç»Ÿè¿‡ç¨‹
 	return systemDeviceControl(DeviceObject, Irp);
 }
 
 // 
-// ÊµÏÖÎÒÃÇ×Ô¼ºµÄAddDeviceº¯Êý
+// å®žçŽ°æˆ‘ä»¬è‡ªå·±çš„AddDeviceå‡½æ•°
 //
 NTSTATUS myAddDevice(
 					 IN PDRIVER_OBJECT  DriverObject,
@@ -102,15 +102,15 @@ NTSTATUS myAddDevice(
 {
 	if(gDeviceObject != NULL)
 	{
-		// ÔÚÕâÀïÃæ´´½¨ÎÒÃÇ×Ô¼ºµÄÉè±¸¶ÔÏó£¬»òÕßÉêÇëËùÐèÒªµÄ×ÊÔ´¡£
-		// ÎªÁËÇø·Ö²»Í¬ÊµÀý£¬½«Éè±¸¶ÔÏóÃû¹¹Ôì³É£º¡±MyNdisDevice¡±+HardwareID¡£
+		// åœ¨è¿™é‡Œé¢åˆ›å»ºæˆ‘ä»¬è‡ªå·±çš„è®¾å¤‡å¯¹è±¡ï¼Œæˆ–è€…ç”³è¯·æ‰€éœ€è¦çš„èµ„æºã€‚
+		// ä¸ºäº†åŒºåˆ†ä¸åŒå®žä¾‹ï¼Œå°†è®¾å¤‡å¯¹è±¡åæž„é€ æˆï¼šâ€MyNdisDeviceâ€+HardwareIDã€‚
 		UNICODE_STRING nameString; 
 		WCHAR wcsName[256];
 		UNICODE_STRING preName = RTL_CONSTANT_STRING(L"\\Device\\MyNdisDevice");
 
-		// Ê×ÏÈÈ¡µÃÉè±¸µÄHDID¡£
+		// é¦–å…ˆå–å¾—è®¾å¤‡çš„HDIDã€‚
 		ULONG nameLength = 0;
-		WCHAR wcsHardwareID[256]; //×ã¹»´óÁË
+		WCHAR wcsHardwareID[256]; //è¶³å¤Ÿå¤§äº†
 		NTSTATUS status = IoGetDeviceProperty (PhysicalDeviceObject,
 			DevicePropertyHardwareID,
 			256,
@@ -121,7 +121,7 @@ NTSTATUS myAddDevice(
 			return status;
 		}
 
-		// ÏÂÃæ¹¹ÔìÉè±¸¶ÔÏóµÄÃû×Ö£¬¸ù¾ÝÉÏÃæµÄ¹æÔò£º¡°MyNdisDevice¡±+ HardwareID¡£
+		// ä¸‹é¢æž„é€ è®¾å¤‡å¯¹è±¡çš„åå­—ï¼Œæ ¹æ®ä¸Šé¢çš„è§„åˆ™ï¼šâ€œMyNdisDeviceâ€+ HardwareIDã€‚
 		RtlInitEmptyUnicodeString( &nameString, wcsName, 256*2);
 		RtlCopyUnicodeString( &nameString, &preName);
 		//RtlUnicodeStringPrintf(&nameString, L"%wZ_%d_", &preName, 0);
@@ -135,21 +135,21 @@ NTSTATUS myAddDevice(
 			FALSE,
 			&gDeviceObject); 
 
-		// Èç¹û´´½¨Ê§°ÜÁË£¬ÎÒÃÇÓÐÈ¨ÀûÈÃº¯ÊýÒÔÊ§°Ü·µ»Ø
-		// µ«ÕâÑùÎÒÃÇµÄÇý¶¯¼ÓÔØÒ²¾ÍÊ§°ÜÁË
+		// å¦‚æžœåˆ›å»ºå¤±è´¥äº†ï¼Œæˆ‘ä»¬æœ‰æƒåˆ©è®©å‡½æ•°ä»¥å¤±è´¥è¿”å›ž
+		// ä½†è¿™æ ·æˆ‘ä»¬çš„é©±åŠ¨åŠ è½½ä¹Ÿå°±å¤±è´¥äº†
 		if(status != STATUS_SUCCESS){
 			KdPrint(("Failed to create device %ws\n", nameString));
 			return status;
 		}
 	}
 
-	//ExAllocatePoolWithTag(); //ÉêÇë×ÊÔ´¼°ÆäËû
+	//ExAllocatePoolWithTag(); //ç”³è¯·èµ„æºåŠå…¶ä»–
 
 	// 
-	// »¹¿ÉÒÔ¼ÓÈëÆäËûÕýÈ·µÄ²Ù×÷
+	// è¿˜å¯ä»¥åŠ å…¥å…¶ä»–æ­£ç¡®çš„æ“ä½œ
 	//
 
-	// ÏÖÔÚµ÷ÓÃ±£´æµÄNdis¿âÖÐµÄAddDeviceÊµÏÖ
-	// Ç§Íò²»ÒªÍü¼Ç£¬·ñÔò¾Í»á´ó´íÌØ´íÁË
+	// çŽ°åœ¨è°ƒç”¨ä¿å­˜çš„Ndisåº“ä¸­çš„AddDeviceå®žçŽ°
+	// åƒä¸‡ä¸è¦å¿˜è®°ï¼Œå¦åˆ™å°±ä¼šå¤§é”™ç‰¹é”™äº†
 	return systemAddDevice(DriverObject, PhysicalDeviceObject);
 }

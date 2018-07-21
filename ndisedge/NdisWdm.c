@@ -74,10 +74,10 @@ Arguments:
     DEBUGP(MP_INFO, ("---> Sample is built with NDIS Version %d.%d\n",
                             MP_NDIS_MAJOR_VERSION, MP_NDIS_MINOR_VERSION));
 
-    // ���汾�š��������汾��Ϊ5���ΰ汾��Ϊ0��Ҫ����Ͱ汾Ϊ5.0
+    // 检查版本号。这里主版本号为5，次版本号为0，要求最低版本为5.0
     if (NdisGetVersion() < ((MP_NDIS_MAJOR_VERSION << 16) | MP_NDIS_MINOR_VERSION)){
         DEBUGP(MP_ERROR, ("This version of driver is not support on this OS\n"));
-        // ����汾̫�ͣ���ֱ�ӷ���ʧ�ܼ��ɡ�
+        // 如果版本太低，则直接返回失败即可。
         return NDIS_STATUS_FAILURE;
     }
 
@@ -102,9 +102,9 @@ Arguments:
         return NDIS_STATUS_FAILURE;
     }
 
-    // ��ʼ����װ�������������ע��С�˿ڱ���ġ����Ƕ�С�˿�
-    // �����Ŀ����߶��ԣ����˵���һЩNDIS������Ҫ�ṩ������֮
-    // �⣬��û��ʲôʵ�ʵ����塣
+    // 初始化包装句柄。这个句柄是注册小端口必须的。但是对小端口
+    // 驱动的开发者而言，除了调用一些NDIS函数需要提供这个句柄之
+    // 外，并没有什么实质的意义。
     NdisMInitializeWrapper(
             &NdisWrapperHandle,
             DriverObject,
@@ -116,10 +116,10 @@ Arguments:
         return NDIS_STATUS_FAILURE;
     }
 
-    // ��С�˿�������0��
+    // 把小端口特征清0。
     NdisZeroMemory(&MPChar, sizeof(MPChar));
 
-    // Ȼ��ʼ��дС�˿�������
+    // 然后开始填写小端口特征。
     MPChar.MajorNdisVersion          = MP_NDIS_MAJOR_VERSION;
     MPChar.MinorNdisVersion          = MP_NDIS_MINOR_VERSION;
     MPChar.InitializeHandler         = MPInitialize;
@@ -138,7 +138,7 @@ Arguments:
 
     DEBUGP(MP_LOUD, ("Calling NdisMRegisterMiniport...\n"));
 
-    // ע��С�˿ڡ�ע����Ҫ��װ�����С�˿�������
+    // 注册小端口。注意需要包装句柄与小端口特征。
     Status = NdisMRegisterMiniport(
                     NdisWrapperHandle,
                     &MPChar,
@@ -150,12 +150,12 @@ Arguments:
 
     } else {
 
-        // ��ʼ��ȫ�ֱ�������Щȫ�ֱ�����������������ʹ�õ�
+        // 初始化全局变量。这些全局变量是在整个驱动中使用的
         NdisAllocateSpinLock(&GlobalData.Lock);
         NdisInitializeListHead(&GlobalData.AdapterList);
 
-        // ע��һ��Unload��������ע��Unload����������ж�ص�ʱ����á�
-        // ��Э�������е�MPHalt����ÿ��ʵ����������ж�ص�ʱ����õġ�
+        // 注册一个Unload函数。请注意Unload是整个驱动卸载的时候调用。
+        // 而协议特征中的MPHalt则是每个实例（网卡）卸载的时候调用的。
         NdisMRegisterUnloadHandler(NdisWrapperHandle, MPUnload);
     }
 
@@ -207,7 +207,7 @@ Arguments:
 
     do {
 
-        // ����ѡ��ý����������û��NdisMedium802_3.
+        // 检查可选的媒质类型中有没有NdisMedium802_3.
         for(index = 0; index < MediumArraySize; ++index)
         {
             if (MediumArray[index] == NIC_MEDIA_TYPE) {
@@ -215,7 +215,7 @@ Arguments:
             }
         }
 
-        // ���û�е�Ȼ��ֱ�ӷ��ز�֧���ˡ�
+        // 如果没有当然就直接返回不支持了。
         if (index == MediumArraySize)
         {
             DEBUGP(MP_ERROR, ("Expected media is not in MediumArray.\n"));
@@ -223,17 +223,17 @@ Arguments:
             break;
         }
 
-        // ��дѡ�е�ý�ʡ�
+        // 填写选中的媒质。
         *SelectedMediumIndex = index;
 
-        // �����Ƿ����ʼ���������ṹ���ǳ��򵥣���������
+        // 下面是分配初始化适配器结构。非常简单，不详述。
         Status = NICAllocAdapter(&Adapter);
         if (Status != NDIS_STATUS_SUCCESS)
         {
             break;
         }
 
-        // �������ü�����������ü�����Ӧ����MPHalt�м��١�
+        // 增加引用计数。这个引用计数对应的在MPHalt中减少。
         MP_INC_REF(Adapter);
 
         //

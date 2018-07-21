@@ -7,7 +7,7 @@
 #include "DPBitmap.h"
 #include "DPMain.h"
 
-//µ±ÎÒÃÇÅÐ¶Ï³öÄÇ¸öÉè±¸ÊÇÐèÒª±£»¤µÄÊ±ºò£¬»á½«Õâ¸öÖ¸ÕëÖ¸ÏòÕâ¸öÐèÒª±£»¤Éè±¸µÄDevExt
+//å½“æˆ‘ä»¬åˆ¤æ–­å‡ºé‚£ä¸ªè®¾å¤‡æ˜¯éœ€è¦ä¿æŠ¤çš„æ—¶å€™ï¼Œä¼šå°†è¿™ä¸ªæŒ‡é’ˆæŒ‡å‘è¿™ä¸ªéœ€è¦ä¿æŠ¤è®¾å¤‡çš„DevExt
 PDP_FILTER_DEV_EXTENSION gProtectDevExt = NULL;
 
 VOID
@@ -17,29 +17,29 @@ DPReinitializationRoutine(
 	IN	ULONG			Count 
 	)
 {
-	//·µ»ØÖµ
+	//è¿”å›žå€¼
 	NTSTATUS ntStatus;
-	//DÅÌµÄ»º³åÎÄ¼þÃû
+	//Dç›˜çš„ç¼“å†²æ–‡ä»¶å
 	WCHAR				SparseFilename[] = L"\\??\\E:\\temp.dat";
 	UNICODE_STRING		SparseFilenameUni;
-	//½¨Á¢ÎÄ¼þÊ±µÄio²Ù×÷×´Ì¬Öµ
+	//å»ºç«‹æ–‡ä»¶æ—¶çš„ioæ“ä½œçŠ¶æ€å€¼
 	IO_STATUS_BLOCK					ios = { 0 };
-	//½¨Á¢ÎÄ¼þÊ±µÄ¶ÔÏóÊôÐÔ±äÁ¿
+	//å»ºç«‹æ–‡ä»¶æ—¶çš„å¯¹è±¡å±žæ€§å˜é‡
 	OBJECT_ATTRIBUTES				ObjAttr = { 0 };
-	//ÉèÖÃÎÄ¼þ´óÐ¡µÄÊ±ºòÊ¹ÓÃµÄÎÄ¼þ½áÎ²ÃèÊö·û
+	//è®¾ç½®æ–‡ä»¶å¤§å°çš„æ—¶å€™ä½¿ç”¨çš„æ–‡ä»¶ç»“å°¾æè¿°ç¬¦
 	FILE_END_OF_FILE_INFORMATION    FileEndInfo = { 0 };
 
-	//´ò¿ªÎÒÃÇ½«ÒªÓÃÀ´×ö×ª´¢µÄÎÄ¼þ
-	//³õÊ¼»¯Òª´ò¿ªµÄÎÄ¼þÃû
+	//æ‰“å¼€æˆ‘ä»¬å°†è¦ç”¨æ¥åšè½¬å‚¨çš„æ–‡ä»¶
+	//åˆå§‹åŒ–è¦æ‰“å¼€çš„æ–‡ä»¶å
 	RtlInitUnicodeString(&SparseFilenameUni,SparseFilename);
-	//³õÊ¼»¯ÎÄ¼þÃû¶ÔÓ¦µÄ¶ÔÏóÃû£¬ÕâÀïÐèÒª½«Æä³õÊ¼»¯ÎªÄÚºË¶ÔÏó£¬²¢ÇÒ´óÐ¡Ð´²»Ãô¸Ð
+	//åˆå§‹åŒ–æ–‡ä»¶åå¯¹åº”çš„å¯¹è±¡åï¼Œè¿™é‡Œéœ€è¦å°†å…¶åˆå§‹åŒ–ä¸ºå†…æ ¸å¯¹è±¡ï¼Œå¹¶ä¸”å¤§å°å†™ä¸æ•æ„Ÿ
 	InitializeObjectAttributes(
 		&ObjAttr, 
 		&SparseFilenameUni,
 		OBJ_KERNEL_HANDLE|OBJ_CASE_INSENSITIVE,
 		NULL,
 		NULL);
-	//½¨Á¢ÎÄ¼þ£¬ÕâÀïÐèÒª×¢ÒâµÄÊÇ£¬Òª¼ÓÈëFILE_NO_INTERMEDIATE_BUFFERINGÑ¡Ïî£¬±ÜÃâÎÄ¼þÏµÍ³ÔÙ»º´æÕâ¸öÎÄ¼þ
+	//å»ºç«‹æ–‡ä»¶ï¼Œè¿™é‡Œéœ€è¦æ³¨æ„çš„æ˜¯ï¼Œè¦åŠ å…¥FILE_NO_INTERMEDIATE_BUFFERINGé€‰é¡¹ï¼Œé¿å…æ–‡ä»¶ç³»ç»Ÿå†ç¼“å­˜è¿™ä¸ªæ–‡ä»¶
 	ntStatus = ZwCreateFile(
 		&gProtectDevExt->TempFile,
 		GENERIC_READ | GENERIC_WRITE,
@@ -59,7 +59,7 @@ DPReinitializationRoutine(
 	{
 		goto ERROUT;
 	}
-	//ÉèÖÃÕâ¸öÎÄ¼þÎªÏ¡ÊèÎÄ¼þ
+	//è®¾ç½®è¿™ä¸ªæ–‡ä»¶ä¸ºç¨€ç–æ–‡ä»¶
 	ntStatus = ZwFsControlFile(
 		gProtectDevExt->TempFile,
 		NULL,
@@ -75,7 +75,7 @@ DPReinitializationRoutine(
 	{
 		goto ERROUT;
 	}
-	//ÉèÖÃÕâ¸öÎÄ¼þµÄ´óÐ¡Îª"D"ÅÌµÄ´óÐ¡²¢ÇÒÁô³ö10mµÄ±£»¤¿Õ¼ä
+	//è®¾ç½®è¿™ä¸ªæ–‡ä»¶çš„å¤§å°ä¸º"D"ç›˜çš„å¤§å°å¹¶ä¸”ç•™å‡º10mçš„ä¿æŠ¤ç©ºé—´
 	FileEndInfo.EndOfFile.QuadPart = gProtectDevExt->TotalSizeInByte.QuadPart + 10*1024*1024;
 	ntStatus = ZwSetInformationFile(
 		gProtectDevExt->TempFile,
@@ -88,7 +88,7 @@ DPReinitializationRoutine(
 	{
 		goto ERROUT;
 	}
-	//Èç¹û³É¹¦³õÊ¼»¯¾Í½«Õâ¸ö¾íµÄ±£»¤±êÖ¾ÉèÖÃÎªÔÚ±£»¤×´Ì¬
+	//å¦‚æžœæˆåŠŸåˆå§‹åŒ–å°±å°†è¿™ä¸ªå·çš„ä¿æŠ¤æ ‡å¿—è®¾ç½®ä¸ºåœ¨ä¿æŠ¤çŠ¶æ€
 	gProtectDevExt->Protect = TRUE;
 	return;
 ERROUT:
@@ -108,30 +108,30 @@ DriverEntry(
 
 	for (i = 0; i <= IRP_MJ_MAXIMUM_FUNCTION; i++)
 	{
-		//³õÊ¼»¯Õâ¸öÇý¶¯ËùÓÐµÄ·Ö·¢º¯Êý£¬Ä¬ÈÏÖµÊÇ³õÊ¼»¯ÎªDPDispatchAny
+		//åˆå§‹åŒ–è¿™ä¸ªé©±åŠ¨æ‰€æœ‰çš„åˆ†å‘å‡½æ•°ï¼Œé»˜è®¤å€¼æ˜¯åˆå§‹åŒ–ä¸ºDPDispatchAny
 		DriverObject->MajorFunction[i] = DPDispatchAny;
 	}
     
-	//ÏÂÃæ½«ÎÒÃÇÌØÊâ¹Ø×¢µÄ·Ö·¢º¯ÊýÖØÐÂ¸³ÖµÎªÎÒÃÇ×Ô¼ºµÄ´¦Àíº¯Êý
+	//ä¸‹é¢å°†æˆ‘ä»¬ç‰¹æ®Šå…³æ³¨çš„åˆ†å‘å‡½æ•°é‡æ–°èµ‹å€¼ä¸ºæˆ‘ä»¬è‡ªå·±çš„å¤„ç†å‡½æ•°
     DriverObject->MajorFunction[IRP_MJ_POWER] = DPDispatchPower;
     DriverObject->MajorFunction[IRP_MJ_PNP] = DPDispatchPnp;
     DriverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DPDispatchDeviceControl;
     DriverObject->MajorFunction[IRP_MJ_READ] = DPDispatchReadWrite;
     DriverObject->MajorFunction[IRP_MJ_WRITE] = DPDispatchReadWrite;
 
-	//½«Õâ¸öÇý¶¯µÄAddDeviceº¯Êý³õÊ¼»¯ÎªDpAddDeviceº¯Êý
+	//å°†è¿™ä¸ªé©±åŠ¨çš„AddDeviceå‡½æ•°åˆå§‹åŒ–ä¸ºDpAddDeviceå‡½æ•°
     DriverObject->DriverExtension->AddDevice = DPAddDevice;
-	//½«Õâ¸öÇý¶¯µÄunloadº¯Êý³õÊ¼»¯ÎªDpUnloadº¯Êý
+	//å°†è¿™ä¸ªé©±åŠ¨çš„unloadå‡½æ•°åˆå§‹åŒ–ä¸ºDpUnloadå‡½æ•°
     DriverObject->DriverUnload = DPUnload;
     
-	//×¢²áÒ»¸öbootÇý¶¯½áÊø»Øµ÷£¬Õâ¸ö»Øµ÷º¯Êý»áÔÚËùÓÐµÄbootÐÍÇý¶¯¶¼ÔËÐÐÍê±ÏÖ®ºóÔÙÈ¥Ö´ÐÐ
+	//æ³¨å†Œä¸€ä¸ªbooté©±åŠ¨ç»“æŸå›žè°ƒï¼Œè¿™ä¸ªå›žè°ƒå‡½æ•°ä¼šåœ¨æ‰€æœ‰çš„bootåž‹é©±åŠ¨éƒ½è¿è¡Œå®Œæ¯•ä¹‹åŽå†åŽ»æ‰§è¡Œ
 	IoRegisterBootDriverReinitialization(
 		DriverObject,
 		DPReinitializationRoutine,
 		NULL
 		);
 
-	//×÷ÎªÒ»¸ö¹ýÂËÇý¶¯£¬ÎÞÂÛÈçºÎ¶¼Òª·µ»Ø³É¹¦
+	//ä½œä¸ºä¸€ä¸ªè¿‡æ»¤é©±åŠ¨ï¼Œæ— è®ºå¦‚ä½•éƒ½è¦è¿”å›žæˆåŠŸ
     return STATUS_SUCCESS;
 }
 
@@ -142,9 +142,9 @@ DPCompleteRequest(
 	IN	CCHAR			Priority
 	)
 {	
-	//½«IRPµÄio×´Ì¬¸³ÖµÎª´«ÈëµÄ²ÎÊý
+	//å°†IRPçš„ioçŠ¶æ€èµ‹å€¼ä¸ºä¼ å…¥çš„å‚æ•°
 	Irp->IoStatus.Status = Status;
-	//µ÷ÓÃIoCompleteRequestÀ´Íê³ÉÕâ¸öIrp
+	//è°ƒç”¨IoCompleteRequestæ¥å®Œæˆè¿™ä¸ªIrp
 	IoCompleteRequest(Irp, Priority);
 	return STATUS_SUCCESS;
 }
@@ -155,9 +155,9 @@ DPSendToNextDriver(
 	IN	PIRP			Irp
 	)
 {	
-	//Ìø¹ýµ±Ç°µÄirp stack
+	//è·³è¿‡å½“å‰çš„irp stack
 	IoSkipCurrentIrpStackLocation(Irp);
-	//µ÷ÓÃÄ¿±êÉè±¸À´´¦ÀíÕâ¸öirp
+	//è°ƒç”¨ç›®æ ‡è®¾å¤‡æ¥å¤„ç†è¿™ä¸ªirp
 	return IoCallDriver(TgtDevObj, Irp);
 }
 
@@ -169,14 +169,14 @@ DPIrpCompletionRoutine(
 	IN	PVOID			Context
 	)
 {
-	//½«´«ÈëµÄÉÏÏÂÎÄ²ÎÊý×ª»¯ÎªÒ»¸öÄÚºËÊÂ¼þ¶ÔÏó
+	//å°†ä¼ å…¥çš„ä¸Šä¸‹æ–‡å‚æ•°è½¬åŒ–ä¸ºä¸€ä¸ªå†…æ ¸äº‹ä»¶å¯¹è±¡
 	PKEVENT Event = (PKEVENT) Context;
-	//ºöÂÔµô´«ÈëµÄ²»ÐèÒªµÄ²ÎÊý
+	//å¿½ç•¥æŽ‰ä¼ å…¥çš„ä¸éœ€è¦çš„å‚æ•°
 	UNREFERENCED_PARAMETER(DeviceObject);
 	UNREFERENCED_PARAMETER(Irp);
-	//ÉèÖÃÕâ¸ö¶ÔÏó£¬»½ÐÑµÈ´ýËüµÄ½ø³Ì
+	//è®¾ç½®è¿™ä¸ªå¯¹è±¡ï¼Œå”¤é†’ç­‰å¾…å®ƒçš„è¿›ç¨‹
 	KeSetEvent(Event, IO_NO_INCREMENT, FALSE);
-	//·µ»Ø
+	//è¿”å›ž
 	return STATUS_MORE_PROCESSING_REQUIRED;
 }
 
@@ -187,15 +187,15 @@ DPForwardIrpSync(
 	IN PIRP Irp
 	)
 {
-	//ÓÃÀ´µÈ´ýµÄÊÂ¼þ
+	//ç”¨æ¥ç­‰å¾…çš„äº‹ä»¶
 	KEVENT event;
-	//·µ»ØÖµ
+	//è¿”å›žå€¼
 	NTSTATUS status;
-	//³õÊ¼»¯µÈ´ýÊÂ¼þ
+	//åˆå§‹åŒ–ç­‰å¾…äº‹ä»¶
 	KeInitializeEvent(&event, NotificationEvent, FALSE);
-	//¿½±´Ò»·Ýirp stack
+	//æ‹·è´ä¸€ä»½irp stack
 	IoCopyCurrentIrpStackLocationToNext(Irp);
-	//ÉèÖÃÍê³Éº¯Êý£¬²¢ÇÒ½«µÈ´ýÊÂ¼þÉèÖÃÎªÉÏÃæ³õÊ¼»¯µÄÊÂ¼þ£¬Èç¹ûÍê³Éº¯Êý±»µ÷ÓÃ£¬Õâ¸öÊÂ¼þ½«»á±»ÉèÖÃ£¬Í¬Ê±Ò²ÓÉ´Ë»ñÖªÕâ¸öirp´¦ÀíÍê³ÉÁË
+	//è®¾ç½®å®Œæˆå‡½æ•°ï¼Œå¹¶ä¸”å°†ç­‰å¾…äº‹ä»¶è®¾ç½®ä¸ºä¸Šé¢åˆå§‹åŒ–çš„äº‹ä»¶ï¼Œå¦‚æžœå®Œæˆå‡½æ•°è¢«è°ƒç”¨ï¼Œè¿™ä¸ªäº‹ä»¶å°†ä¼šè¢«è®¾ç½®ï¼ŒåŒæ—¶ä¹Ÿç”±æ­¤èŽ·çŸ¥è¿™ä¸ªirpå¤„ç†å®Œæˆäº†
 	IoSetCompletionRoutine(
 		Irp, 
 		DPIrpCompletionRoutine,
@@ -203,9 +203,9 @@ DPForwardIrpSync(
 		TRUE, 
 		TRUE, 
 		TRUE);
-	//µ÷ÓÃÄ¿±êÉè±¸È¥´¦ÀíÕâ¸öirp
+	//è°ƒç”¨ç›®æ ‡è®¾å¤‡åŽ»å¤„ç†è¿™ä¸ªirp
 	status = IoCallDriver(TgtDevObj, Irp);
-	//Èç¹ûµ÷ÓÃ·µ»ØµÄÊÇSTATUS_PENDING£¬ËµÃ÷Ä¿±êÉè±¸ÔÚ´¦ÀíÕâ¸öirpµÄÊ±ºòÐèÒª¸ü¶àµÄÊ±¼ä£¬ÎÒÃÇ¾Í¿ªÊ¼µÈ´ý£¬Ö±µ½Ëü´¦ÀíÍê±ÏÎªÖ¹
+	//å¦‚æžœè°ƒç”¨è¿”å›žçš„æ˜¯STATUS_PENDINGï¼Œè¯´æ˜Žç›®æ ‡è®¾å¤‡åœ¨å¤„ç†è¿™ä¸ªirpçš„æ—¶å€™éœ€è¦æ›´å¤šçš„æ—¶é—´ï¼Œæˆ‘ä»¬å°±å¼€å§‹ç­‰å¾…ï¼Œç›´åˆ°å®ƒå¤„ç†å®Œæ¯•ä¸ºæ­¢
 	if (status == STATUS_PENDING)
 	{
 		KeWaitForSingleObject(
@@ -214,10 +214,10 @@ DPForwardIrpSync(
 			KernelMode, 
 			FALSE, 
 			NULL);
-		//µÈµ½ÁËÖ®ºó¸³Öµ×´Ì¬±äÁ¿
+		//ç­‰åˆ°äº†ä¹‹åŽèµ‹å€¼çŠ¶æ€å˜é‡
 		status = Irp->IoStatus.Status;
 	}
-	//·µ»Ø×´Ì¬±äÁ¿
+	//è¿”å›žçŠ¶æ€å˜é‡
 	return status;
 }
 
@@ -226,35 +226,35 @@ DPReadWriteThread (
 	IN PVOID Context
 	)
 {
-	//NTSTATUSÀàÐÍµÄº¯Êý·µ»ØÖµ
+	//NTSTATUSç±»åž‹çš„å‡½æ•°è¿”å›žå€¼
 	NTSTATUS					ntStatus = STATUS_SUCCESS;
-	//ÓÃÀ´Ö¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹µÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•çš„æŒ‡é’ˆ
 	PDP_FILTER_DEV_EXTENSION	DevExt = (PDP_FILTER_DEV_EXTENSION)Context;
-	//ÇëÇó¶ÓÁÐµÄÈë¿Ú
+	//è¯·æ±‚é˜Ÿåˆ—çš„å…¥å£
 	PLIST_ENTRY			ReqEntry = NULL;
-	//irpÖ¸Õë
+	//irpæŒ‡é’ˆ
 	PIRP				Irp = NULL;
-	//irp stackÖ¸Õë
+	//irp stackæŒ‡é’ˆ
 	PIO_STACK_LOCATION	Irpsp = NULL;
-	//irpÖÐ°üÀ¨µÄÊý¾ÝµØÖ·
+	//irpä¸­åŒ…æ‹¬çš„æ•°æ®åœ°å€
 	PBYTE				sysBuf = NULL;
-	//irpÖÐµÄÊý¾Ý³¤¶È
+	//irpä¸­çš„æ•°æ®é•¿åº¦
 	ULONG				length = 0;
-	//irpÒª´¦ÀíµÄÆ«ÒÆÁ¿
+	//irpè¦å¤„ç†çš„åç§»é‡
 	LARGE_INTEGER		offset = { 0 };
-	//ÎÄ¼þ»º³åÖ¸Õë
+	//æ–‡ä»¶ç¼“å†²æŒ‡é’ˆ
 	PBYTE				fileBuf = NULL;
-	//Éè±¸»º³åÖ¸Õë
+	//è®¾å¤‡ç¼“å†²æŒ‡é’ˆ
 	PBYTE				devBuf = NULL;
-	//io²Ù×÷×´Ì¬
+	//ioæ“ä½œçŠ¶æ€
 	IO_STATUS_BLOCK		ios;
 
-	//ÉèÖÃÕâ¸öÏß³ÌµÄÓÅÏÈ¼¶
+	//è®¾ç½®è¿™ä¸ªçº¿ç¨‹çš„ä¼˜å…ˆçº§
 	KeSetPriorityThread(KeGetCurrentThread(), LOW_REALTIME_PRIORITY);
-	//ÏÂÃæÊÇÏß³ÌµÄÊµÏÖ²¿·Ö£¬Õâ¸öÑ­»·ÓÀ²»ÍË³ö
+	//ä¸‹é¢æ˜¯çº¿ç¨‹çš„å®žçŽ°éƒ¨åˆ†ï¼Œè¿™ä¸ªå¾ªçŽ¯æ°¸ä¸é€€å‡º
 	for (;;)
 	{	
-		//ÏÈµÈ´ýÇëÇó¶ÓÁÐÍ¬²½ÊÂ¼þ£¬Èç¹û¶ÓÁÐÖÐÃ»ÓÐirpÐèÒª´¦Àí£¬ÎÒÃÇµÄÏß³Ì¾ÍµÈ´ýÔÚÕâÀï£¬ÈÃ³öcpuÊ±¼ä¸øÆäËüÏß³Ì
+		//å…ˆç­‰å¾…è¯·æ±‚é˜Ÿåˆ—åŒæ­¥äº‹ä»¶ï¼Œå¦‚æžœé˜Ÿåˆ—ä¸­æ²¡æœ‰irpéœ€è¦å¤„ç†ï¼Œæˆ‘ä»¬çš„çº¿ç¨‹å°±ç­‰å¾…åœ¨è¿™é‡Œï¼Œè®©å‡ºcpuæ—¶é—´ç»™å…¶å®ƒçº¿ç¨‹
 		KeWaitForSingleObject(
 			&DevExt->ReqEvent,
 			Executive,
@@ -262,24 +262,24 @@ DPReadWriteThread (
 			FALSE,
 			NULL
 			);
-		//Èç¹ûÓÐÁËÏß³Ì½áÊø±êÖ¾£¬ÄÇÃ´¾ÍÔÚÏß³ÌÄÚ²¿×Ô¼º½áÊø×Ô¼º
+		//å¦‚æžœæœ‰äº†çº¿ç¨‹ç»“æŸæ ‡å¿—ï¼Œé‚£ä¹ˆå°±åœ¨çº¿ç¨‹å†…éƒ¨è‡ªå·±ç»“æŸè‡ªå·±
 		if (DevExt->ThreadTermFlag)
 		{
-			//ÕâÊÇÏß³ÌµÄÎ¨Ò»ÍË³öµØµã
+			//è¿™æ˜¯çº¿ç¨‹çš„å”¯ä¸€é€€å‡ºåœ°ç‚¹
 			PsTerminateSystemThread(STATUS_SUCCESS);
 			return;
 		}
-		//´ÓÇëÇó¶ÓÁÐµÄÊ×²¿ÄÃ³öÒ»¸öÇëÇóÀ´×¼±¸´¦Àí£¬ÕâÀïÊ¹ÓÃÁË×ÔÐýËø»úÖÆ£¬ËùÒÔ²»»áÓÐ³åÍ»
+		//ä»Žè¯·æ±‚é˜Ÿåˆ—çš„é¦–éƒ¨æ‹¿å‡ºä¸€ä¸ªè¯·æ±‚æ¥å‡†å¤‡å¤„ç†ï¼Œè¿™é‡Œä½¿ç”¨äº†è‡ªæ—‹é”æœºåˆ¶ï¼Œæ‰€ä»¥ä¸ä¼šæœ‰å†²çª
 		while (ReqEntry = ExInterlockedRemoveHeadList(
 			&DevExt->ReqList,
 			&DevExt->ReqLock
 			))
 		{
-			//´Ó¶ÓÁÐµÄÈë¿ÚÀïÕÒµ½Êµ¼ÊµÄirpµÄµØÖ·
+			//ä»Žé˜Ÿåˆ—çš„å…¥å£é‡Œæ‰¾åˆ°å®žé™…çš„irpçš„åœ°å€
 			Irp = CONTAINING_RECORD(ReqEntry, IRP, Tail.Overlay.ListEntry);
-			//È¡µÃirp stack
+			//å–å¾—irp stack
 			Irpsp = IoGetCurrentIrpStackLocation(Irp);
-			//»ñÈ¡Õâ¸öirpÆäÖÐ°üº¬µÄ»º´æµØÖ·£¬Õâ¸öµØÖ·¿ÉÄÜÀ´×Ômdl£¬Ò²¿ÉÄÜ¾ÍÊÇÖ±½ÓµÄ»º³å£¬ÕâÈ¡¾öÓÚÎÒÃÇµ±Ç°Éè±¸µÄio·½Ê½ÊÇbuffer»¹ÊÇdirect·½Ê½
+			//èŽ·å–è¿™ä¸ªirpå…¶ä¸­åŒ…å«çš„ç¼“å­˜åœ°å€ï¼Œè¿™ä¸ªåœ°å€å¯èƒ½æ¥è‡ªmdlï¼Œä¹Ÿå¯èƒ½å°±æ˜¯ç›´æŽ¥çš„ç¼“å†²ï¼Œè¿™å–å†³äºŽæˆ‘ä»¬å½“å‰è®¾å¤‡çš„ioæ–¹å¼æ˜¯bufferè¿˜æ˜¯directæ–¹å¼
 			if (NULL == Irp->MdlAddress)
 				sysBuf = (PBYTE)Irp->UserBuffer;
 			else
@@ -287,41 +287,41 @@ DPReadWriteThread (
 
 			if (IRP_MJ_READ == Irpsp->MajorFunction)
 			{
-				//Èç¹ûÊÇ¶ÁµÄirpÇëÇó£¬ÎÒÃÇÔÚirp stackÖÐÈ¡µÃÏàÓ¦µÄ²ÎÊý×÷ÎªoffsetºÍlength
+				//å¦‚æžœæ˜¯è¯»çš„irpè¯·æ±‚ï¼Œæˆ‘ä»¬åœ¨irp stackä¸­å–å¾—ç›¸åº”çš„å‚æ•°ä½œä¸ºoffsetå’Œlength
 				offset = Irpsp->Parameters.Read.ByteOffset;
 				length = Irpsp->Parameters.Read.Length;
 			}
 			else if (IRP_MJ_WRITE == Irpsp->MajorFunction)
 			{
-				//Èç¹ûÊÇÐ´µÄirpÇëÇó£¬ÎÒÃÇÔÚirp stackÖÐÈ¡µÃÏàÓ¦µÄ²ÎÊý×÷ÎªoffsetºÍlength
+				//å¦‚æžœæ˜¯å†™çš„irpè¯·æ±‚ï¼Œæˆ‘ä»¬åœ¨irp stackä¸­å–å¾—ç›¸åº”çš„å‚æ•°ä½œä¸ºoffsetå’Œlength
 				offset = Irpsp->Parameters.Write.ByteOffset;
 				length = Irpsp->Parameters.Write.Length;
 			}
 			else
 			{
-				//³ý´ËÖ®Íâ£¬offsetºÍlength¶¼ÊÇ0
+				//é™¤æ­¤ä¹‹å¤–ï¼Œoffsetå’Œlengthéƒ½æ˜¯0
 				offset.QuadPart = 0;
 				length = 0;
 			}
 			if (NULL == sysBuf || 0 == length)
 			{
-				//Èç¹û´«ÏÂÀ´µÄirpÃ»ÓÐÏµÍ³»º³å»òÕß»º³åµÄ³¤¶ÈÊÇ0£¬ÄÇÃ´ÎÒÃÇ¾ÍÃ»ÓÐ±ØÒª´¦ÀíÕâ¸öirp£¬Ö±½ÓÏÂ·¢¸øÏÂ²ãÉè±¸¾ÍÐÐÁË
+				//å¦‚æžœä¼ ä¸‹æ¥çš„irpæ²¡æœ‰ç³»ç»Ÿç¼“å†²æˆ–è€…ç¼“å†²çš„é•¿åº¦æ˜¯0ï¼Œé‚£ä¹ˆæˆ‘ä»¬å°±æ²¡æœ‰å¿…è¦å¤„ç†è¿™ä¸ªirpï¼Œç›´æŽ¥ä¸‹å‘ç»™ä¸‹å±‚è®¾å¤‡å°±è¡Œäº†
 				goto ERRNEXT;
 			}
-			//ÏÂÃæÊÇ×ª´¢µÄ¹ý³ÌÁË
+			//ä¸‹é¢æ˜¯è½¬å‚¨çš„è¿‡ç¨‹äº†
 			if (IRP_MJ_READ == Irpsp->MajorFunction)
 			{
-				//ÕâÀïÊÇ¶ÁµÄ´¦Àí
-				//Ê×ÏÈ¸ù¾ÝbitmapÀ´ÅÐ¶ÏÕâ´Î¶Á²Ù×÷¶ÁÈ¡µÄ·¶Î§ÊÇÈ«²¿Îª×ª´¢¿Õ¼ä£¬»¹ÊÇÈ«²¿ÎªÎ´×ª´¢¿Õ¼ä£¬»òÕß¼æ¶øÓÐÖ®
+				//è¿™é‡Œæ˜¯è¯»çš„å¤„ç†
+				//é¦–å…ˆæ ¹æ®bitmapæ¥åˆ¤æ–­è¿™æ¬¡è¯»æ“ä½œè¯»å–çš„èŒƒå›´æ˜¯å…¨éƒ¨ä¸ºè½¬å‚¨ç©ºé—´ï¼Œè¿˜æ˜¯å…¨éƒ¨ä¸ºæœªè½¬å‚¨ç©ºé—´ï¼Œæˆ–è€…å…¼è€Œæœ‰ä¹‹
 				long tstResult = DPBitmapTest(DevExt->Bitmap, offset, length);
 				switch (tstResult)
 				{
 				case BITMAP_RANGE_CLEAR: 
-					//ÕâËµÃ÷Õâ´Î¶ÁÈ¡µÄ²Ù×÷È«²¿ÊÇ¶ÁÈ¡Î´×ª´¢µÄ¿Õ¼ä£¬Ò²¾ÍÊÇÕæÕýµÄ´ÅÅÌÉÏµÄÄÚÈÝ£¬ÎÒÃÇÖ±½Ó·¢¸øÏÂ²ãÉè±¸È¥´¦Àí
+					//è¿™è¯´æ˜Žè¿™æ¬¡è¯»å–çš„æ“ä½œå…¨éƒ¨æ˜¯è¯»å–æœªè½¬å‚¨çš„ç©ºé—´ï¼Œä¹Ÿå°±æ˜¯çœŸæ­£çš„ç£ç›˜ä¸Šçš„å†…å®¹ï¼Œæˆ‘ä»¬ç›´æŽ¥å‘ç»™ä¸‹å±‚è®¾å¤‡åŽ»å¤„ç†
 					goto ERRNEXT;
 				case BITMAP_RANGE_SET: 
-					//ÕâËµÃ÷Õâ´Î¶ÁÈ¡µÄ²Ù×÷È«²¿ÊÇ¶ÁÈ¡ÒÑ¾­×ª´¢µÄ¿Õ¼ä£¬Ò²¾ÍÊÇ»º³åÎÄ¼þÉÏµÄÄÚÈÝ£¬ÎÒÃÇ´ÓÎÄ¼þÖÐ¶ÁÈ¡³öÀ´£¬È»ºóÖ±½ÓÍê³ÉÕâ¸öirp
-					//·ÖÅäÒ»¸ö»º³åÇøÓÃÀ´´Ó»º³åÎÄ¼þÖÐ¶ÁÈ¡
+					//è¿™è¯´æ˜Žè¿™æ¬¡è¯»å–çš„æ“ä½œå…¨éƒ¨æ˜¯è¯»å–å·²ç»è½¬å‚¨çš„ç©ºé—´ï¼Œä¹Ÿå°±æ˜¯ç¼“å†²æ–‡ä»¶ä¸Šçš„å†…å®¹ï¼Œæˆ‘ä»¬ä»Žæ–‡ä»¶ä¸­è¯»å–å‡ºæ¥ï¼Œç„¶åŽç›´æŽ¥å®Œæˆè¿™ä¸ªirp
+					//åˆ†é…ä¸€ä¸ªç¼“å†²åŒºç”¨æ¥ä»Žç¼“å†²æ–‡ä»¶ä¸­è¯»å–
 					if (NULL == (fileBuf = (PBYTE)ExAllocatePoolWithTag(NonPagedPool, length, 'xypD')))
 					{
 						ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -354,8 +354,8 @@ DPReadWriteThread (
 					break;
 
 				case BITMAP_RANGE_BLEND:
-					//ÕâËµÃ÷Õâ´Î¶ÁÈ¡µÄ²Ù×÷ÊÇ»ìºÏµÄ£¬ÎÒÃÇÒ²ÐèÒª´ÓÏÂ²ãÉè±¸ÖÐ¶Á³ö£¬Í¬Ê±´ÓÎÄ¼þÖÐ¶Á³ö£¬È»ºó»ìºÏ²¢·µ»Ø
-					//·ÖÅäÒ»¸ö»º³åÇøÓÃÀ´´Ó»º³åÎÄ¼þÖÐ¶ÁÈ¡
+					//è¿™è¯´æ˜Žè¿™æ¬¡è¯»å–çš„æ“ä½œæ˜¯æ··åˆçš„ï¼Œæˆ‘ä»¬ä¹Ÿéœ€è¦ä»Žä¸‹å±‚è®¾å¤‡ä¸­è¯»å‡ºï¼ŒåŒæ—¶ä»Žæ–‡ä»¶ä¸­è¯»å‡ºï¼Œç„¶åŽæ··åˆå¹¶è¿”å›ž
+					//åˆ†é…ä¸€ä¸ªç¼“å†²åŒºç”¨æ¥ä»Žç¼“å†²æ–‡ä»¶ä¸­è¯»å–
 					if (NULL == (fileBuf = (PBYTE)ExAllocatePoolWithTag(NonPagedPool, length, 'xypD')))
 					{
 						ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -363,7 +363,7 @@ DPReadWriteThread (
 						goto ERRERR;
 					}
 					RtlZeroMemory(fileBuf,length);
-					//·ÖÅäÒ»¸ö»º³åÇøÓÃÀ´´ÓÏÂ²ãÉè±¸ÖÐ¶ÁÈ¡
+					//åˆ†é…ä¸€ä¸ªç¼“å†²åŒºç”¨æ¥ä»Žä¸‹å±‚è®¾å¤‡ä¸­è¯»å–
 					if (NULL == (devBuf = (PBYTE)ExAllocatePoolWithTag(NonPagedPool, length, 'xypD')))
 					{
 						ntStatus = STATUS_INSUFFICIENT_RESOURCES;
@@ -387,7 +387,7 @@ DPReadWriteThread (
 						Irp->IoStatus.Information = 0;
 						goto ERRERR;
 					}
-					//°ÑÕâ¸öirp·¢¸øÏÂ²ãÉè±¸È¥»ñÈ¡ÐèÒª´ÓÉè±¸ÉÏ¶ÁÈ¡µÄÐÅÏ¢
+					//æŠŠè¿™ä¸ªirpå‘ç»™ä¸‹å±‚è®¾å¤‡åŽ»èŽ·å–éœ€è¦ä»Žè®¾å¤‡ä¸Šè¯»å–çš„ä¿¡æ¯
 					ntStatus = DPForwardIrpSync(DevExt->LowerDevObj,Irp);
 					if (!NT_SUCCESS(ntStatus))
 					{
@@ -395,9 +395,9 @@ DPReadWriteThread (
 						Irp->IoStatus.Information = 0;
 						goto ERRERR;
 					}
-					//½«´ÓÏÂ²ãÉè±¸»ñÈ¡µ½µÄÊý¾Ý´æ´¢µ½devBufÖÐ
+					//å°†ä»Žä¸‹å±‚è®¾å¤‡èŽ·å–åˆ°çš„æ•°æ®å­˜å‚¨åˆ°devBufä¸­
 					memcpy(devBuf, sysBuf, Irp->IoStatus.Information);
-					//°Ñ´ÓÎÄ¼þ»ñÈ¡µ½µÄÊý¾ÝºÍ´ÓÉè±¸»ñÈ¡µ½µÄÊý¾Ý¸ù¾ÝÏàÓ¦µÄbitmapÖµÀ´½øÐÐºÏ²¢£¬ºÏ²¢µÄ½á¹û·ÅÔÚdevBufÖÐ
+					//æŠŠä»Žæ–‡ä»¶èŽ·å–åˆ°çš„æ•°æ®å’Œä»Žè®¾å¤‡èŽ·å–åˆ°çš„æ•°æ®æ ¹æ®ç›¸åº”çš„bitmapå€¼æ¥è¿›è¡Œåˆå¹¶ï¼Œåˆå¹¶çš„ç»“æžœæ”¾åœ¨devBufä¸­
 					ntStatus = DPBitmapGet(
 						DevExt->Bitmap,
 						offset,
@@ -411,7 +411,7 @@ DPReadWriteThread (
 						Irp->IoStatus.Information = 0;
 						goto ERRERR;
 					}
-					//°ÑºÏ²¢ÍêµÄÊý¾Ý´æÈëÏµÍ³»º³å²¢Íê³Éirp
+					//æŠŠåˆå¹¶å®Œçš„æ•°æ®å­˜å…¥ç³»ç»Ÿç¼“å†²å¹¶å®Œæˆirp
 					memcpy(sysBuf, devBuf, Irp->IoStatus.Information);
 					goto ERRCMPLT;
 				default:
@@ -421,8 +421,8 @@ DPReadWriteThread (
 			}
 			else
 			{
-				//ÕâÀïÊÇÐ´µÄ¹ý³Ì
-				//¶ÔÓÚÐ´£¬ÎÒÃÇÖ±½ÓÐ´»º³åÎÄ¼þ£¬¶ø²»»áÐ´´ÅÅÌÊý¾Ý£¬Õâ¾ÍÊÇËùÎ½µÄ×ª´¢£¬µ«ÊÇ×ª´¢Ö®ºóÐèÒªÔÚbitmapÖÐ×öÏàÓ¦µÄ±ê¼Ç
+				//è¿™é‡Œæ˜¯å†™çš„è¿‡ç¨‹
+				//å¯¹äºŽå†™ï¼Œæˆ‘ä»¬ç›´æŽ¥å†™ç¼“å†²æ–‡ä»¶ï¼Œè€Œä¸ä¼šå†™ç£ç›˜æ•°æ®ï¼Œè¿™å°±æ˜¯æ‰€è°“çš„è½¬å‚¨ï¼Œä½†æ˜¯è½¬å‚¨ä¹‹åŽéœ€è¦åœ¨bitmapä¸­åšç›¸åº”çš„æ ‡è®°
 				ntStatus = ZwWriteFile(
 					DevExt->TempFile,
 					NULL,
@@ -514,18 +514,18 @@ DPAddDevice(
     IN	PDEVICE_OBJECT	PhysicalDeviceObject
     )
 {
-	//NTSTATUSÀàÐÍµÄº¯Êý·µ»ØÖµ
+	//NTSTATUSç±»åž‹çš„å‡½æ•°è¿”å›žå€¼
 	NTSTATUS					ntStatus = STATUS_SUCCESS;
-    //ÓÃÀ´Ö¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹µÄÖ¸Õë
+    //ç”¨æ¥æŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•çš„æŒ‡é’ˆ
 	PDP_FILTER_DEV_EXTENSION	DevExt = NULL;
-	//¹ýÂËÉè±¸µÄÏÂ²ãÉè±¸µÄÖ¸Õë¶ÔÏó
+	//è¿‡æ»¤è®¾å¤‡çš„ä¸‹å±‚è®¾å¤‡çš„æŒ‡é’ˆå¯¹è±¡
 	PDEVICE_OBJECT				LowerDevObj = NULL;
-	//¹ýÂËÉè±¸µÄÉè±¸Ö¸ÕëµÄÖ¸Õë¶ÔÏó
+	//è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æŒ‡é’ˆçš„æŒ‡é’ˆå¯¹è±¡
 	PDEVICE_OBJECT				FltDevObj = NULL;
-	//¹ýÂËÉè±¸µÄ´¦ÀíÏß³ÌµÄÏß³Ì¾ä±ú
+	//è¿‡æ»¤è®¾å¤‡çš„å¤„ç†çº¿ç¨‹çš„çº¿ç¨‹å¥æŸ„
 	HANDLE						ThreadHandle = NULL;
 
-	//½¨Á¢Ò»¸ö¹ýÂËÉè±¸£¬Õâ¸öÉè±¸ÊÇFILE_DEVICE_DISKÀàÐÍµÄÉè±¸²¢ÇÒ¾ßÓÐDP_FILTER_DEV_EXTENSIONÀàÐÍµÄÉè±¸À©Õ¹
+	//å»ºç«‹ä¸€ä¸ªè¿‡æ»¤è®¾å¤‡ï¼Œè¿™ä¸ªè®¾å¤‡æ˜¯FILE_DEVICE_DISKç±»åž‹çš„è®¾å¤‡å¹¶ä¸”å…·æœ‰DP_FILTER_DEV_EXTENSIONç±»åž‹çš„è®¾å¤‡æ‰©å±•
 	ntStatus = IoCreateDevice(
 		DriverObject,
 		sizeof(DP_FILTER_DEV_EXTENSION),
@@ -536,12 +536,12 @@ DPAddDevice(
 		&FltDevObj);
 	if (!NT_SUCCESS(ntStatus)) 
 		goto ERROUT;
-	//½«DevExtÖ¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹Ö¸Õë
+	//å°†DevExtæŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•æŒ‡é’ˆ
 	DevExt = FltDevObj->DeviceExtension;
-	//Çå¿Õ¹ýÂËÉè±¸µÄÉè±¸À©Õ¹
+	//æ¸…ç©ºè¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•
 	RtlZeroMemory(DevExt,sizeof(DP_FILTER_DEV_EXTENSION));
 
-	//½«¸Õ¸Õ½¨Á¢µÄ¹ýÂËÉè±¸¸½¼Óµ½Õâ¸ö¾íÉè±¸µÄÎïÀíÉè±¸ÉÏ
+	//å°†åˆšåˆšå»ºç«‹çš„è¿‡æ»¤è®¾å¤‡é™„åŠ åˆ°è¿™ä¸ªå·è®¾å¤‡çš„ç‰©ç†è®¾å¤‡ä¸Š
 	LowerDevObj = IoAttachDeviceToDeviceStack(
 		FltDevObj, 
 		PhysicalDeviceObject);
@@ -551,41 +551,41 @@ DPAddDevice(
 		goto ERROUT;
 	}
 
-	//³õÊ¼»¯Õâ¸ö¾íÉè±¸µÄ·ÖÒ³Â·¾¶¼ÆÊýµÄ¼ÆÊýÊÂ¼þ
+	//åˆå§‹åŒ–è¿™ä¸ªå·è®¾å¤‡çš„åˆ†é¡µè·¯å¾„è®¡æ•°çš„è®¡æ•°äº‹ä»¶
 	KeInitializeEvent(
 		&DevExt->PagingPathCountEvent,
 		NotificationEvent, 
 		TRUE);
 
-	//¶Ô¹ýÂËÉè±¸µÄÉè±¸ÊôÐÔ½øÐÐ³õÊ¼»¯£¬¹ýÂËÉè±¸µÄÉè±¸ÊôÐÔÓ¦¸ÃºÍËüµÄÏÂ²ãÉè±¸ÏàÍ¬
+	//å¯¹è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡å±žæ€§è¿›è¡Œåˆå§‹åŒ–ï¼Œè¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡å±žæ€§åº”è¯¥å’Œå®ƒçš„ä¸‹å±‚è®¾å¤‡ç›¸åŒ
 	FltDevObj->Flags = LowerDevObj->Flags;
-	//¸ø¹ýÂËÉè±¸µÄÉè±¸ÊôÐÔ¼ÓÉÏµçÔ´¿É·ÖÒ³µÄÊôÐÔ
+	//ç»™è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡å±žæ€§åŠ ä¸Šç”µæºå¯åˆ†é¡µçš„å±žæ€§
 	FltDevObj->Flags |= DO_POWER_PAGABLE;
-	//¶Ô¹ýÂËÉè±¸½øÐÐÉè±¸³õÊ¼»¯
+	//å¯¹è¿‡æ»¤è®¾å¤‡è¿›è¡Œè®¾å¤‡åˆå§‹åŒ–
 	FltDevObj->Flags &= ~DO_DEVICE_INITIALIZING;
 
-	//½«¹ýÂËÉè±¸¶ÔÓ¦µÄÉè±¸À©Õ¹ÖÐµÄÏàÓ¦±äÁ¿½øÐÐ³õÊ¼»¯
-	//¾íÉè±¸µÄ¹ýÂËÉè±¸¶ÔÏó
+	//å°†è¿‡æ»¤è®¾å¤‡å¯¹åº”çš„è®¾å¤‡æ‰©å±•ä¸­çš„ç›¸åº”å˜é‡è¿›è¡Œåˆå§‹åŒ–
+	//å·è®¾å¤‡çš„è¿‡æ»¤è®¾å¤‡å¯¹è±¡
 	DevExt->FltDevObj = FltDevObj;
-	//¾íÉè±¸µÄÎïÀíÉè±¸¶ÔÏó
+	//å·è®¾å¤‡çš„ç‰©ç†è®¾å¤‡å¯¹è±¡
 	DevExt->PhyDevObj = PhysicalDeviceObject;
-	//¾íÉè±¸µÄÏÂ²ãÉè±¸¶ÔÏó
+	//å·è®¾å¤‡çš„ä¸‹å±‚è®¾å¤‡å¯¹è±¡
 	DevExt->LowerDevObj = LowerDevObj;
 
-	//³õÊ¼»¯Õâ¸ö¾íµÄÇëÇó´¦Àí¶ÓÁÐ
+	//åˆå§‹åŒ–è¿™ä¸ªå·çš„è¯·æ±‚å¤„ç†é˜Ÿåˆ—
 	InitializeListHead(&DevExt->ReqList);
-	//³õÊ¼»¯ÇëÇó´¦Àí¶ÓÁÐµÄËø
+	//åˆå§‹åŒ–è¯·æ±‚å¤„ç†é˜Ÿåˆ—çš„é”
 	KeInitializeSpinLock(&DevExt->ReqLock);
-	//³õÊ¼»¯ÇëÇó´¦Àí¶ÓÁÐµÄÍ¬²½ÊÂ¼þ
+	//åˆå§‹åŒ–è¯·æ±‚å¤„ç†é˜Ÿåˆ—çš„åŒæ­¥äº‹ä»¶
 	KeInitializeEvent(
 		&DevExt->ReqEvent,
 		SynchronizationEvent,
 		FALSE
 		);
 
-	//³õÊ¼»¯ÖÕÖ¹´¦ÀíÏß³Ì±êÖ¾
+	//åˆå§‹åŒ–ç»ˆæ­¢å¤„ç†çº¿ç¨‹æ ‡å¿—
 	DevExt->ThreadTermFlag = FALSE;
-	//½¨Á¢ÓÃÀ´´¦ÀíÕâ¸ö¾íµÄÇëÇóµÄ´¦ÀíÏß³Ì£¬Ïß³Ìº¯ÊýµÄ²ÎÊýÔòÊÇÉè±¸À©Õ¹
+	//å»ºç«‹ç”¨æ¥å¤„ç†è¿™ä¸ªå·çš„è¯·æ±‚çš„å¤„ç†çº¿ç¨‹ï¼Œçº¿ç¨‹å‡½æ•°çš„å‚æ•°åˆ™æ˜¯è®¾å¤‡æ‰©å±•
 	ntStatus = PsCreateSystemThread(
 		&ThreadHandle,
 		(ACCESS_MASK)0L,
@@ -598,7 +598,7 @@ DPAddDevice(
 	if (!NT_SUCCESS(ntStatus))
 		goto ERROUT;
 
-	//»ñÈ¡´¦ÀíÏß³ÌµÄ¶ÔÏó
+	//èŽ·å–å¤„ç†çº¿ç¨‹çš„å¯¹è±¡
 	ntStatus = ObReferenceObjectByHandle(
 		ThreadHandle,
 		THREAD_ALL_ACCESS,
@@ -621,23 +621,23 @@ DPAddDevice(
 ERROUT:
 	if (!NT_SUCCESS(ntStatus))
 	{	
-		//Èç¹ûÉÏÃæÓÐ²»³É¹¦µÄµØ·½£¬Ê×ÏÈÐèÒª½â³ý¿ÉÄÜ´æÔÚµÄ¸½¼Ó
+		//å¦‚æžœä¸Šé¢æœ‰ä¸æˆåŠŸçš„åœ°æ–¹ï¼Œé¦–å…ˆéœ€è¦è§£é™¤å¯èƒ½å­˜åœ¨çš„é™„åŠ 
 		if (NULL != LowerDevObj)
 		{
 			IoDetachDevice(LowerDevObj);
 			DevExt->LowerDevObj = NULL;
 		}
-		//È»ºóÉ¾³ý¿ÉÄÜ½¨Á¢µÄ¹ýÂËÉè±¸
+		//ç„¶åŽåˆ é™¤å¯èƒ½å»ºç«‹çš„è¿‡æ»¤è®¾å¤‡
 		if (NULL != FltDevObj)
 		{
 			IoDeleteDevice(FltDevObj);
 			DevExt->FltDevObj = NULL;
 		}
 	}
-	//¹Ø±ÕÏß³Ì¾ä±ú£¬ÎÒÃÇ½ñºó²»»áÓÃµ½Ëü£¬ËùÓÐ¶ÔÏß³ÌµÄÒýÓÃ¶¼Í¨¹ýÏß³Ì¶ÔÏóÀ´½øÐÐÁË
+	//å…³é—­çº¿ç¨‹å¥æŸ„ï¼Œæˆ‘ä»¬ä»ŠåŽä¸ä¼šç”¨åˆ°å®ƒï¼Œæ‰€æœ‰å¯¹çº¿ç¨‹çš„å¼•ç”¨éƒ½é€šè¿‡çº¿ç¨‹å¯¹è±¡æ¥è¿›è¡Œäº†
 	if (NULL != ThreadHandle)
 		ZwClose(ThreadHandle);
-	//·µ»Ø×´Ì¬Öµ
+	//è¿”å›žçŠ¶æ€å€¼
     return ntStatus;
 }
 
@@ -646,7 +646,7 @@ DPUnload(
 	IN	PDRIVER_OBJECT	DriverObject
 	)
 {
-	//Õâ¸öÇý¶¯½«»á¹¤×÷µ½ÏµÍ³¹Ø»ú£¬ËùÒÔÎÒÃÇ²»»áÔÚÇý¶¯Ð¶ÔØµÄÊ±ºò×öÈÎºÎÇåÀí¶¯×÷£¬ÒòÎªÖ®ºóÏµÍ³ÂíÉÏ¾Í¹Ø±ÕÁË
+	//è¿™ä¸ªé©±åŠ¨å°†ä¼šå·¥ä½œåˆ°ç³»ç»Ÿå…³æœºï¼Œæ‰€ä»¥æˆ‘ä»¬ä¸ä¼šåœ¨é©±åŠ¨å¸è½½çš„æ—¶å€™åšä»»ä½•æ¸…ç†åŠ¨ä½œï¼Œå› ä¸ºä¹‹åŽç³»ç»Ÿé©¬ä¸Šå°±å…³é—­äº†
 	UNREFERENCED_PARAMETER(DriverObject);
 	return;
 }
@@ -657,11 +657,11 @@ DPDispatchAny(
     IN	PIRP			Irp
     )
 {
-	//NTSTATUSÀàÐÍµÄº¯Êý·µ»ØÖµ
+	//NTSTATUSç±»åž‹çš„å‡½æ•°è¿”å›žå€¼
 	NTSTATUS					ntStatus = STATUS_SUCCESS;
-	//ÓÃÀ´Ö¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹µÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•çš„æŒ‡é’ˆ
 	PDP_FILTER_DEV_EXTENSION	DevExt = DeviceObject->DeviceExtension;
-    //¶ÔÓÚÎÒÃÇ²»¸ÐÐËÈ¤µÄirpÇëÇó£¬±ê×¼µÄ´¦Àí·½Ê½Ö±½ÓÏÂ·¢¸øÏÂ²ãÉè±¸È¥´¦Àí
+    //å¯¹äºŽæˆ‘ä»¬ä¸æ„Ÿå…´è¶£çš„irpè¯·æ±‚ï¼Œæ ‡å‡†çš„å¤„ç†æ–¹å¼ç›´æŽ¥ä¸‹å‘ç»™ä¸‹å±‚è®¾å¤‡åŽ»å¤„ç†
 	return DPSendToNextDriver(
 		DevExt->LowerDevObj,
 		Irp);
@@ -673,15 +673,15 @@ DPDispatchPower(
     IN	PIRP			Irp
     )
 {
-	//ÓÃÀ´Ö¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹µÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•çš„æŒ‡é’ˆ
 	PDP_FILTER_DEV_EXTENSION	DevExt = DeviceObject->DeviceExtension;
 #if (NTDDI_VERSION < NTDDI_VISTA)
-	//Èç¹ûÊÇvistaÒÔÇ°µÄ°æ±¾µÄwindows£¬ÐèÒªÊ¹ÓÃÌØÊâµÄÏòÏÂ²ãÉè±¸×ª·¢µÄº¯Êý
+	//å¦‚æžœæ˜¯vistaä»¥å‰çš„ç‰ˆæœ¬çš„windowsï¼Œéœ€è¦ä½¿ç”¨ç‰¹æ®Šçš„å‘ä¸‹å±‚è®¾å¤‡è½¬å‘çš„å‡½æ•°
 	PoStartNextPowerIrp(Irp);
 	IoSkipCurrentIrpStackLocation(Irp);
 	return PoCallDriver(DevExt->LowerDevObj, Irp);
 #else
-	//Èç¹ûÊÇvistaÏµÍ³£¬¿ÉÒÔÊ¹ÓÃºÍÒ»°ãÏÂ·¢irpÒ»ÑùµÄ·½·¨À´ÏÂ·¢
+	//å¦‚æžœæ˜¯vistaç³»ç»Ÿï¼Œå¯ä»¥ä½¿ç”¨å’Œä¸€èˆ¬ä¸‹å‘irpä¸€æ ·çš„æ–¹æ³•æ¥ä¸‹å‘
 	return DPSendToNextDriver(
 		DevExt->LowerDevObj,
 		Irp);
@@ -694,29 +694,29 @@ DPDispatchPnp(
 	IN	PIRP			Irp
 	)
 {
-	//ÓÃÀ´Ö¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹µÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•çš„æŒ‡é’ˆ
 	PDP_FILTER_DEV_EXTENSION	DevExt = DeviceObject->DeviceExtension;
-	//·µ»ØÖµ
+	//è¿”å›žå€¼
 	NTSTATUS ntStatus = STATUS_SUCCESS;
-	//ÓÃÀ´Ö¸Ïòirp stackµÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘irp stackçš„æŒ‡é’ˆ
 	PIO_STACK_LOCATION  irpsp = IoGetCurrentIrpStackLocation(Irp);
 
 	switch(irpsp->MinorFunction) 
 	{
 	case IRP_MN_REMOVE_DEVICE:
-		//Èç¹ûÊÇPnP manager·¢¹ýÀ´µÄÒÆ³ýÉè±¸µÄirp£¬½«½øÈëÕâÀï
+		//å¦‚æžœæ˜¯PnP managerå‘è¿‡æ¥çš„ç§»é™¤è®¾å¤‡çš„irpï¼Œå°†è¿›å…¥è¿™é‡Œ
 		{
-			//ÕâÀïÖ÷Òª×öÒ»Ð©ÇåÀí¹¤×÷
+			//è¿™é‡Œä¸»è¦åšä¸€äº›æ¸…ç†å·¥ä½œ
 			if (DevExt->ThreadTermFlag != TRUE && NULL != DevExt->ThreadHandle)
 			{
-				//Èç¹ûÏß³Ì»¹ÔÚÔËÐÐµÄ»°ÐèÒªÍ£Ö¹Ëü£¬ÕâÀïÍ¨¹ýÉèÖÃÏß³ÌÍ£Ö¹ÔËÐÐµÄ±êÖ¾²¢ÇÒ·¢ËÍÊÂ¼þÐÅÏ¢£¬ÈÃÏß³Ì×Ô¼ºÖÕÖ¹ÔËÐÐ
+				//å¦‚æžœçº¿ç¨‹è¿˜åœ¨è¿è¡Œçš„è¯éœ€è¦åœæ­¢å®ƒï¼Œè¿™é‡Œé€šè¿‡è®¾ç½®çº¿ç¨‹åœæ­¢è¿è¡Œçš„æ ‡å¿—å¹¶ä¸”å‘é€äº‹ä»¶ä¿¡æ¯ï¼Œè®©çº¿ç¨‹è‡ªå·±ç»ˆæ­¢è¿è¡Œ
 				DevExt->ThreadTermFlag = TRUE;
 				KeSetEvent(
 					&DevExt->ReqEvent,
 					(KPRIORITY) 0,
 					FALSE
 					);
-				//µÈ´ýÏß³Ì½áÊø
+				//ç­‰å¾…çº¿ç¨‹ç»“æŸ
 				KeWaitForSingleObject(
 					DevExt->ThreadHandle,
 					Executive,
@@ -724,31 +724,31 @@ DPDispatchPnp(
 					FALSE,
 					NULL
 					);
-				//½â³ýÒýÓÃÏß³Ì¶ÔÏó
+				//è§£é™¤å¼•ç”¨çº¿ç¨‹å¯¹è±¡
 				ObDereferenceObject(DevExt->ThreadHandle);
 			}
 	 		if (NULL != DevExt->Bitmap)
 	 		{
-				//Èç¹û»¹ÓÐÎ»Í¼£¬¾ÍÊÍ·Å
+				//å¦‚æžœè¿˜æœ‰ä½å›¾ï¼Œå°±é‡Šæ”¾
 	 			DPBitmapFree(DevExt->Bitmap);
 	 		}
 			if (NULL != DevExt->LowerDevObj)
 			{
-				//Èç¹û´æÔÚ×ÅÏÂ²ãÉè±¸£¬¾ÍÏÈÈ¥µô¹Ò½Ó
+				//å¦‚æžœå­˜åœ¨ç€ä¸‹å±‚è®¾å¤‡ï¼Œå°±å…ˆåŽ»æŽ‰æŒ‚æŽ¥
 				IoDetachDevice(DevExt->LowerDevObj);
 			}
 	 		if (NULL != DevExt->FltDevObj)
 	 		{
-				//Èç¹û´æÔÚ¹ýÂËÉè±¸£¬¾ÍÒªÉ¾³ýËü
+				//å¦‚æžœå­˜åœ¨è¿‡æ»¤è®¾å¤‡ï¼Œå°±è¦åˆ é™¤å®ƒ
 	 			IoDeleteDevice(DevExt->FltDevObj);
 	 		}
 			break;
 		}
-	//Õâ¸öÊÇPnP ¹ÜÀíÆ÷ÓÃÀ´Ñ¯ÎÊÉè±¸ÄÜ·ñÖ§³ÖÌØÊâÎÄ¼þµÄirp£¬×÷Îª¾íµÄ¹ýÂËÇý¶¯£¬ÎÒÃÇ±ØÐë´¦Àí
+	//è¿™ä¸ªæ˜¯PnP ç®¡ç†å™¨ç”¨æ¥è¯¢é—®è®¾å¤‡èƒ½å¦æ”¯æŒç‰¹æ®Šæ–‡ä»¶çš„irpï¼Œä½œä¸ºå·çš„è¿‡æ»¤é©±åŠ¨ï¼Œæˆ‘ä»¬å¿…é¡»å¤„ç†
 	case IRP_MN_DEVICE_USAGE_NOTIFICATION:
 		{
 			BOOLEAN setPagable;
-			//Èç¹ûÊÇÑ¯ÎÊÊÇ·ñÖ§³ÖÐÝÃßÎÄ¼þºÍdumpÎÄ¼þ£¬ÔòÖ±½ÓÏÂ·¢¸øÏÂ²ãÉè±¸È¥´¦Àí
+			//å¦‚æžœæ˜¯è¯¢é—®æ˜¯å¦æ”¯æŒä¼‘çœ æ–‡ä»¶å’Œdumpæ–‡ä»¶ï¼Œåˆ™ç›´æŽ¥ä¸‹å‘ç»™ä¸‹å±‚è®¾å¤‡åŽ»å¤„ç†
 			if (irpsp->Parameters.UsageNotification.Type != DeviceUsageTypePaging) 
 			{
 				ntStatus = DPSendToNextDriver(
@@ -756,7 +756,7 @@ DPDispatchPnp(
 					Irp);
 				return ntStatus; 
 			}
-			//ÕâÀïµÈÒ»ÏÂ·ÖÒ³¼ÆÊýÊÂ¼þ
+			//è¿™é‡Œç­‰ä¸€ä¸‹åˆ†é¡µè®¡æ•°äº‹ä»¶
 			ntStatus = KeWaitForSingleObject(
 				&DevExt->PagingPathCountEvent,
 				Executive, 
@@ -764,28 +764,28 @@ DPDispatchPnp(
 				FALSE, 
 				NULL);
 
-			//setPagable³õÊ¼»¯Îª¼Ù£¬ÊÇÃ»ÓÐÉèÖÃ¹ýDO_POWER_PAGABLEµÄÒâË¼
+			//setPagableåˆå§‹åŒ–ä¸ºå‡ï¼Œæ˜¯æ²¡æœ‰è®¾ç½®è¿‡DO_POWER_PAGABLEçš„æ„æ€
 			setPagable = FALSE;
 			if (!irpsp->Parameters.UsageNotification.InPath &&
 				DevExt->PagingPathCount == 1 ) 
 			{
-				//Èç¹ûÊÇPnP managerÍ¨ÖªÎÒÃÇ½«ÒªÉ¾È¥·ÖÒ³ÎÄ¼þ£¬ÇÒÎÒÃÇÄ¿Ç°Ö»Ê£ÏÂ×îºóÒ»¸ö·ÖÒ³ÎÄ¼þµÄÊ±ºò»á½øÈëÕâÀï
+				//å¦‚æžœæ˜¯PnP manageré€šçŸ¥æˆ‘ä»¬å°†è¦åˆ åŽ»åˆ†é¡µæ–‡ä»¶ï¼Œä¸”æˆ‘ä»¬ç›®å‰åªå‰©ä¸‹æœ€åŽä¸€ä¸ªåˆ†é¡µæ–‡ä»¶çš„æ—¶å€™ä¼šè¿›å…¥è¿™é‡Œ
 				if (DeviceObject->Flags & DO_POWER_INRUSH)
 				{} 
 				else 
 				{
-					//µ½ÕâÀïËµÃ÷Ã»ÓÐ·ÖÒ³ÎÄ¼þÔÚÕâ¸öÉè±¸ÉÏÁË£¬ÐèÒªÉèÖÃDO_POWER_PAGABLEÕâÒ»Î»ÁË
+					//åˆ°è¿™é‡Œè¯´æ˜Žæ²¡æœ‰åˆ†é¡µæ–‡ä»¶åœ¨è¿™ä¸ªè®¾å¤‡ä¸Šäº†ï¼Œéœ€è¦è®¾ç½®DO_POWER_PAGABLEè¿™ä¸€ä½äº†
 					DeviceObject->Flags |= DO_POWER_PAGABLE;
 					setPagable = TRUE;
 				}
 			}
-			//µ½ÕâÀï¿Ï¶¨ÊÇ¹ØÓÚ·ÖÒ³ÎÄ¼þµÄÊÇ·ñ¿É½¨Á¢²éÑ¯£¬»òÕßÊÇÉ¾³ýµÄÍ¨Öª£¬ÎÒÃÇ½»¸øÏÂ²ãÉè±¸È¥×ö¡£ÕâÀïÐèÒªÓÃÍ¬²½µÄ·½Ê½¸øÏÂ²ãÉè±¸£¬Ò²¾ÍÊÇËµÒªµÈ´ýÏÂ²ãÉè±¸µÄ·µ»Ø
+			//åˆ°è¿™é‡Œè‚¯å®šæ˜¯å…³äºŽåˆ†é¡µæ–‡ä»¶çš„æ˜¯å¦å¯å»ºç«‹æŸ¥è¯¢ï¼Œæˆ–è€…æ˜¯åˆ é™¤çš„é€šçŸ¥ï¼Œæˆ‘ä»¬äº¤ç»™ä¸‹å±‚è®¾å¤‡åŽ»åšã€‚è¿™é‡Œéœ€è¦ç”¨åŒæ­¥çš„æ–¹å¼ç»™ä¸‹å±‚è®¾å¤‡ï¼Œä¹Ÿå°±æ˜¯è¯´è¦ç­‰å¾…ä¸‹å±‚è®¾å¤‡çš„è¿”å›ž
 			ntStatus = DPForwardIrpSync(DevExt->LowerDevObj,Irp);
 
 			if (NT_SUCCESS(ntStatus)) 
 			{
-				//Èç¹û·¢¸øÏÂ²ãÉè±¸µÄÇëÇó³É¹¦ÁË£¬ËµÃ÷ÏÂ²ãÉè±¸Ö§³ÖÕâ¸ö²Ù×÷£¬»áÖ´ÐÐµ½ÕâÀï
-				//ÔÚ³É¹¦µÄÌõ¼þÏÂÎÒÃÇÀ´¸Ä±äÎÒÃÇ×Ô¼ºµÄ¼ÆÊýÖµ£¬ÕâÑù¾ÍÄÜ¼ÇÂ¼ÎÒÃÇÏÖÔÚÕâ¸öÉè±¸ÉÏµ½µ×ÓÐ¶àÉÙ¸ö·ÖÒ³ÎÄ¼þ
+				//å¦‚æžœå‘ç»™ä¸‹å±‚è®¾å¤‡çš„è¯·æ±‚æˆåŠŸäº†ï¼Œè¯´æ˜Žä¸‹å±‚è®¾å¤‡æ”¯æŒè¿™ä¸ªæ“ä½œï¼Œä¼šæ‰§è¡Œåˆ°è¿™é‡Œ
+				//åœ¨æˆåŠŸçš„æ¡ä»¶ä¸‹æˆ‘ä»¬æ¥æ”¹å˜æˆ‘ä»¬è‡ªå·±çš„è®¡æ•°å€¼ï¼Œè¿™æ ·å°±èƒ½è®°å½•æˆ‘ä»¬çŽ°åœ¨è¿™ä¸ªè®¾å¤‡ä¸Šåˆ°åº•æœ‰å¤šå°‘ä¸ªåˆ†é¡µæ–‡ä»¶
 				IoAdjustPagingPathCount(
 					&DevExt->PagingPathCount,
 					irpsp->Parameters.UsageNotification.InPath);
@@ -793,28 +793,28 @@ DPDispatchPnp(
 				{
 					if (DevExt->PagingPathCount == 1) 
 					{
-						//Èç¹ûÕâ¸öÇëÇóÊÇÒ»¸ö½¨Á¢·ÖÒ³ÎÄ¼þµÄ²éÑ¯ÇëÇó£¬²¢ÇÒÏÂ²ãÉè±¸Ö§³ÖÕâ¸öÇëÇó£¬¶øÇÒÕâÊÇµÚÒ»¸öÔÚÕâ¸öÉè±¸ÉÏµÄ·ÖÒ³ÎÄ¼þ£¬ÄÇÃ´ÎÒÃÇÐèÒªÇå³ýDO_POWER_PAGABLEÎ»
+						//å¦‚æžœè¿™ä¸ªè¯·æ±‚æ˜¯ä¸€ä¸ªå»ºç«‹åˆ†é¡µæ–‡ä»¶çš„æŸ¥è¯¢è¯·æ±‚ï¼Œå¹¶ä¸”ä¸‹å±‚è®¾å¤‡æ”¯æŒè¿™ä¸ªè¯·æ±‚ï¼Œè€Œä¸”è¿™æ˜¯ç¬¬ä¸€ä¸ªåœ¨è¿™ä¸ªè®¾å¤‡ä¸Šçš„åˆ†é¡µæ–‡ä»¶ï¼Œé‚£ä¹ˆæˆ‘ä»¬éœ€è¦æ¸…é™¤DO_POWER_PAGABLEä½
 						DeviceObject->Flags &= ~DO_POWER_PAGABLE;
 					}
 				}
 			}
 			else 
 			{
-				//µ½ÕâÀïËµÃ÷¸øÏÂ²ãÉè±¸·¢ÇëÇóÊ§°ÜÁË£¬ÏÂ²ãÉè±¸²»Ö§³ÖÕâ¸öÇëÇó£¬ÕâÊ±ºòÎÒÃÇÐèÒª°ÑÖ®Ç°×ö¹ýµÄ²Ù×÷»¹Ô­
+				//åˆ°è¿™é‡Œè¯´æ˜Žç»™ä¸‹å±‚è®¾å¤‡å‘è¯·æ±‚å¤±è´¥äº†ï¼Œä¸‹å±‚è®¾å¤‡ä¸æ”¯æŒè¿™ä¸ªè¯·æ±‚ï¼Œè¿™æ—¶å€™æˆ‘ä»¬éœ€è¦æŠŠä¹‹å‰åšè¿‡çš„æ“ä½œè¿˜åŽŸ
 				if (setPagable == TRUE) 
 				{
-					//¸ù¾ÝsetPagable±äÁ¿µÄÖµÀ´ÅÐ¶ÏÎÒÃÇÖ®Ç°ÊÇ·ñ×ö¹ý¶ÔDO_POWER_PAGABLEµÄÉèÖÃ£¬Èç¹ûÓÐµÄ»°¾ÍÇå³þÕâ¸öÉèÖÃ
+					//æ ¹æ®setPagableå˜é‡çš„å€¼æ¥åˆ¤æ–­æˆ‘ä»¬ä¹‹å‰æ˜¯å¦åšè¿‡å¯¹DO_POWER_PAGABLEçš„è®¾ç½®ï¼Œå¦‚æžœæœ‰çš„è¯å°±æ¸…æ¥šè¿™ä¸ªè®¾ç½®
 					DeviceObject->Flags &= ~DO_POWER_PAGABLE;
 					setPagable = FALSE;
 				}
 			}
-			//ÉèÖÃ·ÖÒ³¼ÆÊýÊÂ¼þ
+			//è®¾ç½®åˆ†é¡µè®¡æ•°äº‹ä»¶
 			KeSetEvent(
 				&DevExt->PagingPathCountEvent,
 				IO_NO_INCREMENT, 
 				FALSE
 				);
-			//µ½ÕâÀïÎÒÃÇ¾Í¿ÉÒÔÍê³ÉÕâ¸öirpÇëÇóÁË
+			//åˆ°è¿™é‡Œæˆ‘ä»¬å°±å¯ä»¥å®Œæˆè¿™ä¸ªirpè¯·æ±‚äº†
 			IoCompleteRequest(Irp, IO_NO_INCREMENT);
 			return ntStatus;
 		}		
@@ -845,41 +845,41 @@ NTSTATUS DPQueryVolumeInformation(
 	)
 {
 #define _FileSystemNameLength	64
-//¶¨ÒåFAT16ÎÄ¼þÏµÍ³Ç©ÃûµÄÆ«ÒÆÁ¿
+//å®šä¹‰FAT16æ–‡ä»¶ç³»ç»Ÿç­¾åçš„åç§»é‡
 #define FAT16_SIG_OFFSET	54
-//¶¨ÒåFAT32ÎÄ¼þÏµÍ³Ç©ÃûµÄÆ«ÒÆÁ¿
+//å®šä¹‰FAT32æ–‡ä»¶ç³»ç»Ÿç­¾åçš„åç§»é‡
 #define FAT32_SIG_OFFSET	82
-//¶¨ÒåNTFSÎÄ¼þÏµÍ³Ç©ÃûµÄÆ«ÒÆÁ¿
+//å®šä¹‰NTFSæ–‡ä»¶ç³»ç»Ÿç­¾åçš„åç§»é‡
 #define NTFS_SIG_OFFSET		3
-	//ÕâÊÇFAT16ÎÄ¼þÏµÍ³µÄ±êÖ¾
+	//è¿™æ˜¯FAT16æ–‡ä»¶ç³»ç»Ÿçš„æ ‡å¿—
 	const UCHAR FAT16FLG[4] = {'F','A','T','1'};
-	//ÕâÊÇFAT32ÎÄ¼þÏµÍ³µÄ±êÖ¾
+	//è¿™æ˜¯FAT32æ–‡ä»¶ç³»ç»Ÿçš„æ ‡å¿—
 	const UCHAR FAT32FLG[4] = {'F','A','T','3'};
-	//ÕâÊÇNTFSÎÄ¼þÏµÍ³µÄ±êÖ¾
+	//è¿™æ˜¯NTFSæ–‡ä»¶ç³»ç»Ÿçš„æ ‡å¿—
 	const UCHAR NTFSFLG[4] = {'N','T','F','S'};
-	//·µ»ØÖµ
+	//è¿”å›žå€¼
 	NTSTATUS ntStatus = STATUS_SUCCESS;
-	//ÓÃÀ´¶ÁÈ¡¾íDBRÉÈÇøµÄÊý¾Ý»º³åÇø
+	//ç”¨æ¥è¯»å–å·DBRæ‰‡åŒºçš„æ•°æ®ç¼“å†²åŒº
 	BYTE DBR[512] = { 0 };
-	//DBRÉÈÇøÓÐ512¸öbytes´óÐ¡
+	//DBRæ‰‡åŒºæœ‰512ä¸ªbyteså¤§å°
 	ULONG DBRLength = 512;
-	//ÒÔÏÂÊÇÈý¸öÖ¸Õë£¬Í³Ò»Ö¸Ïò¶ÁÈ¡µÄDBRÊý¾Ý£¬µ«ÊÇÕâÈý¸öÖ¸ÕëµÄÀàÐÍ·Ö±ð´ú±íFAT16£¬FAT32ºÍNTFSÀàÐÍÎÄ¼þÏµÍ³µÄDBRÊý¾Ý½á¹¹
+	//ä»¥ä¸‹æ˜¯ä¸‰ä¸ªæŒ‡é’ˆï¼Œç»Ÿä¸€æŒ‡å‘è¯»å–çš„DBRæ•°æ®ï¼Œä½†æ˜¯è¿™ä¸‰ä¸ªæŒ‡é’ˆçš„ç±»åž‹åˆ†åˆ«ä»£è¡¨FAT16ï¼ŒFAT32å’ŒNTFSç±»åž‹æ–‡ä»¶ç³»ç»Ÿçš„DBRæ•°æ®ç»“æž„
 	PDP_NTFS_BOOT_SECTOR pNtfsBootSector = (PDP_NTFS_BOOT_SECTOR)DBR;
 	PDP_FAT32_BOOT_SECTOR pFat32BootSector = (PDP_FAT32_BOOT_SECTOR)DBR;
 	PDP_FAT16_BOOT_SECTOR pFat16BootSector = (PDP_FAT16_BOOT_SECTOR)DBR;
-	//¶ÁÈ¡µÄÆ«ÒÆÁ¿£¬¶ÔÓÚDBRÀ´ËµÊÇ¾íµÄÆðÊ¼Î»ÖÃ£¬ËùÒÔÆ«ÒÆÁ¿Îª0
+	//è¯»å–çš„åç§»é‡ï¼Œå¯¹äºŽDBRæ¥è¯´æ˜¯å·çš„èµ·å§‹ä½ç½®ï¼Œæ‰€ä»¥åç§»é‡ä¸º0
 	LARGE_INTEGER readOffset = { 0 };
-	//¶ÁÈ¡Ê±µÄio²Ù×÷×´Ì¬
+	//è¯»å–æ—¶çš„ioæ“ä½œçŠ¶æ€
 	IO_STATUS_BLOCK ios;
- 	//ÎªÁËÍ¬²½¶ÁÈ¡ËùÉèÖÃµÄÍ¬²½ÊÂ¼þ
+ 	//ä¸ºäº†åŒæ­¥è¯»å–æ‰€è®¾ç½®çš„åŒæ­¥äº‹ä»¶
  	KEVENT Event;
- 	//ÎªÁËÍ¬²½¶ÁÈ¡ËùÐèÒª¹¹½¨µÄirpÖ¸Õë
+ 	//ä¸ºäº†åŒæ­¥è¯»å–æ‰€éœ€è¦æž„å»ºçš„irpæŒ‡é’ˆ
  	PIRP   pIrp	= NULL;
 
-	//ÏÂÃæÎÒÃÇÊ×ÏÈ´ÓÖ¸¶¨µÄ¾íÉè±¸ÉÏ¶ÁÈ¡Æ«ÒÆÁ¿Îª0µÄÒ»¸öÉÈÇø£¬Ò²¾ÍÊÇÕâ¸ö¾íµÄDBRÉÈÇø£¬×¼±¸¼ÓÒÔ·ÖÎö
- 	//ÒòÎªÎÒÃÇÒªÍ¬²½¶ÁÈ¡£¬ËùÒÔÏÈ³õÊ¼»¯Ò»¸öÎªÁËÍ¬²½¶ÁÈ¡ÉèÖÃµÄÊÂ¼þ
+	//ä¸‹é¢æˆ‘ä»¬é¦–å…ˆä»ŽæŒ‡å®šçš„å·è®¾å¤‡ä¸Šè¯»å–åç§»é‡ä¸º0çš„ä¸€ä¸ªæ‰‡åŒºï¼Œä¹Ÿå°±æ˜¯è¿™ä¸ªå·çš„DBRæ‰‡åŒºï¼Œå‡†å¤‡åŠ ä»¥åˆ†æž
+ 	//å› ä¸ºæˆ‘ä»¬è¦åŒæ­¥è¯»å–ï¼Œæ‰€ä»¥å…ˆåˆå§‹åŒ–ä¸€ä¸ªä¸ºäº†åŒæ­¥è¯»å–è®¾ç½®çš„äº‹ä»¶
  	KeInitializeEvent(&Event, NotificationEvent, FALSE);
- 	//¹¹ÔìÒ»¸öirpÓÃÀ´·¢¸ø¾íÉè±¸À´¶ÁÈ¡ÐÅÏ¢
+ 	//æž„é€ ä¸€ä¸ªirpç”¨æ¥å‘ç»™å·è®¾å¤‡æ¥è¯»å–ä¿¡æ¯
  	pIrp = IoBuildAsynchronousFsdRequest(
  		IRP_MJ_READ,
  		DevObj,
@@ -892,7 +892,7 @@ NTSTATUS DPQueryVolumeInformation(
  	{
  		goto ERROUT;
  	}
- 	//ÉèÖÃÍê³Éº¯Êý£¬²¢ÇÒ½«Í¬²½ÊÂ¼þ×÷ÎªÍê³Éº¯ÊýµÄ²ÎÊý´«Èë
+ 	//è®¾ç½®å®Œæˆå‡½æ•°ï¼Œå¹¶ä¸”å°†åŒæ­¥äº‹ä»¶ä½œä¸ºå®Œæˆå‡½æ•°çš„å‚æ•°ä¼ å…¥
  	IoSetCompletionRoutine(
  		pIrp,
  		DPQueryVolumeInformationCompletionRoutine,
@@ -901,11 +901,11 @@ NTSTATUS DPQueryVolumeInformation(
  		TRUE,
  		TRUE
  		);
- 	//µ÷ÓÃÄ¿±êÉè±¸È¥´¦ÀíÕâ¸öirp
+ 	//è°ƒç”¨ç›®æ ‡è®¾å¤‡åŽ»å¤„ç†è¿™ä¸ªirp
  	ntStatus = IoCallDriver(DevObj, pIrp);
  	if(ntStatus = STATUS_PENDING)
  	{
- 		//Èç¹ûÏÂ²ãÉè±¸Ò»Ê±²»ÄÜÍê³ÉÕâ¸öirpÇëÇó£¬ÎÒÃÇ¾ÍµÈ
+ 		//å¦‚æžœä¸‹å±‚è®¾å¤‡ä¸€æ—¶ä¸èƒ½å®Œæˆè¿™ä¸ªirpè¯·æ±‚ï¼Œæˆ‘ä»¬å°±ç­‰
  		ntStatus = KeWaitForSingleObject(
  			&Event,
  			Executive,
@@ -913,7 +913,7 @@ NTSTATUS DPQueryVolumeInformation(
  			FALSE,
  			NULL
  			);
- 		//½«·µ»ØÖµÉèÖÃÎªÕâ¸öio²Ù×÷µÄ×´Ì¬
+ 		//å°†è¿”å›žå€¼è®¾ç½®ä¸ºè¿™ä¸ªioæ“ä½œçš„çŠ¶æ€
  		ntStatus = pIrp->IoStatus.Status;
  		if (!NT_SUCCESS(ntStatus))
  		{
@@ -923,14 +923,14 @@ NTSTATUS DPQueryVolumeInformation(
 	
 	if (*(DWORD*)NTFSFLG == *(DWORD*)&DBR[NTFS_SIG_OFFSET])
 	{
-		//Í¨¹ý±È½Ï±êÖ¾·¢ÏÖÕâ¸ö¾íÊÇÒ»¸öntfsÎÄ¼þÏµÍ³µÄ¾í£¬ÏÂÃæ¸ù¾Ýntfs¾íµÄDBR¶¨ÒåÀ´¶Ô¸÷ÖÖÐèÒª»ñÈ¡µÄÖµ½øÐÐ¸³Öµ²Ù×÷
+		//é€šè¿‡æ¯”è¾ƒæ ‡å¿—å‘çŽ°è¿™ä¸ªå·æ˜¯ä¸€ä¸ªntfsæ–‡ä»¶ç³»ç»Ÿçš„å·ï¼Œä¸‹é¢æ ¹æ®ntfså·çš„DBRå®šä¹‰æ¥å¯¹å„ç§éœ€è¦èŽ·å–çš„å€¼è¿›è¡Œèµ‹å€¼æ“ä½œ
 		*SectorSize = (DWORD)(pNtfsBootSector->BytesPerSector);
 		*ClusterSize = (*SectorSize) * (DWORD)(pNtfsBootSector->SectorsPerCluster);    
 		TotalSize->QuadPart = (LONGLONG)(*SectorSize) * (LONGLONG)pNtfsBootSector->TotalSectors;
 	}
 	else if (*(DWORD*)FAT32FLG == *(DWORD*)&DBR[FAT32_SIG_OFFSET])
 	{
-		//Í¨¹ý±È½Ï±êÖ¾·¢ÏÖÕâ¸ö¾íÊÇÒ»¸öntfsÎÄ¼þÏµÍ³µÄ¾í£¬ÏÂÃæ¸ù¾Ýntfs¾íµÄDBR¶¨ÒåÀ´¶Ô¸÷ÖÖÐèÒª»ñÈ¡µÄÖµ½øÐÐ¸³Öµ²Ù×÷
+		//é€šè¿‡æ¯”è¾ƒæ ‡å¿—å‘çŽ°è¿™ä¸ªå·æ˜¯ä¸€ä¸ªntfsæ–‡ä»¶ç³»ç»Ÿçš„å·ï¼Œä¸‹é¢æ ¹æ®ntfså·çš„DBRå®šä¹‰æ¥å¯¹å„ç§éœ€è¦èŽ·å–çš„å€¼è¿›è¡Œèµ‹å€¼æ“ä½œ
 		*SectorSize = (DWORD)(pFat32BootSector->BytesPerSector);
 		*ClusterSize = (*SectorSize) * (DWORD)(pFat32BootSector->SectorsPerCluster);    
 		TotalSize->QuadPart = (LONGLONG)(*SectorSize) * 
@@ -938,7 +938,7 @@ NTSTATUS DPQueryVolumeInformation(
 	}
 	else if (*(DWORD*)FAT16FLG == *(DWORD*)&DBR[FAT16_SIG_OFFSET])
 	{
-		//Í¨¹ý±È½Ï±êÖ¾·¢ÏÖÕâ¸ö¾íÊÇÒ»¸öntfsÎÄ¼þÏµÍ³µÄ¾í£¬ÏÂÃæ¸ù¾Ýntfs¾íµÄDBR¶¨ÒåÀ´¶Ô¸÷ÖÖÐèÒª»ñÈ¡µÄÖµ½øÐÐ¸³Öµ²Ù×÷
+		//é€šè¿‡æ¯”è¾ƒæ ‡å¿—å‘çŽ°è¿™ä¸ªå·æ˜¯ä¸€ä¸ªntfsæ–‡ä»¶ç³»ç»Ÿçš„å·ï¼Œä¸‹é¢æ ¹æ®ntfså·çš„DBRå®šä¹‰æ¥å¯¹å„ç§éœ€è¦èŽ·å–çš„å€¼è¿›è¡Œèµ‹å€¼æ“ä½œ
 		*SectorSize = (DWORD)(pFat16BootSector->BytesPerSector);
 		*ClusterSize = (*SectorSize) * (DWORD)(pFat16BootSector->SectorsPerCluster);    
 		TotalSize->QuadPart = (LONGLONG)(*SectorSize) * 
@@ -946,7 +946,7 @@ NTSTATUS DPQueryVolumeInformation(
 	}
 	else
 	{
-		//×ßµ½ÕâÀï£¬¿ÉÄÜÊÇÆäËüÈÎºÎÎÄ¼þÏµÍ³£¬µ«ÊÇ²»ÊÇwindowsÈÏÊ¶µÄÎÄ¼þÏµÍ³£¬ÎÒÃÇÍ³Ò»·µ»Ø´í
+		//èµ°åˆ°è¿™é‡Œï¼Œå¯èƒ½æ˜¯å…¶å®ƒä»»ä½•æ–‡ä»¶ç³»ç»Ÿï¼Œä½†æ˜¯ä¸æ˜¯windowsè®¤è¯†çš„æ–‡ä»¶ç³»ç»Ÿï¼Œæˆ‘ä»¬ç»Ÿä¸€è¿”å›žé”™
 		ntStatus = STATUS_UNSUCCESSFUL;
 	}
 ERROUT:
@@ -964,26 +964,26 @@ DPVolumeOnLineCompleteRoutine(
 	IN PVOLUME_ONLINE_CONTEXT  Context
 	)
 {
-	//·µ»ØÖµ
+	//è¿”å›žå€¼
 	NTSTATUS ntStatus = STATUS_SUCCESS;
-	//Õâ¸ö¾íÉè±¸µÄdosÃû×Ö£¬Ò²¾ÍÊÇC£¬DµÈ
+	//è¿™ä¸ªå·è®¾å¤‡çš„dosåå­—ï¼Œä¹Ÿå°±æ˜¯Cï¼ŒDç­‰
 	UNICODE_STRING		DosName = { 0 };
 
-	//ÔÚÕâÀïContextÊÇ²»¿ÉÄÜÎª¿ÕµÄ£¬Îª¿Õ¾ÍÊÇ³ö´íÁË
+	//åœ¨è¿™é‡ŒContextæ˜¯ä¸å¯èƒ½ä¸ºç©ºçš„ï¼Œä¸ºç©ºå°±æ˜¯å‡ºé”™äº†
 	ASSERT(Context!=NULL);
-	//ÏÂÃæµ÷ÓÃÎÒÃÇ×Ô¼ºµÄVolumeOnline´¦Àí
-	//»ñÈ¡Õâ¸ö¾íµÄdosÃû×Ö
+	//ä¸‹é¢è°ƒç”¨æˆ‘ä»¬è‡ªå·±çš„VolumeOnlineå¤„ç†
+	//èŽ·å–è¿™ä¸ªå·çš„dosåå­—
 	ntStatus = IoVolumeDeviceToDosName(Context->DevExt->PhyDevObj, &DosName);
 	if (!NT_SUCCESS(ntStatus))
 		goto ERROUT;
-	//½«dosÃû×Ö±ä³É´óÐ´ÐÎÊ½
+	//å°†dosåå­—å˜æˆå¤§å†™å½¢å¼
 	Context->DevExt->VolumeLetter = DosName.Buffer[0];
 	if (Context->DevExt->VolumeLetter > L'Z')
 		Context->DevExt->VolumeLetter -= (L'a' - L'A');
-	//ÎÒÃÇÖ»±£»¤¡°D¡±ÅÌ
+	//æˆ‘ä»¬åªä¿æŠ¤â€œDâ€ç›˜
 	if (Context->DevExt->VolumeLetter == L'D')
 	{
-		//»ñÈ¡Õâ¸ö¾íµÄ»ù±¾ÐÅÏ¢
+		//èŽ·å–è¿™ä¸ªå·çš„åŸºæœ¬ä¿¡æ¯
 		ntStatus = DPQueryVolumeInformation(
 			Context->DevExt->PhyDevObj,
 			&(Context->DevExt->TotalSizeInByte),
@@ -993,7 +993,7 @@ DPVolumeOnLineCompleteRoutine(
 		{
 			goto ERROUT;
 		}
-		//½¨Á¢Õâ¸ö¾í¶ÔÓ¦µÄÎ»Í¼
+		//å»ºç«‹è¿™ä¸ªå·å¯¹åº”çš„ä½å›¾
 		ntStatus = DPBitmapInit(
 			&Context->DevExt->Bitmap,
 			Context->DevExt->SectorSizeInByte,
@@ -1003,7 +1003,7 @@ DPVolumeOnLineCompleteRoutine(
 			(LONGLONG)(25600 * 8 * Context->DevExt->SectorSizeInByte)) + 1);
 		if (!NT_SUCCESS(ntStatus))
 			goto ERROUT;
-		//¶ÔÈ«¾ÖÁ¿¸³Öµ£¬ËµÃ÷ÎÒÃÇÕÒµ½ÐèÒª±£»¤µÄÄÇ¸öÉè±¸ÁË
+		//å¯¹å…¨å±€é‡èµ‹å€¼ï¼Œè¯´æ˜Žæˆ‘ä»¬æ‰¾åˆ°éœ€è¦ä¿æŠ¤çš„é‚£ä¸ªè®¾å¤‡äº†
 		gProtectDevExt = Context->DevExt;
 	}
 	
@@ -1023,7 +1023,7 @@ ERROUT:
 	{
 		ExFreePool(DosName.Buffer);
 	}
-	//ÉèÖÃµÈ´ýÍ¬²½ÊÂ¼þ£¬ÕâÑù¿ÉÒÔÈÃÎÒÃÇµÈ´ýµÄDeviceIoControl´¦Àí¹ý³Ì¼ÌÐøÔËÐÐ
+	//è®¾ç½®ç­‰å¾…åŒæ­¥äº‹ä»¶ï¼Œè¿™æ ·å¯ä»¥è®©æˆ‘ä»¬ç­‰å¾…çš„DeviceIoControlå¤„ç†è¿‡ç¨‹ç»§ç»­è¿è¡Œ
 	KeSetEvent(
 		Context->Event,
 		0,
@@ -1037,30 +1037,30 @@ DPDispatchDeviceControl(
 	IN	PIRP			Irp
 	)
 {
-	//ÓÃÀ´Ö¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹µÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•çš„æŒ‡é’ˆ
 	PDP_FILTER_DEV_EXTENSION	DevExt = DeviceObject->DeviceExtension;
-	//·µ»ØÖµ
+	//è¿”å›žå€¼
 	NTSTATUS ntStatus = STATUS_SUCCESS;
-	//ÓÃÀ´Ö¸Ïòirp stackµÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘irp stackçš„æŒ‡é’ˆ
 	PIO_STACK_LOCATION  irpsp = IoGetCurrentIrpStackLocation(Irp);
-	//ÓÃÀ´Í¬²½IOCTL_VOLUME_ONLINE´¦ÀíµÄÊÂ¼þ
+	//ç”¨æ¥åŒæ­¥IOCTL_VOLUME_ONLINEå¤„ç†çš„äº‹ä»¶
 	KEVENT					Event;
-	//ÓÃÀ´´«¸øIOCTL_VOLUME_ONLINEµÄÍê³Éº¯ÊýµÄÉÏÏÂÎÄ
+	//ç”¨æ¥ä¼ ç»™IOCTL_VOLUME_ONLINEçš„å®Œæˆå‡½æ•°çš„ä¸Šä¸‹æ–‡
 	VOLUME_ONLINE_CONTEXT	context;
 
 	switch (irpsp->Parameters.DeviceIoControl.IoControlCode)
 	{
 	case IOCTL_VOLUME_ONLINE:
 		{
-			//Èç¹ûÊÇ¾íÉè±¸µÄIOCTL_VOLUME_ONLINE£¬»á½øÈëµ½ÕâÀï
-			//ÎÒÃÇ´òËã×Ô¼º´¦ÀíÕâ¸öirpÇëÇó£¬ÕâÀïÏÈ³õÊ¼»¯Ò»¸öÊÂ¼þÓÃÀ´ÔÚÕâ¸öÇëÇóµÄÍê³Éº¯ÊýÀïÃæ×öÍ¬²½ÐÅºÅ
+			//å¦‚æžœæ˜¯å·è®¾å¤‡çš„IOCTL_VOLUME_ONLINEï¼Œä¼šè¿›å…¥åˆ°è¿™é‡Œ
+			//æˆ‘ä»¬æ‰“ç®—è‡ªå·±å¤„ç†è¿™ä¸ªirpè¯·æ±‚ï¼Œè¿™é‡Œå…ˆåˆå§‹åŒ–ä¸€ä¸ªäº‹ä»¶ç”¨æ¥åœ¨è¿™ä¸ªè¯·æ±‚çš„å®Œæˆå‡½æ•°é‡Œé¢åšåŒæ­¥ä¿¡å·
 			KeInitializeEvent(&Event, NotificationEvent, FALSE);
-			//¸øÕâ¸öÇëÇóµÄÍê³Éº¯Êý³õÊ¼»¯²ÎÊý
+			//ç»™è¿™ä¸ªè¯·æ±‚çš„å®Œæˆå‡½æ•°åˆå§‹åŒ–å‚æ•°
 			context.DevExt = DevExt;
 			context.Event = &Event;
-			//ÕâÀïcopyÒ»·Ýirp stack
+			//è¿™é‡Œcopyä¸€ä»½irp stack
 			IoCopyCurrentIrpStackLocationToNext(Irp);
-			//ÉèÖÃÍê³Éº¯Êý
+			//è®¾ç½®å®Œæˆå‡½æ•°
 			IoSetCompletionRoutine(
 				Irp, 
 				DPVolumeOnLineCompleteRoutine, 
@@ -1068,20 +1068,20 @@ DPDispatchDeviceControl(
 				TRUE,
 				TRUE,
 				TRUE);
-			//µ÷ÓÃÏÂ²ãÉè±¸À´´¦ÀíÕâ¸öirp
+			//è°ƒç”¨ä¸‹å±‚è®¾å¤‡æ¥å¤„ç†è¿™ä¸ªirp
 			ntStatus = IoCallDriver(DevExt->LowerDevObj, Irp);
-			//µÈ´ýÏÂ²ãÉè±¸´¦Àí½áÊøÕâ¸öirp
+			//ç­‰å¾…ä¸‹å±‚è®¾å¤‡å¤„ç†ç»“æŸè¿™ä¸ªirp
 			KeWaitForSingleObject(
 				&Event,
 				Executive,
 				KernelMode,
 				FALSE,
 				NULL);
-			//·µ»Ø
+			//è¿”å›ž
 			return ntStatus;
 		}
 	default:
-		//¶ÔÓÚÆäËüDeviceIoControl£¬ÎÒÃÇÒ»ÂÉµ÷ÓÃÏÂ²ãÉè±¸È¥´¦Àí
+		//å¯¹äºŽå…¶å®ƒDeviceIoControlï¼Œæˆ‘ä»¬ä¸€å¾‹è°ƒç”¨ä¸‹å±‚è®¾å¤‡åŽ»å¤„ç†
 		break;
 	}
 	return DPSendToNextDriver(DevExt->LowerDevObj,Irp);		
@@ -1093,33 +1093,33 @@ DPDispatchReadWrite(
     IN	PIRP			Irp
     )
 {	
-	//ÓÃÀ´Ö¸Ïò¹ýÂËÉè±¸µÄÉè±¸À©Õ¹µÄÖ¸Õë
+	//ç”¨æ¥æŒ‡å‘è¿‡æ»¤è®¾å¤‡çš„è®¾å¤‡æ‰©å±•çš„æŒ‡é’ˆ
 	PDP_FILTER_DEV_EXTENSION	DevExt = DeviceObject->DeviceExtension;
-	//·µ»ØÖµ
+	//è¿”å›žå€¼
 	NTSTATUS ntStatus = STATUS_SUCCESS;
 
 	if (DevExt->Protect)
 	{
-		//Õâ¸ö¾íÔÚ±£»¤×´Ì¬£¬
-		//ÎÒÃÇÊ×ÏÈ°ÑÕâ¸öirpÉèÎªpending×´Ì¬
+		//è¿™ä¸ªå·åœ¨ä¿æŠ¤çŠ¶æ€ï¼Œ
+		//æˆ‘ä»¬é¦–å…ˆæŠŠè¿™ä¸ªirpè®¾ä¸ºpendingçŠ¶æ€
 		IoMarkIrpPending(Irp);
-		//È»ºó½«Õâ¸öirp·Å½øÏàÓ¦µÄÇëÇó¶ÓÁÐÀï
+		//ç„¶åŽå°†è¿™ä¸ªirpæ”¾è¿›ç›¸åº”çš„è¯·æ±‚é˜Ÿåˆ—é‡Œ
 		ExInterlockedInsertTailList(
 			&DevExt->ReqList,
 			&Irp->Tail.Overlay.ListEntry,
 			&DevExt->ReqLock
 			);
-		//ÉèÖÃ¶ÓÁÐµÄµÈ´ýÊÂ¼þ£¬Í¨Öª¶ÓÁÐ¶ÔÕâ¸öirp½øÐÐ´¦Àí
+		//è®¾ç½®é˜Ÿåˆ—çš„ç­‰å¾…äº‹ä»¶ï¼Œé€šçŸ¥é˜Ÿåˆ—å¯¹è¿™ä¸ªirpè¿›è¡Œå¤„ç†
 		KeSetEvent(
 			&DevExt->ReqEvent, 
 			(KPRIORITY)0, 
 			FALSE);
-		//·µ»Øpending×´Ì¬£¬Õâ¸öirp¾ÍËã´¦ÀíÍêÁË
+		//è¿”å›žpendingçŠ¶æ€ï¼Œè¿™ä¸ªirpå°±ç®—å¤„ç†å®Œäº†
 		return STATUS_PENDING;
 	}
 	else
 	{
-		//Õâ¸ö¾í²»ÔÚ±£»¤×´Ì¬£¬Ö±½Ó½»¸øÏÂ²ãÉè±¸½øÐÐ´¦Àí
+		//è¿™ä¸ªå·ä¸åœ¨ä¿æŠ¤çŠ¶æ€ï¼Œç›´æŽ¥äº¤ç»™ä¸‹å±‚è®¾å¤‡è¿›è¡Œå¤„ç†
 		return DPSendToNextDriver(
 			DevExt->LowerDevObj,
 			Irp);

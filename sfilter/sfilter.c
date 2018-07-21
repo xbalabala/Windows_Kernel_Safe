@@ -1170,7 +1170,7 @@ Return Value:
 	
 	//
 	//  Modified by devia at 2007-09-13
-	//  ÏÈÇ°°æ±¾×é·ûºÅÁ¬½ÓÃû´íÎó
+	//  å…ˆå‰ç‰ˆæœ¬ç»„ç¬¦å·è¿žæŽ¥åé”™è¯¯
 	// {
 	RtlInitUnicodeString( &dosDevicePrefix, L"\\DosDevices\\" );
 	RtlInitEmptyUnicodeString( &dosDevice, dosDeviceBuffer, MY_DEV_MAX_NAME );
@@ -1195,7 +1195,7 @@ Return Value:
 	// Delete by Tan Wen.
 	// RtlInitUnicodeString( &nameString, L"\\FileSystem\\Filters\\SFilter" );
 
-	// ÕâÊÇÉú³É¿ØÖÆÉè±¸¡£
+	// è¿™æ˜¯ç”ŸæˆæŽ§åˆ¶è®¾å¤‡ã€‚
 	if(g_cdo_for_all_users)
 	{
 		status = IoCreateDevice( DriverObject,
@@ -1208,9 +1208,9 @@ Return Value:
 	}
 	else
 	{
-		// ÒÔÏÂÉú³ÉÒ»¸ö¿ÉÒÔ±»ÈÎºÎÓÃ»§´ò¿ª¶ÁÐ´µÄÉè±¸¡£µ«ÊÇÕâ¸öguidÊÇÎÒÊÖÐ´¹Ì¶¨µÄ¡£
-		// ²»Çå³þÈç¹ûÔÚÓÐ¶à¸ö»ùÓÚ±¾sfilterÄ£¿éµÄÇý¶¯Í¬Ê±°²×°µÄÊ±ºò£¬»á²»»áµ¼ÖÂ³öÏÖ
-		// guidÖØ¸´µÄÎÊÌâ¡£
+		// ä»¥ä¸‹ç”Ÿæˆä¸€ä¸ªå¯ä»¥è¢«ä»»ä½•ç”¨æˆ·æ‰“å¼€è¯»å†™çš„è®¾å¤‡ã€‚ä½†æ˜¯è¿™ä¸ªguidæ˜¯æˆ‘æ‰‹å†™å›ºå®šçš„ã€‚
+		// ä¸æ¸…æ¥šå¦‚æžœåœ¨æœ‰å¤šä¸ªåŸºäºŽæœ¬sfilteræ¨¡å—çš„é©±åŠ¨åŒæ—¶å®‰è£…çš„æ—¶å€™ï¼Œä¼šä¸ä¼šå¯¼è‡´å‡ºçŽ°
+		// guidé‡å¤çš„é—®é¢˜ã€‚
 		UNICODE_STRING sddlString;
 		RtlInitUnicodeString( &sddlString, L"D:P(A;;GA;;;WD)");
 		status = IoCreateDeviceSecure( DriverObject,
@@ -1232,7 +1232,7 @@ Return Value:
 		RtlCopyUnicodeString(&nameString,&path2K);
 		RtlAppendUnicodeStringToString(&nameString,&userNameString);
 
-		// ÕâÊÇÔÙ´ÎÉú³É¿ØÖÆÉè±¸¡£
+		// è¿™æ˜¯å†æ¬¡ç”ŸæˆæŽ§åˆ¶è®¾å¤‡ã€‚
 		if(g_cdo_for_all_users)
 		{
 			status = IoCreateDevice( DriverObject,
@@ -1245,9 +1245,9 @@ Return Value:
 		}
 		else
 		{
-			// ÒÔÏÂÉú³ÉÒ»¸ö¿ÉÒÔ±»ÈÎºÎÓÃ»§´ò¿ª¶ÁÐ´µÄÉè±¸¡£µ«ÊÇÕâ¸öguidÊÇÎÒÊÖÐ´¹Ì¶¨µÄ¡£
-			// ²»Çå³þÈç¹ûÔÚÓÐ¶à¸ö»ùÓÚ±¾sfilterÄ£¿éµÄÇý¶¯Í¬Ê±°²×°µÄÊ±ºò£¬»á²»»áµ¼ÖÂ³öÏÖ
-			// guidÖØ¸´µÄÎÊÌâ¡£
+			// ä»¥ä¸‹ç”Ÿæˆä¸€ä¸ªå¯ä»¥è¢«ä»»ä½•ç”¨æˆ·æ‰“å¼€è¯»å†™çš„è®¾å¤‡ã€‚ä½†æ˜¯è¿™ä¸ªguidæ˜¯æˆ‘æ‰‹å†™å›ºå®šçš„ã€‚
+			// ä¸æ¸…æ¥šå¦‚æžœåœ¨æœ‰å¤šä¸ªåŸºäºŽæœ¬sfilteræ¨¡å—çš„é©±åŠ¨åŒæ—¶å®‰è£…çš„æ—¶å€™ï¼Œä¼šä¸ä¼šå¯¼è‡´å‡ºçŽ°
+			// guidé‡å¤çš„é—®é¢˜ã€‚
 			UNICODE_STRING sddlString;
 			RtlInitUnicodeString( &sddlString, L"D:P(A;;GA;;;WD)");
 			status = IoCreateDeviceSecure( DriverObject,
@@ -1277,7 +1277,7 @@ Return Value:
 	
 	//
 	//  Modified by devia at 2007-09-13
-	//  ÏÈÇ°°æ±¾×é·ûºÅÁ¬½ÓÃû´íÎó
+	//  å…ˆå‰ç‰ˆæœ¬ç»„ç¬¦å·è¿žæŽ¥åé”™è¯¯
 	// {
 	RtlAppendUnicodeStringToString( &dosDevice, &syblnkString );
 	IoDeleteSymbolicLink( &dosDevice );
@@ -1944,7 +1944,7 @@ Note:
 	
 	//
 	//  Added by devia at 2007-09-13
-	//  ËùÓÐµÄ´¦ÀíÀý³ÌÊ×ÏÈÒªÅÐ¶ÏÊÇ·ñÊÇCDOµÄÇëÇó
+	//  æ‰€æœ‰çš„å¤„ç†ä¾‹ç¨‹é¦–å…ˆè¦åˆ¤æ–­æ˜¯å¦æ˜¯CDOçš„è¯·æ±‚
 	// {
 	if(IS_MY_CONTROL_DEVICE_OBJECT( DeviceObject ))
 	{
@@ -1976,7 +1976,7 @@ Note:
     //
 	
 	//
-	//  ¶ÔÓÚ±¾µØÎÄ¼þÏµÍ³ÎÒÃÇÖ»¹ýÂË¾íÉè±¸
+	//  å¯¹äºŽæœ¬åœ°æ–‡ä»¶ç³»ç»Ÿæˆ‘ä»¬åªè¿‡æ»¤å·è®¾å¤‡
 	//
 	if( ( DeviceObject->DeviceType == FILE_DEVICE_DISK_FILE_SYSTEM ) &&
 		( ((PSFILTER_DEVICE_EXTENSION) DeviceObject->DeviceExtension)->StorageStackDeviceObject == NULL ) )
@@ -2154,7 +2154,7 @@ Return Value:
         //  the filter's control device object and manage communication via
         //  that handle.
         //
-		// Èç¹ûÊÇÎÒµÄ¿ØÖÆÉè±¸£¬¾ÍÖ±½Ó³É¹¦¼´¿É¡£
+		// å¦‚æžœæ˜¯æˆ‘çš„æŽ§åˆ¶è®¾å¤‡ï¼Œå°±ç›´æŽ¥æˆåŠŸå³å¯ã€‚
 		Irp->IoStatus.Status = STATUS_SUCCESS;
 		Irp->IoStatus.Information = 0;
         IoCompleteRequest( Irp, IO_NO_INCREMENT );
@@ -2163,7 +2163,7 @@ Return Value:
 
 	if(!IS_MY_DEVICE_OBJECT( DeviceObject ))
 	{
-		// Èç¹ûÍêÈ«²»ÊÇÎÒµÄÉè±¸£¬Í¨ÖªÍâÃæÍê³É¡£ÇÒ±ØÐëÍê³É¡£
+		// å¦‚æžœå®Œå…¨ä¸æ˜¯æˆ‘çš„è®¾å¤‡ï¼Œé€šçŸ¥å¤–é¢å®Œæˆã€‚ä¸”å¿…é¡»å®Œæˆã€‚
 		PVOID context = NULL;
 		ret = OnSfilterIrpPre(
 			DeviceObject,
@@ -2358,7 +2358,7 @@ Note:
 
 	//
 	//  Added by devia at 2007-09-13
-	//  ËùÓÐµÄ´¦ÀíÀý³ÌÊ×ÏÈÒªÅÐ¶ÏÊÇ·ñÊÇCDOµÄÇëÇó
+	//  æ‰€æœ‰çš„å¤„ç†ä¾‹ç¨‹é¦–å…ˆè¦åˆ¤æ–­æ˜¯å¦æ˜¯CDOçš„è¯·æ±‚
 	// {
 	if (IS_MY_CONTROL_DEVICE_OBJECT(DeviceObject))
 	{
@@ -3435,10 +3435,10 @@ Return Value:
 
 	// return FALSE;	// add by tanwen.
 
-	// Èç¹ûÊÇ¿ØÖÆÉè±¸£¬²»ÔÊÐí
+	// å¦‚æžœæ˜¯æŽ§åˆ¶è®¾å¤‡ï¼Œä¸å…è®¸
 	if(IS_MY_CONTROL_DEVICE_OBJECT( DeviceObject ))
 		return FALSE;
-	// Èç¹û²»ÊÇÎÒµÄÉè±¸(Ó°×ÓÉè±¸¿ÉÄÜ·¢ÉúÕâÖÖÇé¿ö)    
+	// å¦‚æžœä¸æ˜¯æˆ‘çš„è®¾å¤‡(å½±å­è®¾å¤‡å¯èƒ½å‘ç”Ÿè¿™ç§æƒ…å†µ)    
 	if(!IS_MY_DEVICE_OBJECT( DeviceObject ))
 		return FALSE;
 
@@ -4195,13 +4195,13 @@ Return Value:
 
 	if(IS_MY_CONTROL_DEVICE_OBJECT( DeviceObject ))
 		return FALSE;
-	// Èç¹û²»ÊÇÎÒµÄÉè±¸(Ó°×ÓÉè±¸¿ÉÄÜ·¢ÉúÕâÖÖÇé¿ö)    
+	// å¦‚æžœä¸æ˜¯æˆ‘çš„è®¾å¤‡(å½±å­è®¾å¤‡å¯èƒ½å‘ç”Ÿè¿™ç§æƒ…å†µ)    
 	if(!IS_MY_DEVICE_OBJECT( DeviceObject ))
 		return FALSE;
 
-	//	return FALSE;	 // add by tanwen.	ÓÐÈ¤µÄÊÇ£¬Õâ¸ö²Ù×÷²»¿ÉÒÔ·µ»Øfalse¡£Èç¹û
-	// ·µ»ØÁËfalse£¬»áµ¼ÖÂ½ðµûÆô¶¯¿ñÂýÎÞ±È£¨ÓÐÊ±Æô¶¯Ê±¼ä´ï15·ÖÖÓÒÔÉÏ£©¡£
-	// Èç¹ûÊÇ¿ØÖÆÉè±¸£¬²»ÔÊÐí
+	//	return FALSE;	 // add by tanwen.	æœ‰è¶£çš„æ˜¯ï¼Œè¿™ä¸ªæ“ä½œä¸å¯ä»¥è¿”å›žfalseã€‚å¦‚æžœ
+	// è¿”å›žäº†falseï¼Œä¼šå¯¼è‡´é‡‘è¶å¯åŠ¨ç‹‚æ…¢æ— æ¯”ï¼ˆæœ‰æ—¶å¯åŠ¨æ—¶é—´è¾¾15åˆ†é’Ÿä»¥ä¸Šï¼‰ã€‚
+	// å¦‚æžœæ˜¯æŽ§åˆ¶è®¾å¤‡ï¼Œä¸å…è®¸
 
     if (DeviceObject->DeviceExtension) {
 

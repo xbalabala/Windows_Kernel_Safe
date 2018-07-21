@@ -60,10 +60,10 @@ enum _DEVICE_STATE
     PS_DEVICE_STATE_DELETING    // delete operation in progress
 } ControlDeviceState = PS_DEVICE_STATE_READY;
 
-// ¶¨ÒåÒ»¸öº¯ÊıÖ¸Õë±äÁ¿£¬±£´æNdis¿âÖĞµÄAddDeviceÊµÏÖ
+// å®šä¹‰ä¸€ä¸ªå‡½æ•°æŒ‡é’ˆå˜é‡ï¼Œä¿å­˜Ndisåº“ä¸­çš„AddDeviceå®ç°
 AddDeviceFunc systemAddDevice = NULL; 
 
-// ÏÂÃæ4¸öº¯ÊıÖ¸Õë±äÁ¿£¬ÓÃÀ´±£´æÏµÍ³¶ÔÕâ¸öIRPµÄ´¦Àí
+// ä¸‹é¢4ä¸ªå‡½æ•°æŒ‡é’ˆå˜é‡ï¼Œç”¨æ¥ä¿å­˜ç³»ç»Ÿå¯¹è¿™ä¸ªIRPçš„å¤„ç†
 DispatchFunc systemCreate = NULL;
 DispatchFunc systemWrite = NULL;
 DispatchFunc systemRead = NULL;
@@ -219,12 +219,12 @@ Return Value:
         NdisTerminateWrapper(NdisWrapperHandle, NULL);
     }
 
-	// ÕâÀïÊµÏÖHook
+	// è¿™é‡Œå®ç°Hook
 	// 
 	systemAddDevice = DriverObject->DriverExtension->AddDevice; 
 	DriverObject->DriverExtension->AddDevice = myAddDevice;
 
-	// Hook·Ö·¢º¯Êı
+	// Hookåˆ†å‘å‡½æ•°
 	//
 	systemCreate = DriverObject->MajorFunction[IRP_MJ_CREATE];
 	DriverObject->MajorFunction[IRP_MJ_CREATE] = myCreate;
@@ -260,7 +260,7 @@ Routine Description:
     the ControlDeviceState and MiniportCount variables.
 
     NOTE: do not call this from DriverEntry; it will prevent the driver
-    from being unloaded (e.g. on uninstall).// ²»ÖªµÀÊÇÎªÊ²Ã´£¬Òª¿¼¾¿Ò»ÏÂ!! MV_COMM_3_17
+    from being unloaded (e.g. on uninstall).// ä¸çŸ¥é“æ˜¯ä¸ºä»€ä¹ˆï¼Œè¦è€ƒç©¶ä¸€ä¸‹!! MV_COMM_3_17
 
 Arguments:
 

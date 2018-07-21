@@ -2,23 +2,23 @@
 /// @file         cf_sfilter.c
 /// @author    crazy_chu
 /// @date       2009-1-29
-/// @brief      ʵ��sfilter�Ļص������� 
+/// @brief      实现sfilter的回调函数。 
 /// 
-/// ��������
-/// ������Ϊʾ�����롣δ���꾡���ԣ�����֤�ɿ��ԡ����߶�
-/// �κ���ʹ�ô˴��뵼�µ�ֱ�Ӻͼ����ʧ�������Ρ�
+/// 免责声明
+/// 本代码为示例代码。未经详尽测试，不保证可靠性。作者对
+/// 任何人使用此代码导致的直接和间接损失不负责任。
 /// 
-/// ��ȨЭ��
-/// ����������ڹ���crypt_file.�ǳ�������wowocockΪ��������
-/// ������Windows�ں˱������Ϣ��ȫ������д���ļ�͸������
-/// ʾ���������̽���֧��WindowsXP�£�FastFat�ļ�ϵͳ�¼���
-/// ���ļ��ܡ�δ������ɱ���������������ļ��������������
-/// �����������ȫ��Ȩ��Ϊ���߱�������������ѧϰ���Ķ�ʹ
-/// �á�δ����λ����������Ȩ������ֱ�Ӹ��ơ����߻��ڴ˴�
-/// ������޸ġ����ô˴����ṩ��ȫ�����߲��ּ���������ҵ
-/// ���������������������Ļ�����Ϊ������Υ�������߱�����
-/// �ߺͻ�ȡ�⳥֮Ȩ�����Ķ��˴��룬���Զ���Ϊ����������
-/// ȨЭ�顣�粻���ܴ�Э���ߣ��벻Ҫ�Ķ��˴��롣
+/// 授权协议
+/// 本代码从属于工程crypt_file.是楚狂人与wowocock为《寒江独
+/// 钓——Windows内核编程与信息安全》所编写的文件透明加密
+/// 示例。本工程仅仅支持WindowsXP下，FastFat文件系统下记事
+/// 本的加密。未测试与杀毒软件或者其他文件过滤驱动并存的
+/// 情况。本代码全部权利为作者保留，仅供读者学习和阅读使
+/// 用。未经两位作者书面授权，不得直接复制、或者基于此代
+/// 码进行修改、利用此代码提供的全部或者部分技术用于商业
+/// 的软件开发、或者其他的获利行为。如有违反，作者保留起
+/// 诉和获取赔偿之权力。阅读此代码，则自动视为接受以上授
+/// 权协议。如不接受此协议者，请不要阅读此代码。
 ///
 
 #include <ntifs.h>
@@ -41,19 +41,19 @@ SF_RET OnSfilterIrpPre(
 		OUT NTSTATUS *status,
 		PVOID *context)
 {
-    // ��õ�ǰ����ջ
+    // 获得当前调用栈
 		PIO_STACK_LOCATION irpsp = IoGetCurrentIrpStackLocation(irp);
     PFILE_OBJECT file = irpsp->FileObject;
-    // ����ǰ�����Ƿ��Ǽ��ܽ���
+    // 看当前进程是否是加密进程
     BOOLEAN proc_sec = cfIsCurProcSec();
     BOOLEAN file_sec;
 
-	// �ҽ��������ļ����� FileObject�����ڵ����һ��passthru.
+	// 我仅仅过滤文件请求。 FileObject不存在的情况一律passthru.
 	if(file == NULL)
 		return SF_IRP_PASS;
 
 
-	// ��Ҫ������Щ���������Ǳ�����˵ġ��������ǰpassthru����
+	// 首要决定哪些请求是我们必须过滤的。多余的提前passthru掉。
 	if( irpsp->MajorFunction != IRP_MJ_CREATE &&
 		irpsp->MajorFunction != IRP_MJ_CLOSE &&
 		irpsp->MajorFunction != IRP_MJ_READ &&
@@ -69,16 +69,16 @@ SF_RET OnSfilterIrpPre(
         return SF_IRP_PASS;
 
 
-    // �����ļ��򿪣���cfIrpCreatePreͳһ������
+    // 对于文件打开，用cfIrpCreatePre统一处理。
     if(irpsp->MajorFunction == IRP_MJ_CREATE)
     {
         if(proc_sec)
             return cfIrpCreatePre(irp,irpsp,file,next_dev);
         else
         {
-            // �������������Ϊ��ͨ���̣���������һ�����ڼ�
-            // �ܵ��ļ��������������޷��ж�����ļ��Ƿ����ڼ�
-            // �ܣ����Է���GO_ON���жϡ�
+            // 其他的情况，作为普通进程，不允许打开一个正在加
+            // 密的文件。但是在这里无法判断这个文件是否正在加
+            // 密，所以返回GO_ON来判断。
             return SF_IRP_GO_ON;
         }
     }
@@ -87,17 +87,17 @@ SF_RET OnSfilterIrpPre(
     file_sec = cfIsFileCrypting(file);
     cfListUnlock();
 
-    // ������Ǽ��ܵ��ļ��Ļ����Ϳ���ֱ��passthru�ˣ�û�б�
-    // �������ˡ�
+    // 如果不是加密的文件的话，就可以直接passthru了，没有别
+    // 的事情了。
     if(!file_sec)
         return SF_IRP_PASS;
 
-    // �����close�Ϳ���ɾ���ڵ��� 
+    // 如果是close就可以删除节点了 
     if(irpsp->MajorFunction == IRP_MJ_CLOSE)
         return SF_IRP_GO_ON;
 
- 	// ��������ƫ�ơ�������������������⴦��������GO_ON
-    // ������������set information��������Ҫ������
+ 	// 操作上有偏移。以下三种请求必须特殊处理。进行GO_ON
+    // 处理。其他的set information操作不需要处理。
 	// 1.SET FILE_ALLOCATION_INFORMATION
 	// 2.SET FILE_END_OF_FILE_INFORMATION
 	// 3.SET FILE_VALID_DATA_LENGTH_INFORMATION
@@ -109,15 +109,15 @@ SF_RET OnSfilterIrpPre(
 		 irpsp->Parameters.SetFile.FileInformationClass == FileAllInformation ||
 		 irpsp->Parameters.SetFile.FileInformationClass == FilePositionInformation))
     {
-        // ����Щset information�����޸ģ�ʹ֮��ȥǰ���4k�ļ�ͷ��
+        // 对这些set information给予修改，使之隐去前面的4k文件头。
         cfIrpSetInforPre(irp,irpsp/*,next_dev,file*/);
 		return SF_IRP_PASS;
     }
 
     if(irpsp->MajorFunction == IRP_MJ_QUERY_INFORMATION)
     {
-        // Ҫ����Щread information�Ľ�������޸ġ����Է���go on.
-        // ����������cfIrpQueryInforPost(irp,irpsp);
+        // 要对这些read information的结果给予修改。所以返回go on.
+        // 结束后会调用cfIrpQueryInforPost(irp,irpsp);
         if(irpsp->Parameters.QueryFile.FileInformationClass == FileAllInformation ||
          irpsp->Parameters.QueryFile.FileInformationClass == FileAllocationInformation ||
 		 irpsp->Parameters.QueryFile.FileInformationClass == FileEndOfFileInformation ||
@@ -132,11 +132,11 @@ SF_RET OnSfilterIrpPre(
         }
     }
 
-	// ��ʱ��������
+	// 暂时不处理。
 	//if(irpsp->MajorFunction == IRP_MJ_DIRECTORY_CONTROL)
 	//{
-	//	// Ҫ����Щread information�Ľ�������޸ġ����Է���go on.
-	//	// ����������cfIrpQueryInforPost(irp,irpsp);
+	//	// 要对这些read information的结果给予修改。所以返回go on.
+	//	// 结束后会调用cfIrpQueryInforPost(irp,irpsp);
 	//	if(irpsp->Parameters.QueryDirectory.FileInformationClass == FileDirectoryInformation ||
 	//		irpsp->Parameters.QueryDirectory.FileInformationClass == FileFullDirectoryInformation ||
 	//		irpsp->Parameters.QueryDirectory.FileInformationClass == FileBothDirectoryInformation)
@@ -149,8 +149,8 @@ SF_RET OnSfilterIrpPre(
 	//	}
 	//}
 
-    // ���������read��write�������ֶ�Ҫ�޸���������´���ͬʱ��readҪ�����
-    // ��������ע�⣺ֻ����ֱ�Ӷ�Ӳ�̵����󡣶Ի����ļ����󲻴�����
+    // 最后两种是read和write，这两种都要修改请求后再下传。同时，read要有完成
+    // 处理。请注意：只处理直接读硬盘的请求。对缓冲文件请求不处理。
     if(irpsp->MajorFunction == IRP_MJ_READ &&
        (irp->Flags & (IRP_PAGING_IO|IRP_SYNCHRONOUS_PAGING_IO|IRP_NOCACHE)))
     {
@@ -169,7 +169,7 @@ SF_RET OnSfilterIrpPre(
         }
     }
 
-    // �����κδ�����ֱ�ӷ��ء�
+    // 不加任何处理，直接返回。
     return SF_IRP_PASS;
 }
 
@@ -181,17 +181,17 @@ VOID OnSfilterIrpPost(
 		IN NTSTATUS status,
 		PVOID context)
 {
-    // ��õ�ǰ����ջ
+    // 获得当前调用栈
 		PIO_STACK_LOCATION irpsp = IoGetCurrentIrpStackLocation(irp);
     BOOLEAN crypting,sec_proc,need_crypt,need_write_header;
     PFILE_OBJECT file = irpsp->FileObject;
     ULONG desired_access;
     BOOLEAN proc_sec = cfIsCurProcSec();
 
-    // ��ǰ�����Ƿ��Ǽ��ܽ���
+    // 当前进程是否是加密进程
     sec_proc = cfIsCurProcSec();
 
-    // ����������ɹ�����û�б�Ҫ������
+    // 如果操作不成功，就没有必要处理。
     if( !NT_SUCCESS(status) &&
         !(irpsp->MajorFunction == IRP_MJ_QUERY_INFORMATION &&
             irpsp->Parameters.QueryFile.FileInformationClass == FileAllInformation &&
@@ -211,20 +211,20 @@ VOID OnSfilterIrpPost(
         return;
     }
 
-   // �Ƿ���һ���Ѿ������ܽ��̴򿪵��ļ�
+   // 是否是一个已经被加密进程打开的文件
     cfListLock();
-    // �����create,����Ҫ�ָ��ļ����ȡ����������������pre��
-    // ʱ���Ӧ���Ѿ��ָ��ˡ�
+    // 如果是create,不需要恢复文件长度。如果是其他请求，在pre的
+    // 时候就应该已经恢复了。
     crypting = cfIsFileCrypting(file);
     cfListUnlock();
 
-    // �����е��ļ��򿪣��������µĹ��̲�����
+    // 对所有的文件打开，都用如下的过程操作：
     if(irpsp->MajorFunction == IRP_MJ_CREATE)
     {
         if(proc_sec)
         {
             ASSERT(crypting == FALSE);
-            // ����Ǽ��ܽ��̣���׷�ӽ�ȥ���ɡ�
+            // 如果是加密进程，则追加进去即可。
             if(!cfFileCryptAppendLk(file))
             {
                 IoCancelFileOpen(next_dev,file);
@@ -239,8 +239,8 @@ VOID OnSfilterIrpPost(
         }
         else
         {
-            // ����ͨ���̡������Ƿ��Ǽ����ļ�������Ǽ����ļ���
-            // ������������
+            // 是普通进程。根据是否是加密文件。如果是加密文件，
+            // 否决这个操作。
             if(crypting)
             {
                 IoCancelFileOpen(next_dev,file);
@@ -251,7 +251,7 @@ VOID OnSfilterIrpPost(
     }
     else if(irpsp->MajorFunction == IRP_MJ_CLOSE)
     {
-        // clean up�����ˡ�����ɾ�����ܽڵ㣬ɾ�����塣
+        // clean up结束了。这里删除加密节点，删除缓冲。
         ASSERT(crypting);
         cfCryptFileCleanupComplete(file);
     }
@@ -290,19 +290,19 @@ NTSTATUS OnSfilterDriverEntry(
 //    _asm int 3
 #endif
 
-    // ��ʼ����������
+    // 初始化加密链表
     cfListInit();
 
-  	// ȷ�������豸�����ֺͷ������ӡ�
+  	// 确定控制设备的名字和符号链接。
 	RtlInitUnicodeString(&user_name,L"crypt_file_cdo");
 	RtlInitUnicodeString(&syb_name,L"crypt_file_cdo_syb");
 	RtlCopyUnicodeString(userNameString,&user_name);
 	RtlCopyUnicodeString(syblnkString,&syb_name);
 
-	// ���ÿ����豸Ϊ�����û�����
+	// 设置控制设备为所有用户可用
 	sfilterSetCdoAccessForAll();
 
-    // ��ʼ���������ֲ���
+    // 初始化进程名字查找
     cfCurProcNameInit();
 
 
@@ -311,7 +311,7 @@ NTSTATUS OnSfilterDriverEntry(
 
 VOID OnSfilterDriverUnload()
 {
-    // ûʲôҪ����...;
+    // 没什么要做的...;
 }
 
 NTSTATUS OnSfilterCDODispatch(
@@ -327,7 +327,7 @@ BOOLEAN OnSfilterAttachPre(
 		IN PUNICODE_STRING DeviceName,
 		IN PVOID extension)
 {
-    // ֱ�ӷ���TRUE�������豸����
+    // 直接返回TRUE，所有设备都绑定
     return TRUE;
 }
 
@@ -338,5 +338,5 @@ VOID OnSfilterAttachPost(
 		IN PVOID extension,
 		IN NTSTATUS status)
 {
-    // ����Ҫ��ʲô��
+    // 不需要做什么。
 }

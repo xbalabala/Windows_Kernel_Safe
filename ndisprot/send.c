@@ -25,7 +25,7 @@ Revision History:
 
 
 
-// ·Ö·¢º¯Êý£¬´¦ÀíÐ´ÇëÇó£¨Ò²¾ÍÊÇ·¢°üÇëÇó£©¡£
+// åˆ†å‘å‡½æ•°ï¼Œå¤„ç†å†™è¯·æ±‚ï¼ˆä¹Ÿå°±æ˜¯å‘åŒ…è¯·æ±‚ï¼‰ã€‚
 NTSTATUS
 NdisProtWrite(
     IN PDEVICE_OBJECT       pDeviceObject,
@@ -41,14 +41,14 @@ NdisProtWrite(
     PNDIS_BUFFER            pNdisBuffer;
     NDISPROT_ETH_HEADER UNALIGNED *pEthHeader;
 
-    // NDIS51Ö§³ÖÐ´ÇëÇóÈ¡Ïû¡£µ«ÊÇ±¾Êé²»ÌÖÂÛÇëÇóÈ¡ÏûµÄ»°Ìâ¡£
+    // NDIS51æ”¯æŒå†™è¯·æ±‚å–æ¶ˆã€‚ä½†æ˜¯æœ¬ä¹¦ä¸è®¨è®ºè¯·æ±‚å–æ¶ˆçš„è¯é¢˜ã€‚
 #ifdef NDIS51
     PVOID                   CancelId;
 #endif
 
     UNREFERENCED_PARAMETER(pDeviceObject);
 
-    // Ê×ÏÈµÃµ½´ò¿ªÉÏÏÂÎÄ¡£ÒÔÈ·ÈÏÊÇÓÃÄÄ¸öÍø¿¨·¢°ü¡£
+    // é¦–å…ˆå¾—åˆ°æ‰“å¼€ä¸Šä¸‹æ–‡ã€‚ä»¥ç¡®è®¤æ˜¯ç”¨å“ªä¸ªç½‘å¡å‘åŒ…ã€‚
     pIrpSp = IoGetCurrentIrpStackLocation(pIrp);
     pOpenContext = pIrpSp->FileObject->FsContext;
 
@@ -56,7 +56,7 @@ NdisProtWrite(
 
     do
     {
-        // ¼ì²é´ò¿ªÉÏÏÂÎÄµÄ¿É¿¿ÐÔ¡£
+        // æ£€æŸ¥æ‰“å¼€ä¸Šä¸‹æ–‡çš„å¯é æ€§ã€‚
         if (pOpenContext == NULL)
         {
             DEBUGP(DL_WARN, ("Write: FileObject %p not yet associated with a device\n",
@@ -66,7 +66,7 @@ NdisProtWrite(
         }
         NPROT_STRUCT_ASSERT(pOpenContext, oc);
 
-        // È·ÈÏÊäÈë»º³åµÄ¿É¿¿ÐÔ¡£
+        // ç¡®è®¤è¾“å…¥ç¼“å†²çš„å¯é æ€§ã€‚
         if (pIrp->MdlAddress == NULL)
         {
             DEBUGP(DL_FATAL, ("Write: NULL MDL address on IRP %p\n", pIrp));
@@ -74,10 +74,10 @@ NdisProtWrite(
             break;
         }
 
-        // µÃµ½ÊäÈë»º³åµÄÐéÄâµØÖ·¡£Ö®ºó½øÐÐÒ»ÏµÁÐµÄ¼ì²é¡£µÚÒ»£¬
-        // ÊäÈë»º³åÐéÄâµØÖ·²»ÄÜÎªNULL£¬µÚ¶þ£¬»º³åµÄ³¤¶È£¬ÖÁÉÙ±ØÐë
-        // ±ÈÒ»¸öÒÔÌ«Íø°üÍ·Òª³¤¡£·ñÔòÎÞ·¨ÌîÐ´ÒÔÌ«Íø°üÍ·¡£µÚÈý£¬·¢
-        // °üµÄ³¤¶È²»ÄÜ³¬¹ýÕâ¸öÍø¿¨µÄ×î´óÖ¡³¤¡£µÚËÄ£¬
+        // å¾—åˆ°è¾“å…¥ç¼“å†²çš„è™šæ‹Ÿåœ°å€ã€‚ä¹‹åŽè¿›è¡Œä¸€ç³»åˆ—çš„æ£€æŸ¥ã€‚ç¬¬ä¸€ï¼Œ
+        // è¾“å…¥ç¼“å†²è™šæ‹Ÿåœ°å€ä¸èƒ½ä¸ºNULLï¼Œç¬¬äºŒï¼Œç¼“å†²çš„é•¿åº¦ï¼Œè‡³å°‘å¿…é¡»
+        // æ¯”ä¸€ä¸ªä»¥å¤ªç½‘åŒ…å¤´è¦é•¿ã€‚å¦åˆ™æ— æ³•å¡«å†™ä»¥å¤ªç½‘åŒ…å¤´ã€‚ç¬¬ä¸‰ï¼Œå‘
+        // åŒ…çš„é•¿åº¦ä¸èƒ½è¶…è¿‡è¿™ä¸ªç½‘å¡çš„æœ€å¤§å¸§é•¿ã€‚ç¬¬å››ï¼Œ
         pEthHeader = MmGetSystemAddressForMdlSafe(pIrp->MdlAddress, NormalPagePriority);
 
         if (pEthHeader == NULL)
@@ -106,10 +106,10 @@ NdisProtWrite(
             break;
         }
 
-        // ÏÂÃæ¿ªÊ¼¼ì²é£¬»º³åÖÐÊÇ·ñÒÑ¾­ÌîÐ´ÁËÎ±ÔìµÄMACµØÖ·¡£
-        // ·½·¨ºÜ¼òµ¥£¬È¡µÃÒÑÌîÐ´µÄµØÖ·ºÍÍø¿¨µÄMACµØÖ·±È½Ï¡£
-        // Èç¹û²»·ûºÏÔò·µ»ØÊ§°Ü¡£ºÜ¶àÇé¿ö£¬ÍøÂç¹¥»÷¹¤¾ßÊÇ²»»á
-        // ¿½±´Õâ¶Î´úÂëµÄ¡£
+        // ä¸‹é¢å¼€å§‹æ£€æŸ¥ï¼Œç¼“å†²ä¸­æ˜¯å¦å·²ç»å¡«å†™äº†ä¼ªé€ çš„MACåœ°å€ã€‚
+        // æ–¹æ³•å¾ˆç®€å•ï¼Œå–å¾—å·²å¡«å†™çš„åœ°å€å’Œç½‘å¡çš„MACåœ°å€æ¯”è¾ƒã€‚
+        // å¦‚æžœä¸ç¬¦åˆåˆ™è¿”å›žå¤±è´¥ã€‚å¾ˆå¤šæƒ…å†µï¼Œç½‘ç»œæ”»å‡»å·¥å…·æ˜¯ä¸ä¼š
+        // æ‹·è´è¿™æ®µä»£ç çš„ã€‚
         if ((pIrp->RequestorMode == UserMode) && 
             !NPROT_MEM_CMP(pEthHeader->SrcAddr, pOpenContext->CurrentAddress, NPROT_MAC_ADDR_LEN))
         {
@@ -118,8 +118,8 @@ NdisProtWrite(
             break;
         }
          
-        // È·ÈÏ°ü¿ÉÒÔ·¢ËÍÁË¡£ÏÂÃæ¿ªÊ¼ÕæÊµµÄ×¼±¸·¢ËÍÒ»¸ö°ü£¬Ê×ÏÈ
-        // »ñµÃËø£¬²¢ÅÐ¶Ïµ±Ç°Íø¿¨ÊÇ·ñ´¦ÓÚ¿ÉÒÔ·¢°üµÄ×´Ì¬¡£
+        // ç¡®è®¤åŒ…å¯ä»¥å‘é€äº†ã€‚ä¸‹é¢å¼€å§‹çœŸå®žçš„å‡†å¤‡å‘é€ä¸€ä¸ªåŒ…ï¼Œé¦–å…ˆ
+        // èŽ·å¾—é”ï¼Œå¹¶åˆ¤æ–­å½“å‰ç½‘å¡æ˜¯å¦å¤„äºŽå¯ä»¥å‘åŒ…çš„çŠ¶æ€ã€‚
         NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
 
         if (!NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_ACTIVE))
@@ -131,7 +131,7 @@ NdisProtWrite(
             break;
         }
         
-        // ´ÓÇ°Ãæ°ó¶¨Ê±·ÖÅäµÄ·¢ËÍ°ü³ØÖÐ·ÖÅäÒ»¸ö°üÃèÊö·û¡£
+        // ä»Žå‰é¢ç»‘å®šæ—¶åˆ†é…çš„å‘é€åŒ…æ± ä¸­åˆ†é…ä¸€ä¸ªåŒ…æè¿°ç¬¦ã€‚
         NPROT_ASSERT(pOpenContext->SendPacketPool != NULL);
         NdisAllocatePacket(
             &Status,
@@ -146,7 +146,7 @@ NdisProtWrite(
             break;
         }
 
-        // ÏÂÃæµÄ´úÂëÎªWin9x±àÐ´£¬±¾Êé²»ÌÖÂÛ¡£
+        // ä¸‹é¢çš„ä»£ç ä¸ºWin9xç¼–å†™ï¼Œæœ¬ä¹¦ä¸è®¨è®ºã€‚
         if (pOpenContext->bRunningOnWin9x)
         {
             NdisAllocateBuffer(
@@ -170,21 +170,21 @@ NdisProtWrite(
             pNdisBuffer = pIrp->MdlAddress;
         }
 
-        // ¼ÇÂ¼·¢ËÍ°üÓÖÔö¼ÓÁËÒ»¸ö¡£
+        // è®°å½•å‘é€åŒ…åˆå¢žåŠ äº†ä¸€ä¸ªã€‚
         NdisInterlockedIncrement((PLONG)&pOpenContext->PendedSendCount);
 
-        // ´ò¿ªÉÏÏÂÎÄÒýÓÃ¼ÆÊý¼Ó1£¬ÕâÊÇÎªÁË·ÀÖ¹·¢°ü¹ý³ÌÖÐÕâ¸ö°ó¶¨±»½â³ý¡£
+        // æ‰“å¼€ä¸Šä¸‹æ–‡å¼•ç”¨è®¡æ•°åŠ 1ï¼Œè¿™æ˜¯ä¸ºäº†é˜²æ­¢å‘åŒ…è¿‡ç¨‹ä¸­è¿™ä¸ªç»‘å®šè¢«è§£é™¤ã€‚
         NPROT_REF_OPEN(pOpenContext);  // pended send
         IoMarkIrpPending(pIrp);
 
-        // ³õÊ¼»¯°üÒýÓÃ¼ÆÊý¡£Õâ¸ö°ü»áÔÚ¼ÆÊýÎª0µÄÊ±ºòÊÍ·Åµô¡£
+        // åˆå§‹åŒ–åŒ…å¼•ç”¨è®¡æ•°ã€‚è¿™ä¸ªåŒ…ä¼šåœ¨è®¡æ•°ä¸º0çš„æ—¶å€™é‡Šæ”¾æŽ‰ã€‚
         NPROT_SEND_PKT_RSVD(pNdisPacket)->RefCount = 1;
 
 #ifdef NDIS51
 
-        // NDIS5.1Ö§³ÖÈ¡Ïû·¢ËÍ¡£ÎÒÃÇ¸øÃ¿¸ö°üÉèÖÃÒ»¸öÈ¡ÏûID¡£Ã¿¸ö
-        // °üºÍÒ»¸öÐ´IRP¹ØÁª£¬°Ñ°üµÄÖ¸Õë±£´æÔÚIRPÖÐ¡£Èç¹ûIRP»ñµÃ
-        // È¡ÏûÍ¨Öª£¬ÔòÊ¹ÓÃNdisCancelSendPacketsÈ¥È¡Ïû°ü¡£
+        // NDIS5.1æ”¯æŒå–æ¶ˆå‘é€ã€‚æˆ‘ä»¬ç»™æ¯ä¸ªåŒ…è®¾ç½®ä¸€ä¸ªå–æ¶ˆIDã€‚æ¯ä¸ª
+        // åŒ…å’Œä¸€ä¸ªå†™IRPå…³è”ï¼ŒæŠŠåŒ…çš„æŒ‡é’ˆä¿å­˜åœ¨IRPä¸­ã€‚å¦‚æžœIRPèŽ·å¾—
+        // å–æ¶ˆé€šçŸ¥ï¼Œåˆ™ä½¿ç”¨NdisCancelSendPacketsåŽ»å–æ¶ˆåŒ…ã€‚
         CancelId = NPROT_GET_NEXT_CANCEL_ID();
         NDIS_SET_PACKET_CANCEL_ID(pNdisPacket, CancelId);
         pIrp->Tail.Overlay.DriverContext[0] = (PVOID)pOpenContext;
@@ -196,15 +196,15 @@ NdisProtWrite(
 
         NPROT_RELEASE_LOCK(&pOpenContext->Lock);
 
-        // ¼ÇÏÂirpµÄÖ¸Õë·ÅÔÚ°üÃèÊö·ûÀï£¬ÒÔ±¸ºóÓÃ¡£
+        // è®°ä¸‹irpçš„æŒ‡é’ˆæ”¾åœ¨åŒ…æè¿°ç¬¦é‡Œï¼Œä»¥å¤‡åŽç”¨ã€‚
         NPROT_IRP_FROM_SEND_PKT(pNdisPacket) = pIrp;
 
-        // °Ñ»º³åºÍ°üÁªÏµÆðÀ´¡£×´Ì¬ÉèÖÃÎªpending¡£
+        // æŠŠç¼“å†²å’ŒåŒ…è”ç³»èµ·æ¥ã€‚çŠ¶æ€è®¾ç½®ä¸ºpendingã€‚
         NtStatus = STATUS_PENDING;
         pNdisBuffer->Next = NULL;
         NdisChainBufferAtFront(pNdisPacket, pNdisBuffer);
 
-        // ÏÂÃæµÄ´úÂë½ö¹©µ÷ÊÔÊ¹ÓÃ¡£
+        // ä¸‹é¢çš„ä»£ç ä»…ä¾›è°ƒè¯•ä½¿ç”¨ã€‚
 #if SEND_DBG
         {
             PUCHAR      pData;
@@ -220,15 +220,15 @@ NdisProtWrite(
         }
 #endif // SEND_DBG
 
-        // ·¢ËÍ°ü¡£·Ç³£¼òµ¥¡£°ü·¢ËÍÍêÖ®ºó»á×Ô¶¯µ÷ÓÃÐ­ÒéÌØÕ÷ÖÐµÄÒ»¸ö
-        // »Øµ÷º¯ÊýNdisProtSendComplete¡£ÔÚÆäÖÐÔÙÍê³ÉIRP¼´¿É¡£
+        // å‘é€åŒ…ã€‚éžå¸¸ç®€å•ã€‚åŒ…å‘é€å®Œä¹‹åŽä¼šè‡ªåŠ¨è°ƒç”¨åè®®ç‰¹å¾ä¸­çš„ä¸€ä¸ª
+        // å›žè°ƒå‡½æ•°NdisProtSendCompleteã€‚åœ¨å…¶ä¸­å†å®ŒæˆIRPå³å¯ã€‚
         NdisSendPackets(pOpenContext->BindingHandle, &pNdisPacket, 1);
 
     }
     while (FALSE);
 
-    // Èç¹ûÕý³£·¢ËÍ°üÊÇSTATUS_PENDING¡£·ñÔòÊÇÓÐ´íµÄ£¬¿ÉÒÔÔÚÕâÀï
-    // Ö±½ÓÍê³É¡£
+    // å¦‚æžœæ­£å¸¸å‘é€åŒ…æ˜¯STATUS_PENDINGã€‚å¦åˆ™æ˜¯æœ‰é”™çš„ï¼Œå¯ä»¥åœ¨è¿™é‡Œ
+    // ç›´æŽ¥å®Œæˆã€‚
     if (NtStatus != STATUS_PENDING)
     {
         pIrp->IoStatus.Status = NtStatus;
@@ -342,8 +342,8 @@ Return Value:
 
 #endif // NDIS51
 
-// ÕâÊÇÐ­ÒéÌØÕ÷¼¯ÖÐµÄÒ»¸ö»Øµ÷º¯Êý¡£Èç¹ûµ÷ÓÃÁËNdisSendPacket,
-// ÄÇÃ´ÔÚ·¢ËÍ½áÊøÖ®ºó£¬Õâ¸öº¯Êý»á±»µ÷ÓÃ¡£
+// è¿™æ˜¯åè®®ç‰¹å¾é›†ä¸­çš„ä¸€ä¸ªå›žè°ƒå‡½æ•°ã€‚å¦‚æžœè°ƒç”¨äº†NdisSendPacket,
+// é‚£ä¹ˆåœ¨å‘é€ç»“æŸä¹‹åŽï¼Œè¿™ä¸ªå‡½æ•°ä¼šè¢«è°ƒç”¨ã€‚
 VOID
 NdisProtSendComplete(
     IN NDIS_HANDLE                  ProtocolBindingContext,
@@ -355,14 +355,14 @@ NdisProtSendComplete(
     PIO_STACK_LOCATION          pIrpSp;
     PNDISPROT_OPEN_CONTEXT       pOpenContext;
 
-    // È¡µÃ´ò¿ªÉÏÏÂÎÄ¡£
+    // å–å¾—æ‰“å¼€ä¸Šä¸‹æ–‡ã€‚
     pOpenContext = (PNDISPROT_OPEN_CONTEXT)ProtocolBindingContext;
     NPROT_STRUCT_ASSERT(pOpenContext, oc);
 
-    // ´Ó°üÃèÊö·ûÖÐÈ¡µÃIRPµÄÖ¸Õë¡£
+    // ä»ŽåŒ…æè¿°ç¬¦ä¸­å–å¾—IRPçš„æŒ‡é’ˆã€‚
     pIrp = NPROT_IRP_FROM_SEND_PKT(pNdisPacket);
 
-    // ÏÂÃæµÄ´úÂëÖ»ºÍWin9xÓÐ¹Ø¡£±¾Êé²»ÌÖÂÛ¡£
+    // ä¸‹é¢çš„ä»£ç åªå’ŒWin9xæœ‰å…³ã€‚æœ¬ä¹¦ä¸è®¨è®ºã€‚
     if (pOpenContext->bRunningOnWin9x)
     {
         //
@@ -391,7 +391,7 @@ NdisProtSendComplete(
 #endif
     }
 
-    // È¥µôÎ´¾öÈ¡Ïûº¯Êý¡£Í¬Ê±´ÓÎ´¾öÁ´ÖÐÉ¾³ý¡£
+    // åŽ»æŽ‰æœªå†³å–æ¶ˆå‡½æ•°ã€‚åŒæ—¶ä»Žæœªå†³é“¾ä¸­åˆ é™¤ã€‚
 #ifdef NDIS51
     IoSetCancelRoutine(pIrp, NULL);
     NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
@@ -399,10 +399,10 @@ NdisProtSendComplete(
     NPROT_RELEASE_LOCK(&pOpenContext->Lock);
 #endif
 
-    // Êý¾Ý°ü½âÒýÓÃ¡£
+    // æ•°æ®åŒ…è§£å¼•ç”¨ã€‚
     NPROT_DEREF_SEND_PKT(pNdisPacket);
 
-    // °ÑÇëÇóÍê³Éµô¡£
+    // æŠŠè¯·æ±‚å®ŒæˆæŽ‰ã€‚
     pIrpSp = IoGetCurrentIrpStackLocation(pIrp);
     if (Status == NDIS_STATUS_SUCCESS)
     {
@@ -420,7 +420,7 @@ NdisProtSendComplete(
                     pNdisPacket, pIrp, pIrp->IoStatus.Information, pIrp->IoStatus.Status));
     IoCompleteRequest(pIrp, IO_NO_INCREMENT);
 
-    // Î´¾ö·¢ËÍ°ü¼õÉÙÒ»¸ö¡£
+    // æœªå†³å‘é€åŒ…å‡å°‘ä¸€ä¸ªã€‚
     NdisInterlockedDecrement((PLONG)&pOpenContext->PendedSendCount);
     NPROT_DEREF_OPEN(pOpenContext);
 }

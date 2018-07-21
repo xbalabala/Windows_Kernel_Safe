@@ -11,7 +11,7 @@ void cfListInit();
 BOOLEAN cfListInited();
 void cfListLock();
 void cfListUnlock();
-// ÈÎÒâ¸ø¶¨Ò»¸öÎÄ¼þ£¬ÅÐ¶ÏÊÇ·ñÔÚ¼ÓÃÜÁ´±íÖÐ¡£
+// ä»»æ„ç»™å®šä¸€ä¸ªæ–‡ä»¶ï¼Œåˆ¤æ–­æ˜¯å¦åœ¨åŠ å¯†é“¾è¡¨ä¸­ã€‚
 BOOLEAN cfIsFileCrypting(PFILE_OBJECT file);
 BOOLEAN cfFileCryptAppendLk(PFILE_OBJECT file);
 BOOLEAN cfIsFileNeedCrypt(
@@ -19,8 +19,8 @@ BOOLEAN cfIsFileNeedCrypt(
     PDEVICE_OBJECT next_dev,
     ULONG desired_access,
     BOOLEAN *need_write_header);
-// µ±ÓÐÎÄ¼þ±»clean upµÄÊ±ºòµ÷ÓÃ´Ëº¯Êý¡£Èç¹û¼ì²é·¢ÏÖ
-// FileObject->FsContextÔÚÁÐ±íÖÐ
+// å½“æœ‰æ–‡ä»¶è¢«clean upçš„æ—¶å€™è°ƒç”¨æ­¤å‡½æ•°ã€‚å¦‚æžœæ£€æŸ¥å‘çŽ°
+// FileObject->FsContextåœ¨åˆ—è¡¨ä¸­
 BOOLEAN cfCryptFileCleanupComplete(PFILE_OBJECT file);
 NTSTATUS cfWriteAHeader(PFILE_OBJECT file,PDEVICE_OBJECT next_dev);
 

@@ -6,12 +6,12 @@
 
 #include <ntddk.h>
 
-// ��һ����ڣ��򱾳������Ϊ�滻INT0x93�����������
-// �����ڣ���ΪIOAPIC�ض�λ������
+// 这一句存在，则本程序编译为替换INT0x93的做法。如果
+// 不存在，则为IOAPIC重定位做法。
 // #define BUILD_FOR_IDT_HOOK
 
-// �����������Ǳ�����ȷһ�����Ƕ���λ����������Ԥ�ȶ��弸����
-// ȷ֪������λ���ȵı������Ա��ⲻͬ�����±�����鷳.
+// 由于这里我们必须明确一个域是多少位，所以我们预先定义几个明
+// 确知道多少位长度的变量，以避免不同环境下编译的麻烦.
 typedef unsigned char P2C_U8;
 typedef unsigned short P2C_U16;
 typedef unsigned long P2C_U32;
@@ -25,19 +25,19 @@ typedef unsigned long P2C_U32;
 #define P2C_HIGH16_OF_32(data) \
 ((P2C_U16)(((P2C_U32)data) >> 16))
 
-// ��sidtָ����һ�����µĽṹ����������Եõ�IDT�Ŀ�ʼ��ַ
+// 从sidt指令获得一个如下的结构。从这里可以得到IDT的开始地址
 #pragma pack(push,1)
 typedef struct P2C_IDTR_ {
-	P2C_U16 limit;		// ��Χ
-	P2C_U32 base;		// ����ַ�����ǿ�ʼ��ַ��
+	P2C_U16 limit;		// 范围
+	P2C_U32 base;		// 基地址（就是开始地址）
 } P2C_IDTR, *PP2C_IDTR;
 #pragma pack(pop)
 
-// �������������sidtָ�����һ��P2C_IDTR�ṹ��������IDT�ĵ�ַ��
+// 下面这个函数用sidt指令读出一个P2C_IDTR结构，并返回IDT的地址。
 void *p2cGetIdt()
 {
 	P2C_IDTR idtr;
-    // һ�����ȡ��IDT��λ�á�
+    // 一句汇编读取到IDT的位置。
 	_asm sidt idtr
 	return (void *)idtr.base;
 }
@@ -88,10 +88,10 @@ ULONG p2cWaitForKbWrite()
 	return FALSE;
 }
 
-// ���ȶ��˿ڻ�ð���ɨ�����ӡ������Ȼ�����ɨ
-// ����д�ض˿ڣ��Ա���Ӧ�ó�������ȷ���յ�������
-// ��������ñ�ĳ���ػ񰴼�������д��һ�������
-// ���ݡ�
+// 首先读端口获得按键扫描码打印出来。然后将这个扫
+// 描码写回端口，以便别的应用程序能正确接收到按键。
+// 如果不想让别的程序截获按键，可以写回一个任意的
+// 数据。
 void p2cUserFilter()
 {
     static P2C_U8 sch_pre = 0;
@@ -100,7 +100,7 @@ void p2cUserFilter()
     _asm in al,0x60
     _asm mov sch,al
     KdPrint(("p2c: scan code = %2x\r\n",sch));
-   //  ������д�ض˿ڣ��Ա��ñ�ĳ��������ȷ��ȡ��
+   //  把数据写回端口，以便让别的程序可以正确读取。
 	if(sch_pre != sch)
 	{
 		sch_pre = sch;
@@ -118,18 +118,18 @@ __declspec(naked) p2cInterruptProc()
 {
 	__asm
 	{
-		pushad					// �������е�ͨ�üĴ���
-		pushfd					// �����־�Ĵ���
-		call p2cUserFilter	// ��һ�������Լ��ĺ����� ���������ʵ��
-								    // һЩ�����Լ��Ĺ���
-		popfd					// �ָ���־�Ĵ���
-		popad					// �ָ�ͨ�üĴ���
-		jmp	g_p2c_old		// ����ԭ�����жϷ������
+		pushad					// 保存所有的通用寄存器
+		pushfd					// 保存标志寄存器
+		call p2cUserFilter	// 调一个我们自己的函数。 这个函数将实现
+								    // 一些我们自己的功能
+		popfd					// 恢复标志寄存器
+		popad					// 恢复通用寄存器
+		jmp	g_p2c_old		// 跳到原来的中断服务程序
 	}
 }
 
-// ��������޸�IDT���еĵ�0x93��޸�Ϊp2cInterruptProc��
-// ���޸�֮ǰҪ���浽g_p2c_old�С�
+// 这个函数修改IDT表中的第0x93项，修改为p2cInterruptProc。
+// 在修改之前要保存到g_p2c_old中。
 void p2cHookInt93(BOOLEAN hook_or_unhook)
 {
     PP2C_IDTENTRY idt_addr = (PP2C_IDTENTRY)p2cGetIdt();
@@ -139,7 +139,7 @@ void p2cHookInt93(BOOLEAN hook_or_unhook)
     if(hook_or_unhook)
     {
         KdPrint(("p2c: try to hook interrupt.\r\n"));
-        // ���g_p2c_old��NULL����ô����hook
+        // 如果g_p2c_old是NULL，那么进行hook
         g_p2c_old = (void *)P2C_MAKELONG(idt_addr->offset_low,idt_addr->offset_high);
         idt_addr->offset_low = P2C_LOW16_OF_32(p2cInterruptProc);
         idt_addr->offset_high = P2C_HIGH16_OF_32(p2cInterruptProc);
@@ -147,7 +147,7 @@ void p2cHookInt93(BOOLEAN hook_or_unhook)
     else
     {
         KdPrint(("p2c: try to recovery interrupt.\r\n"));
-        // ���g_p2c_old����NULL����ôȡ��hook.
+        // 如果g_p2c_old不是NULL，那么取消hook.
         idt_addr->offset_low = P2C_LOW16_OF_32(g_p2c_old);
         idt_addr->offset_high = P2C_HIGH16_OF_32(g_p2c_old);
     }
@@ -155,18 +155,18 @@ void p2cHookInt93(BOOLEAN hook_or_unhook)
         (void *)P2C_MAKELONG(idt_addr->offset_low,idt_addr->offset_high)));
 }
 
-// ��idt�����ҵ�һ�����е�idtentry��λ�á�Ȼ�󷵻����id.����Ϊ
-// �������������µļ����жϴ�����ڡ�����Ҳ����ͷ���0����
-// ��������޷���װ�µ��жϴ�����
+// 在idt表中找到一个空闲的idtentry的位置。然后返回这个id.这是为
+// 了能填入我们新的键盘中断处理入口。如果找不到就返回0。这
+// 种情况下无法安装新的中断处理。
 P2C_U8 p2cGetIdleIdtVec()
 {
     P2C_U8 i;
     PP2C_IDTENTRY idt_addr = (PP2C_IDTENTRY)p2cGetIdt();
 
-    // ��vec20������2a���ɡ�
+    // 从vec20搜索到2a即可。
 	for(i=0x20;i<0x2a;i++)
 	{
-        // �������Ϊ0˵���ǿ���λ�ã����ؼ��ɡ�
+        // 如果类型为0说明是空闲位置，返回即可。
         if(idt_addr[i].type == 0)
 		{
 			return i;
@@ -178,8 +178,8 @@ P2C_U8 p2cGetIdleIdtVec()
 
 P2C_U8 p2cCopyANewIdt93(P2C_U8 id,void *interrupt_proc)
 {
-    // ����д��һ���µ��ж��š��������ȫ����ԭ����0x93
-    // �ϵ�idtentry��ֻ���жϴ��������ĵ�ַ��ͬ��
+    // 我们写入一个新的中断门。这个门完全拷贝原来的0x93
+    // 上的idtentry，只是中断处理函数的地址不同。
     PP2C_IDTENTRY idt_addr = (PP2C_IDTENTRY)p2cGetIdt();
     idt_addr[id] = idt_addr[0x93];
     idt_addr[id].offset_low = P2C_LOW16_OF_32(interrupt_proc);
@@ -187,42 +187,42 @@ P2C_U8 p2cCopyANewIdt93(P2C_U8 id,void *interrupt_proc)
     return id;
 }
 
-// ����IOAPIC��ü����жϣ������������ֵ��
+// 搜索IOAPIC获得键盘中断，或者设置这个值。
 P2C_U8 p2cSeachOrSetIrq1(P2C_U8 new_ch)
 {
-    // ѡ��Ĵ�����ѡ��Ĵ�����Ȼ��32λ�ļĴ���������ֻʹ��
-    // ��8λ��������λ����������
+    // 选择寄存器。选择寄存器虽然是32位的寄存器，但是只使用
+    // 低8位，其他的位都被保留。
 	P2C_U8 *io_reg_sel;
 
-    // ���ڼĴ�����������д��ѡ��Ĵ���ѡ���ֵ����32λ�ġ�
+    // 窗口寄存器，用来读写被选择寄存器选择的值，是32位的。
 	P2C_U32 *io_win;
 	P2C_U32 ch,ch1;
 
-    // ����һ��������ַ�������ַΪ0xfec00000������IOAPIC
-    // �Ĵ�������Windows�ϵĿ�ʼ��ַ
+    // 定义一个物理地址，这个地址为0xfec00000。正是IOAPIC
+    // 寄存器组在Windows上的开始地址
 	PHYSICAL_ADDRESS	phys ;
 	PVOID paddr;
 	RtlZeroMemory(&phys,sizeof(PHYSICAL_ADDRESS));
 	phys.u.LowPart = 0xfec00000;
 
-    // ������ַ�ǲ���ֱ�Ӷ�д�ġ�MmMapIoSpace��������ַӳ��
-    // Ϊϵͳ�ռ�������ַ��0x14����Ƭ�ռ�ĳ��ȡ�
+    // 物理地址是不能直接读写的。MmMapIoSpace把物理地址映射
+    // 为系统空间的虚拟地址。0x14是这片空间的长度。
 	paddr = MmMapIoSpace(phys, 0x14, MmNonCached);
 
-    // ���ӳ��ʧ���˾ͷ���0.
+    // 如果映射失败了就返回0.
 	if (!MmIsAddressValid(paddr))
 		return 0;
 
-    // ѡ��Ĵ�����ƫ��Ϊ0
+    // 选择寄存器的偏移为0
 	io_reg_sel = (P2C_U8 *)paddr;
-    // ���ڼĴ�����ƫ��Ϊ0x10.
+    // 窗口寄存器的偏移为0x10.
 	io_win = (P2C_U32 *)((P2C_U8 *)(paddr) + 0x10);
 
-    // ѡ���0x12���պ���irq1����
+    // 选择第0x12，刚好是irq1的项
 	*io_reg_sel = 0x12;
 	ch = *io_win;
 
-    // ���new_ch��Ϊ0�����Ǿ�������ֵ�������ؾ�ֵ��
+    // 如果new_ch不为0，我们就设置新值。并返回旧值。
     if(new_ch != 0)
     {
         ch1 = *io_win;
@@ -232,9 +232,9 @@ P2C_U8 p2cSeachOrSetIrq1(P2C_U8 new_ch)
         KdPrint(("p2cSeachOrSetIrq1: set %2x to irq1.\r\n",(P2C_U8)new_ch));
     }
 
-    // ���ڼĴ����������ֵ��32λ�ģ���������ֻ��Ҫ
-    // һ���ֽھͿ����ˡ�����ֽھ����ж�������ֵ��
-    // һ������Ҫ�޸����ֵ��
+    // 窗口寄存器里读出的值是32位的，但是我们只需要
+    // 一个字节就可以了。这个字节就是中断向量的值。
+    // 一会我们要修改这个值。
     ch &= 0xff;
 	MmUnmapIoSpace(paddr, 0x14);
     KdPrint(("p2cSeachOrSetIrq1: the old vec of irq1 is %2x.\r\n",(P2C_U8)ch));
@@ -249,30 +249,30 @@ void p2cResetIoApic(BOOLEAN set_or_recovery)
 
     if(set_or_recovery)
     {
-        // ����������µ�ioapic��λ����ô������g_p2c_old�б���
-        // ԭ��������ڡ�
+        // 如果是设置新的ioapic定位，那么首先在g_p2c_old中保存
+        // 原函数的入口。
         idt_addr = (PP2C_IDTENTRY)p2cGetIdt();
         idt_addr += 0x93;
         g_p2c_old = (void *)P2C_MAKELONG(idt_addr->offset_low,idt_addr->offset_high);
  
-        // Ȼ����һ������λ����irq1�����ж��Ÿ���һ����ȥ��
-        // �������ת������дΪ���ǵ��µĴ���������
+        // 然后获得一个空闲位，将irq1处理中断门复制一个进去。
+        // 里面的跳转函数填写为我们的新的处理函数。
         idle_id = p2cGetIdleIdtVec();
         if(idle_id != 0)
         {
             p2cCopyANewIdt93(idle_id,p2cInterruptProc);
-            // Ȼ�����¶�λ������жϡ�
+            // 然后重新定位到这个中断。
             old_id = p2cSeachOrSetIrq1(idle_id);
-            // ��32λWindowsXP������ж�Ĭ��Ӧ���Ƕ�λ��0x93�ġ�
+            // 在32位WindowsXP下这个中断默认应该是定位到0x93的。
             ASSERT(old_id == 0x93);
         }
     }
     else
     {
-        // �����Ҫ�ָ�...
+        // 如果是要恢复...
         old_id = p2cSeachOrSetIrq1(0x93);
         ASSERT(old_id == idle_id);
-        // �����Ǹ��ж���û���ˣ�����type = 0ʹ֮����
+        // 现在那个中断门没用了，设置type = 0使之空闲
         idt_addr[old_id].type = 0;
     }
 }
@@ -290,7 +290,7 @@ void p2cUnload(PDRIVER_OBJECT drv)
     p2cResetIoApic(FALSE);
 #endif
     KdPrint (("p2c: unloading\n")); 
-	// ˯��5�롣�ȴ�����irp��������
+	// 睡眠5秒。等待所有irp处理结束
 	interval.QuadPart = (5*1000 * DELAY_ONE_MILLISECOND);		
 	KeDelayExecutionThread(KernelMode,FALSE,&interval);
 }
@@ -302,7 +302,7 @@ NTSTATUS DriverEntry(
 { 
     ULONG i; 
     KdPrint (("p2c: entering DriverEntry\n")); 
-    // ж�غ�����
+    // 卸载函数。
     DriverObject->DriverUnload = p2cUnload;
 #ifdef BUILD_FOR_IDT_HOOK
     p2cHookInt93(TRUE);

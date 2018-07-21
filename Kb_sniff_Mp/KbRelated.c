@@ -198,41 +198,41 @@ void __stdcall print_keystroke()
 //
 //		in al , 0x64
 //
-//			;64ºÅ¶Ë¿ÚÎªAT Keyboard controller 8042Ğ¾Æ¬µÄ×´Ì¬/¿ØÖÆ¶Ë¿Ú
+//			;64å·ç«¯å£ä¸ºAT Keyboard controller 8042èŠ¯ç‰‡çš„çŠ¶æ€/æ§åˆ¶ç«¯å£
 //			and al , 2
 //			jnz    LoopWaitForKdbOK
 //
-//			;µÈ´ı×´Ì¬¶Ë¿ÚOK
-//			;µÈ´ıstatus register µÄIBFÎ»Îª1
-//			;¾ÍÊÇµÈ´ıhost µ½ keyboardµÄInput Buffer full
-//			;²Î¼ûÉÏ×ÊÁÏ
+//			;ç­‰å¾…çŠ¶æ€ç«¯å£OK
+//			;ç­‰å¾…status register çš„IBFä½ä¸º1
+//			;å°±æ˜¯ç­‰å¾…host åˆ° keyboardçš„Input Buffer full
+//			;å‚è§ä¸Šèµ„æ–™
 //
 //			mov    al , 0xD2
 //			out 0x64 , al
 //
-//			;Ïò64¶Ë¿Ú·¢ËÍ¿ØÖÆÃüÁî
-//			;0xD2ºÅÃüÁîÊÇĞ´¼üÅÌoutput bufferµÄÃüÁî
-//			;²Î¿¼:http://lezy.51.net/sub/i8042.htm
+//			;å‘64ç«¯å£å‘é€æ§åˆ¶å‘½ä»¤
+//			;0xD2å·å‘½ä»¤æ˜¯å†™é”®ç›˜output bufferçš„å‘½ä»¤
+//			;å‚è€ƒ:http://lezy.51.net/sub/i8042.htm
 //
 //
 //LoopWaitForCmdOK:    
 //		in    al , 0x64
 //			and    al , 2    
 //			jnz    LoopWaitForCmdOK
-//			;µÈ´ıÃüÁîÍê³É
-//			;µÈ´ıstatus register µÄIBFÎ»Îª1
-//			;¾ÍÊÇµÈ´ıhost µ½ keyboardµÄInput Buffer full
+//			;ç­‰å¾…å‘½ä»¤å®Œæˆ
+//			;ç­‰å¾…status register çš„IBFä½ä¸º1
+//			;å°±æ˜¯ç­‰å¾…host åˆ° keyboardçš„Input Buffer full
 //
 //			mov    al , KeyScanCode
 //
-//			;»ñµÃÒªĞ´ÈëµÄscan code
+//			;è·å¾—è¦å†™å…¥çš„scan code
 //
 //			out 0x60 , al 
 //
-//			;60ºÅ¶Ë¿ÚÊÇAT KeyBoard controller 8042µÄInput/Output Buffer¶Ë¿Ú
+//			;60å·ç«¯å£æ˜¯AT KeyBoard controller 8042çš„Input/Output Bufferç«¯å£
 //
-//			;Ïò¼üÅÌĞ´ÈëÒ»¸öscan code
-//			;Ïàµ±ÓÚÒ»´ÎÄ£Äâ°´¼ü
+//			;å‘é”®ç›˜å†™å…¥ä¸€ä¸ªscan code
+//			;ç›¸å½“äºä¸€æ¬¡æ¨¡æ‹ŸæŒ‰é”®
 //	}
 //}
 //

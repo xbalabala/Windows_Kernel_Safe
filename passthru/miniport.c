@@ -223,10 +223,10 @@ Return Value:
 
 	fStatus = AnalysisPacket(Packet, FALSE);
 	if(fStatus == STATUS_DROP){
-		return NDIS_STATUS_FAILURE; // ¶ªÆúÖ®
+		return NDIS_STATUS_FAILURE; // ä¸¢å¼ƒä¹‹
 	}else if(fStatus == STATUS_REDIRECT){
-		// ×ª·¢......
-		// ĞŞ¸Ä°üÖĞµÄÄ¿±êµØÖ·£¬ºÍÕı³£·¢ËÍÒ»Ñù½«°üÏòÏÂ·¢ËÍ
+		// è½¬å‘......
+		// ä¿®æ”¹åŒ…ä¸­çš„ç›®æ ‡åœ°å€ï¼Œå’Œæ­£å¸¸å‘é€ä¸€æ ·å°†åŒ…å‘ä¸‹å‘é€
 		// TODO.
 	}
 
@@ -429,13 +429,13 @@ Return Value:
 
 		fStatus = AnalysisPacket(Packet, FALSE);
 		if(fStatus == STATUS_DROP){
-			// ÔÚÕâ¸öº¯ÊıÖĞ£¬ÈÎºÎÒ»¸ö±»·ÅÆúµÄ°ü£¬¶¼±ØĞëµ÷ÓÃNdisMSendComplete¡£
+			// åœ¨è¿™ä¸ªå‡½æ•°ä¸­ï¼Œä»»ä½•ä¸€ä¸ªè¢«æ”¾å¼ƒçš„åŒ…ï¼Œéƒ½å¿…é¡»è°ƒç”¨NdisMSendCompleteã€‚
 			NdisMSendComplete(ADAPT_MINIPORT_HANDLE(pAdapt),
 				Packet,
 				NDIS_STATUS_FAILURE);
-			continue; // ¶ªÆúÖ®
+			continue; // ä¸¢å¼ƒä¹‹
 		}else if(fStatus == STATUS_REDIRECT){
-			// ×ª·¢......
+			// è½¬å‘......
 			// TODO.
 		}
 
@@ -1241,13 +1241,13 @@ Return Value:
 
 	if(Status == NDIS_STATUS_SUCCESS){
 
-		// ÒÑ¾­ÍêÈ«´«µİºÃÁË£¬ÊÇÒ»¸öÍêÕûµÄNDIS Packet
+		// å·²ç»å®Œå…¨ä¼ é€’å¥½äº†ï¼Œæ˜¯ä¸€ä¸ªå®Œæ•´çš„NDIS Packet
 		FILTER_STATUS fStatus = AnalysisPacket(Packet, TRUE);
 
 		if(fStatus == STATUS_DROP){
-			Status = NDIS_STATUS_FAILURE; // ¶ªÆúÖ®
+			Status = NDIS_STATUS_FAILURE; // ä¸¢å¼ƒä¹‹
 		}else if(fStatus == STATUS_REDIRECT){
-			// ×ª·¢......
+			// è½¬å‘......
 			// TODO.
 		}
 	}

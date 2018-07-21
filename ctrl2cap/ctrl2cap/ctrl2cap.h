@@ -1,5 +1,5 @@
 #pragma once
-// KbdclassÇı¶¯µÄÃû×Ö
+// Kbdclassé©±åŠ¨çš„åå­—
 #define KBD_DRIVER_NAME  L"\\Driver\\Kbdclass"
 
 #define KEY_UP 1 

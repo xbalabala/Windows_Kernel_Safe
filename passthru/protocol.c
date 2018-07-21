@@ -519,7 +519,7 @@ PtUnloadProtocol(
         ProtHandle = NULL;
     }
 
-	// É¾³ıWDM¿ØÖÆÉè±¸
+	// åˆ é™¤WDMæ§åˆ¶è®¾å¤‡
 	if(gDeviceObject != NULL){
 		IoDeleteDevice(gDeviceObject);
 		gDeviceObject = NULL;
@@ -888,12 +888,12 @@ Return Value:
 {
     PADAPT      pAdapt =(PADAPT)ProtocolBindingContext;
 
-	// µ½´ïÕâÀï£¬ËµÃ÷MPTransferData·µ»ØÁËPending
+	// åˆ°è¾¾è¿™é‡Œï¼Œè¯´æ˜MPTransferDataè¿”å›äº†Pending
 	FILTER_STATUS fStatus = AnalysisPacket(Packet, TRUE);
 	if(fStatus == STATUS_DROP){
-		Status = NDIS_STATUS_FAILURE;// ¶ªÆúÖ®
+		Status = NDIS_STATUS_FAILURE;// ä¸¢å¼ƒä¹‹
 	}else if(fStatus == STATUS_REDIRECT){
-		// ×ª·¢......
+		// è½¬å‘......
 		// TODO.
 	}
 
@@ -959,9 +959,9 @@ Return Value:
 		{
 			FILTER_STATUS fStatus = AnalysisPacket(Packet, TRUE);
 			if(fStatus == STATUS_DROP){
-				Status = NDIS_STATUS_FAILURE;// ¶ªÆúÖ®
+				Status = NDIS_STATUS_FAILURE;// ä¸¢å¼ƒä¹‹
 			}else if(fStatus == STATUS_REDIRECT){
-				// ×ª·¢......
+				// è½¬å‘......
 				// TODO.
 			}
 
@@ -1054,7 +1054,7 @@ Return Value:
                 //
                 NdisDprFreePacket(MyPacket);
 
-                break;// Ìø³öwhile(FALSE)Ñ­»·
+                break;// è·³å‡ºwhile(FALSE)å¾ªç¯
             }
         }
         else
@@ -1219,9 +1219,9 @@ Return Value:
 
 	fStatus = AnalysisPacket(Packet, TRUE);
 	if(fStatus == STATUS_DROP){
-		return 0;// ¶ªÆúÖ®
+		return 0;// ä¸¢å¼ƒä¹‹
 	}else if(fStatus == STATUS_REDIRECT){
-		// ×ª·¢......
+		// è½¬å‘......
 		// TODO.
 	}
 

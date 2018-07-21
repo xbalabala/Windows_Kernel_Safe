@@ -249,11 +249,11 @@ GetOptions(
     return (bOkay);
 }
 
-// ´ò¿ªÉè±¸¡£Çë×¢ÒâpDeviceNameÊÇÉè±¸µÄ·ûºÅÁ´½ÓÃû£¬¶ø²»ÊÇÉè±¸Ãû¡£ÕâÀïµÄ
-// ²ÎÊýËµÃ÷ºê__in __nullterminatedÃ»ÓÐÊµ¼ÊÒâÒå£¬×÷ÓÃÖ»ÊÇ¸æËßÕâ¸öº¯ÊýµÄÊ¹
-// ÓÃÕß£¬Õâ¸ö²ÎÊýÊÇÒ»¸öÊäÈë²ÎÊý£¨__in£©£¬Í¬Ê±Õâ¸ö×Ö·û´®±ØÐëÊÇÒÔ¿Õ£¨\0£©
-// ½áÊøµÄ£¨__in __nullterminated£©¡£Èç¹û²»·ûºÏÕâ¸öÒªÇó£¬»á³öÏÖÎÞ·¨Ô¤ÁÏµÄ
-// ºó¹û¡£
+// æ‰“å¼€è®¾å¤‡ã€‚è¯·æ³¨æ„pDeviceNameæ˜¯è®¾å¤‡çš„ç¬¦å·é“¾æŽ¥åï¼Œè€Œä¸æ˜¯è®¾å¤‡åã€‚è¿™é‡Œçš„
+// å‚æ•°è¯´æ˜Žå®__in __nullterminatedæ²¡æœ‰å®žé™…æ„ä¹‰ï¼Œä½œç”¨åªæ˜¯å‘Šè¯‰è¿™ä¸ªå‡½æ•°çš„ä½¿
+// ç”¨è€…ï¼Œè¿™ä¸ªå‚æ•°æ˜¯ä¸€ä¸ªè¾“å…¥å‚æ•°ï¼ˆ__inï¼‰ï¼ŒåŒæ—¶è¿™ä¸ªå­—ç¬¦ä¸²å¿…é¡»æ˜¯ä»¥ç©ºï¼ˆ\0ï¼‰
+// ç»“æŸçš„ï¼ˆ__in __nullterminatedï¼‰ã€‚å¦‚æžœä¸ç¬¦åˆè¿™ä¸ªè¦æ±‚ï¼Œä¼šå‡ºçŽ°æ— æ³•é¢„æ–™çš„
+// åŽæžœã€‚
 HANDLE
 OpenHandle(
     __in __nullterminated CHAR    *pDeviceName
@@ -275,9 +275,9 @@ OpenHandle(
     FlagsAndAttributes = FILE_ATTRIBUTE_NORMAL;
     TemplateFile = (HANDLE)INVALID_HANDLE_VALUE;
 
-    // Éú³É¡£×¢ÒâDesiredAccessÒ»°ãÊ¹ÓÃGENERIC_READ|GENERIC_WRITE¡£
-    // ShareModeÒ»°ãÊ¹ÓÃ0£¬ÕâÑùµÄ»°¿ÉÒÔ·ÀÖ¹Í¬Ê±ÓÐ¼¸¸öÓ¦ÓÃ³ÌÐò´ò¿ªÕâ¸ö
-    // Éè±¸£¬²Ù×÷Ê±Ôì³É¹²Ïí³åÍ»¡£pDeviceNameÌîÈë·ûºÅÁ´½ÓÃû¼´¿É¡£
+    // ç”Ÿæˆã€‚æ³¨æ„DesiredAccessä¸€èˆ¬ä½¿ç”¨GENERIC_READ|GENERIC_WRITEã€‚
+    // ShareModeä¸€èˆ¬ä½¿ç”¨0ï¼Œè¿™æ ·çš„è¯å¯ä»¥é˜²æ­¢åŒæ—¶æœ‰å‡ ä¸ªåº”ç”¨ç¨‹åºæ‰“å¼€è¿™ä¸ª
+    // è®¾å¤‡ï¼Œæ“ä½œæ—¶é€ æˆå…±äº«å†²çªã€‚pDeviceNameå¡«å…¥ç¬¦å·é“¾æŽ¥åå³å¯ã€‚
     Handle = CreateFile(
                 pDeviceName,
                 DesiredAccess,
@@ -293,9 +293,9 @@ OpenHandle(
         return Handle;
     }
 
-    // ÕâÊÇÒ»¸ö¿ØÖÆÇëÇó£¨¿ØÖÆÂëÎªIOCTL_NDISPROT_BIND_WAIT£©¡£ËüµÄÌØµã
-    // ÊÇ»áµÈ´ýÐ­ÒéÇý¶¯Íê³É¶ÔÍø¿¨µÄ°ó¶¨Ö®ºó²Å·µ»Ø¡£ÕâÑùÕâ¸öÇëÇóÍê³ÉÖ®ºó
-    //£¬ ¾Í¿ÉÒÔÈ·¶¨Ð­ÒéÒÑ¾­³É¹¦°ó¶¨ÁËÍø¿¨ÁË¡£
+    // è¿™æ˜¯ä¸€ä¸ªæŽ§åˆ¶è¯·æ±‚ï¼ˆæŽ§åˆ¶ç ä¸ºIOCTL_NDISPROT_BIND_WAITï¼‰ã€‚å®ƒçš„ç‰¹ç‚¹
+    // æ˜¯ä¼šç­‰å¾…åè®®é©±åŠ¨å®Œæˆå¯¹ç½‘å¡çš„ç»‘å®šä¹‹åŽæ‰è¿”å›žã€‚è¿™æ ·è¿™ä¸ªè¯·æ±‚å®Œæˆä¹‹åŽ
+    //ï¼Œ å°±å¯ä»¥ç¡®å®šåè®®å·²ç»æˆåŠŸç»‘å®šäº†ç½‘å¡äº†ã€‚
     if (!DeviceIoControl(
                 Handle,
                 IOCTL_NDISPROT_BIND_WAIT,
@@ -306,7 +306,7 @@ OpenHandle(
                 &BytesReturned,
                 NULL))
     {
-        // Ê§°ÜµÄ»°£¬¾ä±ú¾ÍÉèÖÃÎªINVALID_HANDLE_VALUE£¬²¢´òÓ¡Ò»ÌõÐÅÏ¢¡£
+        // å¤±è´¥çš„è¯ï¼Œå¥æŸ„å°±è®¾ç½®ä¸ºINVALID_HANDLE_VALUEï¼Œå¹¶æ‰“å°ä¸€æ¡ä¿¡æ¯ã€‚
         DEBUGP(("IOCTL_NDISIO_BIND_WAIT failed, error %x\n", GetLastError()));
         CloseHandle(Handle);
         Handle = INVALID_HANDLE_VALUE;
@@ -414,21 +414,21 @@ DoReadProc(
 
     do
     {
-        // »º³åÇø³¤¶ÈÎªPacketLength¡£Õâ²»Ò»¶¨ÊÇ×ã¹»µÄ¡£Èç¹ûÒ»¸ö°ü±È
-        // PacketLengthÒª³¤£¬½«Ö»ÄÜ¶Á³öÒ»²¿·Ö¡£
+        // ç¼“å†²åŒºé•¿åº¦ä¸ºPacketLengthã€‚è¿™ä¸ä¸€å®šæ˜¯è¶³å¤Ÿçš„ã€‚å¦‚æžœä¸€ä¸ªåŒ…æ¯”
+        // PacketLengthè¦é•¿ï¼Œå°†åªèƒ½è¯»å‡ºä¸€éƒ¨åˆ†ã€‚
         pReadBuf = malloc(PacketLength);
         if (pReadBuf == NULL)
         {
             PRINTF(("DoReadProc: failed to alloc %d bytes\n", PacketLength));
             break;
         }
-        // ¼ÇÂ¼¶Á³öµÄ°üµÄ¸öÊý¡£
+        // è®°å½•è¯»å‡ºçš„åŒ…çš„ä¸ªæ•°ã€‚
         ReadCount = 0; 
         while (TRUE)
         {
 #pragma prefast(suppress: 8193, "bSuccess is examined below")            
 
-            // ¶ÁÈ¡°ü£¬Èç¹ûÊ§°Ü»á·µ»ØFALSE¡£
+            // è¯»å–åŒ…ï¼Œå¦‚æžœå¤±è´¥ä¼šè¿”å›žFALSEã€‚
             bSuccess = (BOOLEAN)ReadFile(
                                     Handle,
                                     (LPVOID)pReadBuf,
@@ -446,7 +446,7 @@ DoReadProc(
 
             DEBUGP(("DoReadProc: read pkt # %d, %d bytes\n", ReadCount, BytesRead));
 
-            // Ö±µ½ÊÕÂúÁËNumberOfPackets¸ö°ü½áÊø¡£
+            // ç›´åˆ°æ”¶æ»¡äº†NumberOfPacketsä¸ªåŒ…ç»“æŸã€‚
             if ((NumberOfPackets != -1) && (ReadCount == NumberOfPackets))
             {
                 break;
@@ -483,7 +483,7 @@ DoWriteProc(
 
     do
     {
-        // ·ÖÅä×ã¹»µÄ³¤¶È¡£
+        // åˆ†é…è¶³å¤Ÿçš„é•¿åº¦ã€‚
         pWriteBuf = malloc(PacketLength);
 
         if (pWriteBuf == NULL)
@@ -496,8 +496,8 @@ DoWriteProc(
 #pragma prefast(suppress: __WARNING_POTENTIAL_BUFFER_OVERFLOW, "pWriteBuf is PacketLength (100) bytes long");                    
         pEthHeader->EthType = EthType;
 
-        // ÏÖÔÚÌîÐ´À´Ô´µÄµÄMACµØÖ·¡£ÕâÀïÓÐÁ½ÖÖÑ¡Ôñ¡£Ò»ÖÖÓÃÕæÊµµÄMAC
-        // µØÖ·£¬Ò»ÖÖÓÃ¼ÙµÄMACµØÖ·¡£
+        // çŽ°åœ¨å¡«å†™æ¥æºçš„çš„MACåœ°å€ã€‚è¿™é‡Œæœ‰ä¸¤ç§é€‰æ‹©ã€‚ä¸€ç§ç”¨çœŸå®žçš„MAC
+        // åœ°å€ï¼Œä¸€ç§ç”¨å‡çš„MACåœ°å€ã€‚
         if (bUseFakeAddress)
         {
             memcpy(pEthHeader->SrcAddr, FakeSrcMacAddr, MAC_ADDR_LEN);
@@ -507,10 +507,10 @@ DoWriteProc(
             memcpy(pEthHeader->SrcAddr, SrcMacAddr, MAC_ADDR_LEN);
         }
         
-        // ÌîÐ´Ä¿±êµÄMACµØÖ·¡£
+        // å¡«å†™ç›®æ ‡çš„MACåœ°å€ã€‚
         memcpy(pEthHeader->DstAddr, DstMacAddr, MAC_ADDR_LEN);
 
-        // ÌîÐ´Êý¾Ý¡£ÕâÀïÌîÐ´Êý¾ÝÊÇºÜ¼òµ¥µÄ£¬ÌîÐ´0,1,2,3,4...
+        // å¡«å†™æ•°æ®ã€‚è¿™é‡Œå¡«å†™æ•°æ®æ˜¯å¾ˆç®€å•çš„ï¼Œå¡«å†™0,1,2,3,4...
         pData = (PUCHAR)(pEthHeader + 1);
         for (i = 0; i < PacketLength - sizeof(ETH_HEADER); i++)
         {

@@ -2,13 +2,13 @@
 /// @file         cf_file_irp.h
 /// @author    crazy_chu
 /// @date       2009-1-29
-/// @brief       ¶ÔÎÄ¼şµÄ²Ù×÷£¬Ö±½Ó·¢ËÍirpÀ´±ÜÃâÖØÈë
+/// @brief       å¯¹æ–‡ä»¶çš„æ“ä½œï¼Œç›´æ¥å‘é€irpæ¥é¿å…é‡å…¥
 /// 
 
 #ifndef _CF_FILE_IRP_HEADER_
 #define _CF_FILE_IRP_HEADER_
 
-// ×Ô·¢ËÍSetInformationÇëÇó.
+// è‡ªå‘é€SetInformationè¯·æ±‚.
 NTSTATUS 
 cfFileSetInformation( 
     DEVICE_OBJECT *dev, 
@@ -49,7 +49,7 @@ cfFileSetFileSize(
 	FILE_OBJECT *file,
 	LARGE_INTEGER *file_size);
 
-// ÇåÀí»º³å
+// æ¸…ç†ç¼“å†²
 void cfFileCacheClear(PFILE_OBJECT pFileObject);
 
 #endif // _CF_FILE_IRP_HEADER_

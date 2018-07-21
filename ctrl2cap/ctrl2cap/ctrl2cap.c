@@ -10,17 +10,17 @@
 
 typedef struct _C2P_DEV_EXT 
 { 
-    // Õâ¸ö½á¹¹µÄ´óĞ¡
+    // è¿™ä¸ªç»“æ„çš„å¤§å°
     ULONG NodeSize; 
-    // ¹ıÂËÉè±¸¶ÔÏó
+    // è¿‡æ»¤è®¾å¤‡å¯¹è±¡
     PDEVICE_OBJECT pFilterDeviceObject;
-    // Í¬Ê±µ÷ÓÃÊ±µÄ±£»¤Ëø
+    // åŒæ—¶è°ƒç”¨æ—¶çš„ä¿æŠ¤é”
     KSPIN_LOCK IoRequestsSpinLock;
-    // ½ø³Ì¼äÍ¬²½´¦Àí  
+    // è¿›ç¨‹é—´åŒæ­¥å¤„ç†  
     KEVENT IoInProgressEvent; 
-    // °ó¶¨µÄÉè±¸¶ÔÏó
+    // ç»‘å®šçš„è®¾å¤‡å¯¹è±¡
     PDEVICE_OBJECT TargetDeviceObject; 
-    // °ó¶¨Ç°µ×²ãÉè±¸¶ÔÏó
+    // ç»‘å®šå‰åº•å±‚è®¾å¤‡å¯¹è±¡
     PDEVICE_OBJECT LowerDeviceObject; 
 } C2P_DEV_EXT, *PC2P_DEV_EXT;
 
@@ -87,8 +87,8 @@ c2pDevExtInit(
     return( STATUS_SUCCESS ); 
 }
 
-// Õâ¸öº¯ÊıÊÇÊÂÊµ´æÔÚµÄ£¬Ö»ÊÇÎÄµµÖĞÃ»ÓĞ¹«¿ª¡£ÉùÃ÷Ò»ÏÂ
-// ¾Í¿ÉÒÔÖ±½ÓÊ¹ÓÃÁË¡£
+// è¿™ä¸ªå‡½æ•°æ˜¯äº‹å®å­˜åœ¨çš„ï¼Œåªæ˜¯æ–‡æ¡£ä¸­æ²¡æœ‰å…¬å¼€ã€‚å£°æ˜ä¸€ä¸‹
+// å°±å¯ä»¥ç›´æ¥ä½¿ç”¨äº†ã€‚
 NTSTATUS
 ObReferenceObjectByName(
                         PUNICODE_STRING ObjectName,
@@ -105,8 +105,8 @@ extern POBJECT_TYPE IoDriverObjectType;
 ULONG gC2pKeyCount = 0;
 PDRIVER_OBJECT gDriverObject = NULL;
 
-// Õâ¸öº¯Êı¾­¹ı¸ÄÔì¡£ÄÜ´ò¿ªÇı¶¯¶ÔÏóKbdclass£¬È»ºó°ó¶¨
-// ËüÏÂÃæµÄËùÓĞµÄÉè±¸£º
+// è¿™ä¸ªå‡½æ•°ç»è¿‡æ”¹é€ ã€‚èƒ½æ‰“å¼€é©±åŠ¨å¯¹è±¡Kbdclassï¼Œç„¶åç»‘å®š
+// å®ƒä¸‹é¢çš„æ‰€æœ‰çš„è®¾å¤‡ï¼š
 NTSTATUS 
 c2pAttachDevices( 
                   IN PDRIVER_OBJECT DriverObject, 
@@ -124,9 +124,9 @@ c2pAttachDevices(
 
     KdPrint(("MyAttach\n")); 
 
-    // ³õÊ¼»¯Ò»¸ö×Ö·û´®£¬¾ÍÊÇKdbclassÇı¶¯µÄÃû×Ö¡£
+    // åˆå§‹åŒ–ä¸€ä¸ªå­—ç¬¦ä¸²ï¼Œå°±æ˜¯Kdbclassé©±åŠ¨çš„åå­—ã€‚
     RtlInitUnicodeString(&uniNtNameString, KBD_DRIVER_NAME); 
-    // Çë²ÎÕÕÇ°Ãæ´ò¿ªÉè±¸¶ÔÏóµÄÀı×Ó¡£Ö»ÊÇÕâÀï´ò¿ªµÄÊÇÇı¶¯¶ÔÏó¡£
+    // è¯·å‚ç…§å‰é¢æ‰“å¼€è®¾å¤‡å¯¹è±¡çš„ä¾‹å­ã€‚åªæ˜¯è¿™é‡Œæ‰“å¼€çš„æ˜¯é©±åŠ¨å¯¹è±¡ã€‚
     status = ObReferenceObjectByName ( 
         &uniNtNameString, 
         OBJ_CASE_INSENSITIVE, 
@@ -137,7 +137,7 @@ c2pAttachDevices(
         NULL, 
         &KbdDriverObject 
         ); 
-    // Èç¹ûÊ§°ÜÁË¾ÍÖ±½Ó·µ»Ø
+    // å¦‚æœå¤±è´¥äº†å°±ç›´æ¥è¿”å›
     if(!NT_SUCCESS(status)) 
     { 
         KdPrint(("MyAttach: Couldn't get the MyTest Device Object\n")); 
@@ -145,17 +145,17 @@ c2pAttachDevices(
     }
     else
     {
-        // Õâ¸ö´ò¿ªĞèÒª½âÓ¦ÓÃ¡£Ôçµã½â³ıÁËÃâµÃÖ®ºóÍü¼Ç¡£
+        // è¿™ä¸ªæ‰“å¼€éœ€è¦è§£åº”ç”¨ã€‚æ—©ç‚¹è§£é™¤äº†å…å¾—ä¹‹åå¿˜è®°ã€‚
         ObDereferenceObject(DriverObject);
     }
 
-    // ÕâÊÇÉè±¸Á´ÖĞµÄµÚÒ»¸öÉè±¸	
+    // è¿™æ˜¯è®¾å¤‡é“¾ä¸­çš„ç¬¬ä¸€ä¸ªè®¾å¤‡	
     pTargetDeviceObject = KbdDriverObject->DeviceObject;
-    // ÏÖÔÚ¿ªÊ¼±éÀúÕâ¸öÉè±¸Á´
+    // ç°åœ¨å¼€å§‹éå†è¿™ä¸ªè®¾å¤‡é“¾
     while (pTargetDeviceObject) 
     {
-        // Éú³ÉÒ»¸ö¹ıÂËÉè±¸£¬ÕâÊÇÇ°Ãæ¶ÁÕßÑ§Ï°¹ıµÄ¡£ÕâÀïµÄINºêºÍOUTºê¶¼ÊÇ
-        // ¿Õºê£¬Ö»ÓĞ±êÖ¾ĞÔÒâÒå£¬±íÃ÷Õâ¸ö²ÎÊıÊÇÒ»¸öÊäÈë»òÕßÊä³ö²ÎÊı¡£
+        // ç”Ÿæˆä¸€ä¸ªè¿‡æ»¤è®¾å¤‡ï¼Œè¿™æ˜¯å‰é¢è¯»è€…å­¦ä¹ è¿‡çš„ã€‚è¿™é‡Œçš„INå®å’ŒOUTå®éƒ½æ˜¯
+        // ç©ºå®ï¼Œåªæœ‰æ ‡å¿—æ€§æ„ä¹‰ï¼Œè¡¨æ˜è¿™ä¸ªå‚æ•°æ˜¯ä¸€ä¸ªè¾“å…¥æˆ–è€…è¾“å‡ºå‚æ•°ã€‚
         status = IoCreateDevice( 
             IN DriverObject, 
             IN sizeof(C2P_DEV_EXT), 
@@ -166,18 +166,18 @@ c2pAttachDevices(
             OUT &pFilterDeviceObject 
             ); 
 
-        // Èç¹ûÊ§°ÜÁË¾ÍÖ±½ÓÍË³ö¡£
+        // å¦‚æœå¤±è´¥äº†å°±ç›´æ¥é€€å‡ºã€‚
         if (!NT_SUCCESS(status)) 
         { 
             KdPrint(("MyAttach: Couldn't create the MyFilter Filter Device Object\n")); 
             return (status); 
         } 
 
-        // °ó¶¨¡£pLowerDeviceObjectÊÇ°ó¶¨Ö®ºóµÃµ½µÄÏÂÒ»¸öÉè±¸¡£Ò²¾ÍÊÇ
-        // Ç°Ãæ³£³£ËµµÄËùÎ½ÕæÊµÉè±¸¡£
+        // ç»‘å®šã€‚pLowerDeviceObjectæ˜¯ç»‘å®šä¹‹åå¾—åˆ°çš„ä¸‹ä¸€ä¸ªè®¾å¤‡ã€‚ä¹Ÿå°±æ˜¯
+        // å‰é¢å¸¸å¸¸è¯´çš„æ‰€è°“çœŸå®è®¾å¤‡ã€‚
         pLowerDeviceObject = 
             IoAttachDeviceToDeviceStack(pFilterDeviceObject, pTargetDeviceObject); 
-        // Èç¹û°ó¶¨Ê§°ÜÁË£¬·ÅÆúÖ®Ç°µÄ²Ù×÷£¬ÍË³ö¡£
+        // å¦‚æœç»‘å®šå¤±è´¥äº†ï¼Œæ”¾å¼ƒä¹‹å‰çš„æ“ä½œï¼Œé€€å‡ºã€‚
         if(!pLowerDeviceObject) 
         { 
             KdPrint(("MyAttach: Couldn't attach to MyTest Device Object\n")); 
@@ -186,7 +186,7 @@ c2pAttachDevices(
             return( status ); 
         } 
 
-        // Éè±¸À©Õ¹£¡ÏÂÃæÒªÏêÏ¸½²ÊöÉè±¸À©Õ¹µÄÓ¦ÓÃ¡£
+        // è®¾å¤‡æ‰©å±•ï¼ä¸‹é¢è¦è¯¦ç»†è®²è¿°è®¾å¤‡æ‰©å±•çš„åº”ç”¨ã€‚
         devExt = (PC2P_DEV_EXT)(pFilterDeviceObject->DeviceExtension); 
         c2pDevExtInit( 
             devExt, 
@@ -194,7 +194,7 @@ c2pAttachDevices(
             pTargetDeviceObject, 
             pLowerDeviceObject ); 
 
-        // ÏÂÃæµÄ²Ù×÷ºÍÇ°Ãæ¹ıÂË´®¿ÚµÄ²Ù×÷»ù±¾Ò»ÖÂ¡£ÕâÀï²»ÔÙ½âÊÍÁË¡£
+        // ä¸‹é¢çš„æ“ä½œå’Œå‰é¢è¿‡æ»¤ä¸²å£çš„æ“ä½œåŸºæœ¬ä¸€è‡´ã€‚è¿™é‡Œä¸å†è§£é‡Šäº†ã€‚
         pFilterDeviceObject->DeviceType=pLowerDeviceObject->DeviceType; 
         pFilterDeviceObject->Characteristics=pLowerDeviceObject->Characteristics; 
         pFilterDeviceObject->StackSize=pLowerDeviceObject->StackSize+1; 
@@ -244,17 +244,17 @@ c2pUnload(IN PDRIVER_OBJECT DriverObject)
     //delay some time 
     lDelay = RtlConvertLongToLargeInteger(100 * DELAY_ONE_MILLISECOND);
     CurrentThread = KeGetCurrentThread();
-    // °Ñµ±Ç°Ïß³ÌÉèÖÃÎªµÍÊµÊ±Ä£Ê½£¬ÒÔ±ãÈÃËüµÄÔËĞĞ¾¡Á¿ÉÙÓ°ÏìÆäËû³ÌĞò¡£
+    // æŠŠå½“å‰çº¿ç¨‹è®¾ç½®ä¸ºä½å®æ—¶æ¨¡å¼ï¼Œä»¥ä¾¿è®©å®ƒçš„è¿è¡Œå°½é‡å°‘å½±å“å…¶ä»–ç¨‹åºã€‚
     KeSetPriorityThread(CurrentThread, LOW_REALTIME_PRIORITY);
 
     UNREFERENCED_PARAMETER(DriverObject); 
     KdPrint(("DriverEntry unLoading...\n")); 
 
-    // ±éÀúËùÓĞÉè±¸²¢Ò»ÂÉ½â³ı°ó¶¨
+    // éå†æ‰€æœ‰è®¾å¤‡å¹¶ä¸€å¾‹è§£é™¤ç»‘å®š
     DeviceObject = DriverObject->DeviceObject;
     while (DeviceObject)
     {
-        // ½â³ı°ó¶¨²¢É¾³ıËùÓĞµÄÉè±¸
+        // è§£é™¤ç»‘å®šå¹¶åˆ é™¤æ‰€æœ‰çš„è®¾å¤‡
         c2pDetach(DeviceObject);
         DeviceObject = DeviceObject->NextDevice;
     } 
@@ -273,8 +273,8 @@ NTSTATUS c2pDispatchGeneral(
                                  IN PIRP Irp 
                                  ) 
 { 
-    // ÆäËûµÄ·Ö·¢º¯Êı£¬Ö±½ÓskipÈ»ºóÓÃIoCallDriver°ÑIRP·¢ËÍµ½ÕæÊµÉè±¸
-    // µÄÉè±¸¶ÔÏó¡£ 
+    // å…¶ä»–çš„åˆ†å‘å‡½æ•°ï¼Œç›´æ¥skipç„¶åç”¨IoCallDriveræŠŠIRPå‘é€åˆ°çœŸå®è®¾å¤‡
+    // çš„è®¾å¤‡å¯¹è±¡ã€‚ 
     KdPrint(("Other Diapatch!")); 
     IoSkipCurrentIrpStackLocation(Irp); 
     return IoCallDriver(((PC2P_DEV_EXT)
@@ -306,7 +306,7 @@ NTSTATUS c2pPnP(
     KIRQL oldIrql; 
     KEVENT event; 
 
-    // »ñµÃÕæÊµÉè±¸¡£
+    // è·å¾—çœŸå®è®¾å¤‡ã€‚
     devExt = (PC2P_DEV_EXT)(DeviceObject->DeviceExtension); 
     irpStack = IoGetCurrentIrpStackLocation(Irp); 
 
@@ -315,25 +315,25 @@ NTSTATUS c2pPnP(
     case IRP_MN_REMOVE_DEVICE: 
         KdPrint(("IRP_MN_REMOVE_DEVICE\n")); 
 
-        // Ê×ÏÈ°ÑÇëÇó·¢ÏÂÈ¥
+        // é¦–å…ˆæŠŠè¯·æ±‚å‘ä¸‹å»
         IoSkipCurrentIrpStackLocation(Irp); 
         IoCallDriver(devExt->LowerDeviceObject, Irp); 
-        // È»ºó½â³ı°ó¶¨¡£
+        // ç„¶åè§£é™¤ç»‘å®šã€‚
         IoDetachDevice(devExt->LowerDeviceObject); 
-        // É¾³ıÎÒÃÇ×Ô¼ºÉú³ÉµÄĞéÄâÉè±¸¡£
+        // åˆ é™¤æˆ‘ä»¬è‡ªå·±ç”Ÿæˆçš„è™šæ‹Ÿè®¾å¤‡ã€‚
         IoDeleteDevice(DeviceObject); 
         status = STATUS_SUCCESS; 
         break; 
 
     default: 
-        // ¶ÔÓÚÆäËûÀàĞÍµÄIRP£¬È«²¿¶¼Ö±½ÓÏÂ·¢¼´¿É¡£ 
+        // å¯¹äºå…¶ä»–ç±»å‹çš„IRPï¼Œå…¨éƒ¨éƒ½ç›´æ¥ä¸‹å‘å³å¯ã€‚ 
         IoSkipCurrentIrpStackLocation(Irp); 
         status = IoCallDriver(devExt->LowerDeviceObject, Irp); 
     } 
     return status; 
 }
 
-// ÕâÊÇÒ»¸öIRPÍê³É»Øµ÷º¯ÊıµÄÔ­ĞÍ
+// è¿™æ˜¯ä¸€ä¸ªIRPå®Œæˆå›è°ƒå‡½æ•°çš„åŸå‹
 NTSTATUS c2pReadComplete( 
                               IN PDEVICE_OBJECT DeviceObject, 
                               IN PIRP Irp, 
@@ -349,19 +349,19 @@ NTSTATUS c2pReadComplete(
 
      IrpSp = IoGetCurrentIrpStackLocation( Irp );
 
-     //  Èç¹ûÕâ¸öÇëÇóÊÇ³É¹¦µÄ¡£ºÜÏÔÈ»£¬Èç¹ûÇëÇóÊ§°ÜÁË£¬ÕâÃ´»ñÈ¡
-     //   ½øÒ»²½µÄĞÅÏ¢ÊÇÃ»ÒâÒåµÄ¡£
+     //  å¦‚æœè¿™ä¸ªè¯·æ±‚æ˜¯æˆåŠŸçš„ã€‚å¾ˆæ˜¾ç„¶ï¼Œå¦‚æœè¯·æ±‚å¤±è´¥äº†ï¼Œè¿™ä¹ˆè·å–
+     //   è¿›ä¸€æ­¥çš„ä¿¡æ¯æ˜¯æ²¡æ„ä¹‰çš„ã€‚
      if( NT_SUCCESS( Irp->IoStatus.Status ) ) 
      {
-        // »ñµÃ¶ÁÇëÇóÍê³ÉºóÊä³öµÄ»º³åÇø
+        // è·å¾—è¯»è¯·æ±‚å®Œæˆåè¾“å‡ºçš„ç¼“å†²åŒº
         buf = Irp->AssociatedIrp.SystemBuffer;
 		KeyData = (PKEYBOARD_INPUT_DATA)buf;
-        // »ñµÃÕâ¸ö»º³åÇøµÄ³¤¶È¡£Ò»°ãµÄËµ·µ»ØÖµÓĞ¶à³¤¶¼±£´æÔÚ
-        // InformationÖĞ¡£
+        // è·å¾—è¿™ä¸ªç¼“å†²åŒºçš„é•¿åº¦ã€‚ä¸€èˆ¬çš„è¯´è¿”å›å€¼æœ‰å¤šé•¿éƒ½ä¿å­˜åœ¨
+        // Informationä¸­ã€‚
         buf_len = Irp->IoStatus.Information;
         numKeys = buf_len / sizeof(KEYBOARD_INPUT_DATA);
-        //¡­ ÕâÀï¿ÉÒÔ×ö½øÒ»²½µÄ´¦Àí¡£ÎÒÕâÀïºÜ¼òµ¥µÄ´òÓ¡³öËùÓĞµÄÉ¨
-        // ÃèÂë¡£
+        //â€¦ è¿™é‡Œå¯ä»¥åšè¿›ä¸€æ­¥çš„å¤„ç†ã€‚æˆ‘è¿™é‡Œå¾ˆç®€å•çš„æ‰“å°å‡ºæ‰€æœ‰çš„æ‰«
+        // æç ã€‚
         //for(i=0;i<buf_len;++i)
 		for(i=0;i<numKeys;++i)
         {
@@ -409,15 +409,15 @@ NTSTATUS c2pDispatchRead(
 		return(status); 
 	} 
 
-    // È«¾Ö±äÁ¿¼ü¼ÆÊıÆ÷¼Ó1
+    // å…¨å±€å˜é‡é”®è®¡æ•°å™¨åŠ 1
     gC2pKeyCount++;
 
-    // µÃµ½Éè±¸À©Õ¹¡£Ä¿µÄÊÇÖ®ºóÎªÁË»ñµÃÏÂÒ»¸öÉè±¸µÄÖ¸Õë¡£
+    // å¾—åˆ°è®¾å¤‡æ‰©å±•ã€‚ç›®çš„æ˜¯ä¹‹åä¸ºäº†è·å¾—ä¸‹ä¸€ä¸ªè®¾å¤‡çš„æŒ‡é’ˆã€‚
     devExt =
         (PC2P_DEV_EXT)DeviceObject->DeviceExtension;
 
-    // ÉèÖÃ»Øµ÷º¯Êı²¢°ÑIRP´«µİÏÂÈ¥¡£ Ö®ºó¶ÁµÄ´¦ÀíÒ²¾Í½áÊøÁË¡£
-    // Ê£ÏÂµÄÈÎÎñÊÇÒªµÈ´ı¶ÁÇëÇóÍê³É¡£
+    // è®¾ç½®å›è°ƒå‡½æ•°å¹¶æŠŠIRPä¼ é€’ä¸‹å»ã€‚ ä¹‹åè¯»çš„å¤„ç†ä¹Ÿå°±ç»“æŸäº†ã€‚
+    // å‰©ä¸‹çš„ä»»åŠ¡æ˜¯è¦ç­‰å¾…è¯»è¯·æ±‚å®Œæˆã€‚
     currentIrpStack = IoGetCurrentIrpStackLocation(Irp); 
     IoCopyCurrentIrpStackLocationToNext(Irp);
     IoSetCompletionRoutine( Irp, c2pReadComplete, 
@@ -434,28 +434,28 @@ NTSTATUS DriverEntry(
     NTSTATUS status; 
     KdPrint (("c2p.SYS: entering DriverEntry\n")); 
 
-    // ÌîĞ´ËùÓĞµÄ·Ö·¢º¯ÊıµÄÖ¸Õë
+    // å¡«å†™æ‰€æœ‰çš„åˆ†å‘å‡½æ•°çš„æŒ‡é’ˆ
     for (i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++) 
     { 
         DriverObject->MajorFunction[i] = c2pDispatchGeneral; 
     } 
 
-    // µ¥¶ÀµÄÌîĞ´Ò»¸öRead·Ö·¢º¯Êı¡£ÒòÎªÒªµÄ¹ıÂË¾ÍÊÇ¶ÁÈ¡À´µÄ°´¼üĞÅÏ¢
-    // ÆäËûµÄ¶¼²»ÖØÒª¡£Õâ¸ö·Ö·¢º¯Êıµ¥¶ÀĞ´¡£
+    // å•ç‹¬çš„å¡«å†™ä¸€ä¸ªReadåˆ†å‘å‡½æ•°ã€‚å› ä¸ºè¦çš„è¿‡æ»¤å°±æ˜¯è¯»å–æ¥çš„æŒ‰é”®ä¿¡æ¯
+    // å…¶ä»–çš„éƒ½ä¸é‡è¦ã€‚è¿™ä¸ªåˆ†å‘å‡½æ•°å•ç‹¬å†™ã€‚
     DriverObject->MajorFunction[IRP_MJ_READ] = c2pDispatchRead; 
 
-    // µ¥¶ÀµÄÌîĞ´Ò»¸öIRP_MJ_POWERº¯Êı¡£ÕâÊÇÒòÎªÕâÀàÇëÇóÖĞ¼äÒªµ÷ÓÃ
-    // Ò»¸öPoCallDriverºÍÒ»¸öPoStartNextPowerIrp£¬±È½ÏÌØÊâ¡£
+    // å•ç‹¬çš„å¡«å†™ä¸€ä¸ªIRP_MJ_POWERå‡½æ•°ã€‚è¿™æ˜¯å› ä¸ºè¿™ç±»è¯·æ±‚ä¸­é—´è¦è°ƒç”¨
+    // ä¸€ä¸ªPoCallDriverå’Œä¸€ä¸ªPoStartNextPowerIrpï¼Œæ¯”è¾ƒç‰¹æ®Šã€‚
     DriverObject->MajorFunction [IRP_MJ_POWER] = c2pPower; 
 
-    // ÎÒÃÇÏëÖªµÀÊ²Ã´Ê±ºòÒ»¸öÎÒÃÇ°ó¶¨¹ıµÄÉè±¸±»Ğ¶ÔØÁË£¨±ÈÈç´Ó»úÆ÷ÉÏ
-    // ±»°ÎµôÁË£¿£©ËùÒÔ×¨ÃÅĞ´Ò»¸öPNP£¨¼´²å¼´ÓÃ£©·Ö·¢º¯Êı
+    // æˆ‘ä»¬æƒ³çŸ¥é“ä»€ä¹ˆæ—¶å€™ä¸€ä¸ªæˆ‘ä»¬ç»‘å®šè¿‡çš„è®¾å¤‡è¢«å¸è½½äº†ï¼ˆæ¯”å¦‚ä»æœºå™¨ä¸Š
+    // è¢«æ‹”æ‰äº†ï¼Ÿï¼‰æ‰€ä»¥ä¸“é—¨å†™ä¸€ä¸ªPNPï¼ˆå³æ’å³ç”¨ï¼‰åˆ†å‘å‡½æ•°
     DriverObject->MajorFunction [IRP_MJ_PNP] = c2pPnP; 
 
-    // Ğ¶ÔØº¯Êı¡£
+    // å¸è½½å‡½æ•°ã€‚
     DriverObject->DriverUnload = c2pUnload; 
     gDriverObject = DriverObject;
-    // °ó¶¨ËùÓĞ¼üÅÌÉè±¸
+    // ç»‘å®šæ‰€æœ‰é”®ç›˜è®¾å¤‡
     status =c2pAttachDevices(DriverObject, RegistryPath);
 
     return status; 

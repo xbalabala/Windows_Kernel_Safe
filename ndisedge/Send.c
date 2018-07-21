@@ -199,8 +199,8 @@ Return Value:
 
     DEBUGP(MP_TRACE, ("--> NICPostWriteRequest\n"));
 
-    // ×¼±¸Ò»¸öĞ´ÇëÇó¡£Êµ¼ÊÉÏÕâÀïºóÃæµÄ²ÎÊı²»ÊÇOutputBuffer
-    // ¶øÊÇInputBuffer¡£µ«ÊÇÔ­Ê¼µÄ´úÂë×¢ÊÍ¾ÍĞ´³ÉÁËOuputBuffer¡£
+    // å‡†å¤‡ä¸€ä¸ªå†™è¯·æ±‚ã€‚å®é™…ä¸Šè¿™é‡Œåé¢çš„å‚æ•°ä¸æ˜¯OutputBuffer
+    // è€Œæ˜¯InputBufferã€‚ä½†æ˜¯åŸå§‹çš„ä»£ç æ³¨é‡Šå°±å†™æˆäº†OuputBufferã€‚
     status = WdfIoTargetFormatRequestForWrite(
                     Adapter->IoTarget,
                     pTCB->Request,
@@ -212,21 +212,21 @@ Return Value:
         return status;
     }
 
-    // ´ÓWdfRequest»ñµÃIRP.
+    // ä»WdfRequestè·å¾—IRP.
     irp = WdfRequestWdmGetIrp(pTCB->Request);
 
-    // »ñµÃÏÂÒ»¸öÕ»¿Õ¼ä¡£È»ºóÌîĞ´ÊäÈë»º³å¡£
+    // è·å¾—ä¸‹ä¸€ä¸ªæ ˆç©ºé—´ã€‚ç„¶åå¡«å†™è¾“å…¥ç¼“å†²ã€‚
     nextStack = IoGetNextIrpStackLocation( irp );
     irp->MdlAddress = pTCB->Mdl;
     nextStack->Parameters.Write.Length = pTCB->ulSize;
 
-    // ÉèÖÃÒ»¸öÍê³É»Øµ÷º¯Êı¡£
+    // è®¾ç½®ä¸€ä¸ªå®Œæˆå›è°ƒå‡½æ•°ã€‚
     WdfRequestSetCompletionRoutine(pTCB->Request,
                    NICWriteRequestCompletion,
                    pTCB);
 
-    // ·¢ËÍÇëÇó¡£ÎÒÃÇ²»¹ØĞÄ·¢ËÍÇëÇóµÄ×´Ì¬¡£ÒòÎªÇëÇó
-    // ·¢ËÍÍê±ÏÖ®ºóÎÒÃÇ´ÓÍê³Éº¯ÊıÖĞ»ñµÃÇëÇóÍê³É×´Ì¬¡£
+    // å‘é€è¯·æ±‚ã€‚æˆ‘ä»¬ä¸å…³å¿ƒå‘é€è¯·æ±‚çš„çŠ¶æ€ã€‚å› ä¸ºè¯·æ±‚
+    // å‘é€å®Œæ¯•ä¹‹åæˆ‘ä»¬ä»å®Œæˆå‡½æ•°ä¸­è·å¾—è¯·æ±‚å®ŒæˆçŠ¶æ€ã€‚
     if (WdfRequestSend(pTCB->Request, Adapter->IoTarget, WDF_NO_SEND_OPTIONS) == FALSE) {
         status = WdfRequestGetStatus(pTCB->Request);
     }
@@ -508,28 +508,28 @@ Return Value:
     //
     // Initialize TCB structure
     //
-    // Õâ¸öÎ»ÖÃ±£´æÒª·¢ËÍµÄÔ­Ê¼µÄ°üÃèÊö·û¡£
+    // è¿™ä¸ªä½ç½®ä¿å­˜è¦å‘é€çš„åŸå§‹çš„åŒ…æè¿°ç¬¦ã€‚
     pTCB->OrgSendPacket = Packet;
-    // ÒıÓÃ¼ÆÊı¸ÄÎª1.
+    // å¼•ç”¨è®¡æ•°æ”¹ä¸º1.
     pTCB->Ref = 1;
-    // ³õÊ¼»¯Á´±í½Úµã¡£Ê¹Ö®±ä³ÉÒ»¸öÁ´±íÍ·¡£
+    // åˆå§‹åŒ–é“¾è¡¨èŠ‚ç‚¹ã€‚ä½¿ä¹‹å˜æˆä¸€ä¸ªé“¾è¡¨å¤´ã€‚
     NdisInitializeListHead(&pTCB->List);
 
     //
     // Query the packet to get length and pointer to the first buffer.
     //
-    // »ñµÃÒª·¢ËÍµÄÊı¾İ°üµÄ³¤¶È¡£
+    // è·å¾—è¦å‘é€çš„æ•°æ®åŒ…çš„é•¿åº¦ã€‚
     NdisQueryPacket(Packet,
                     NULL,
                     NULL,
                     &CurrentBuffer,
                     &PacketLength);
 
-    // ³¤¶È±ØĞë±ÈTCBÀï×¼±¸µÄ×î´ó³¤¶ÈÒªĞ¡¡£
+    // é•¿åº¦å¿…é¡»æ¯”TCBé‡Œå‡†å¤‡çš„æœ€å¤§é•¿åº¦è¦å°ã€‚
     ASSERT(PacketLength <= NIC_BUFFER_SIZE);
 
-    // Õâ¾äÖ»ÔÚ²»Âú×ãÉÏÊöÌõ¼şµÄÇé¿öÏÂÆğ×÷ÓÃ¡£¾ÍÊÇ°üÌ«³¤µÄ
-    // Ê±ºò½Ø¶Ì£¬Ê¹Ö®Âú×ã×î´óÏŞ¶ÈµÄÒªÇó¡£
+    // è¿™å¥åªåœ¨ä¸æ»¡è¶³ä¸Šè¿°æ¡ä»¶çš„æƒ…å†µä¸‹èµ·ä½œç”¨ã€‚å°±æ˜¯åŒ…å¤ªé•¿çš„
+    // æ—¶å€™æˆªçŸ­ï¼Œä½¿ä¹‹æ»¡è¶³æœ€å¤§é™åº¦çš„è¦æ±‚ã€‚
     PacketLength = min(PacketLength, NIC_BUFFER_SIZE);
     if (PacketLength < ETH_MIN_PACKET_SIZE)
     {
@@ -537,7 +537,7 @@ Return Value:
         bPadding = TRUE;
     }
 
-    // ÊÇ·ñÖ§³ÖÁ´×´MDL£¿
+    // æ˜¯å¦æ”¯æŒé“¾çŠ¶MDLï¼Ÿ
     if (Adapter->IsTargetSupportChainedMdls
                     && bPadding == FALSE) {
         //
@@ -549,12 +549,12 @@ Return Value:
         // a real device, the user should only preallocate 60 bytes TCB
         // Buffer instead of NIC_BUFFER_SIZE.
         //
-        // Èç¹ûÏÂ²ãÇı¶¯Ö§³ÖÁ´×´MDL£¬ÎÒÃÇÖ±½Ó°ÑÄÇ¸öMDLÖ¸Õë·ÖÅÉ
-        // ¸øËüÈ»ºó·¢ÏÈÈ¥¡£ÎŞÂÛÈçºÎ£¬Èç¹ûÕâ¸ö°üµÄ³¤¶ÈĞ¡ÓÚ60×Ö
-        // ½Ú£¬ÎÒÃÇ±ØĞë×·¼Ó0À´²¹×ã60×Ö½Ú¡£ÕâÖÖÇé¿öÏÂÎÒÃÇÖ»Ê¹ÓÃ
-        // ÎÒÃÇÔ¤ÏÈ·ÖÅäµÄÁ¬Ğø¿Õ¼ä¡£Èç¹ûÕâ¸öÇı¶¯ÊÇÊÊÓÃÓÚÒ»¸öÕæ
-        // ÊµÉè±¸£¬Ê¹ÓÃÕß±ØĞëÖ»·ÖÅä60×Ö½ÚµÄTCB»º³åÇø£¬¶ø²»ÊÇ
-        // NIC_BUFFER_SIZE¡£
+        // å¦‚æœä¸‹å±‚é©±åŠ¨æ”¯æŒé“¾çŠ¶MDLï¼Œæˆ‘ä»¬ç›´æ¥æŠŠé‚£ä¸ªMDLæŒ‡é’ˆåˆ†æ´¾
+        // ç»™å®ƒç„¶åå‘å…ˆå»ã€‚æ— è®ºå¦‚ä½•ï¼Œå¦‚æœè¿™ä¸ªåŒ…çš„é•¿åº¦å°äº60å­—
+        // èŠ‚ï¼Œæˆ‘ä»¬å¿…é¡»è¿½åŠ 0æ¥è¡¥è¶³60å­—èŠ‚ã€‚è¿™ç§æƒ…å†µä¸‹æˆ‘ä»¬åªä½¿ç”¨
+        // æˆ‘ä»¬é¢„å…ˆåˆ†é…çš„è¿ç»­ç©ºé—´ã€‚å¦‚æœè¿™ä¸ªé©±åŠ¨æ˜¯é€‚ç”¨äºä¸€ä¸ªçœŸ
+        // å®è®¾å¤‡ï¼Œä½¿ç”¨è€…å¿…é¡»åªåˆ†é…60å­—èŠ‚çš„TCBç¼“å†²åŒºï¼Œè€Œä¸æ˜¯
+        // NIC_BUFFER_SIZEã€‚
         pTCB->Mdl = (PMDL)CurrentBuffer;
         pTCB->ulSize = PacketLength;
         Adapter->nBytesArrived += PacketLength;

@@ -531,11 +531,11 @@ Return Value:
     switch (FunctionCode)
     {
         case IOCTL_NDISPROT_BIND_WAIT:
-            // ËùÓÐµÄDeviceIoControlÇëÇóµÄ¶¼Ó¦¸ÃÊÇÓÃµÄ»º³å·½Ê½¡£ÕâÀï
-            // Ö»ÊÇÈ·ÈÏÒ»ÏÂ¡£
+            // æ‰€æœ‰çš„DeviceIoControlè¯·æ±‚çš„éƒ½åº”è¯¥æ˜¯ç”¨çš„ç¼“å†²æ–¹å¼ã€‚è¿™é‡Œ
+            // åªæ˜¯ç¡®è®¤ä¸€ä¸‹ã€‚
             NPROT_ASSERT((FunctionCode & 0x3) == METHOD_BUFFERED);
-            // ·Ç³£¼òµ¥¡£µÈ´ýÒ»¸öÈ«¾ÖÊÂ¼þ¡£Õâ¸öÈ«¾Ö±äÁ¿»áÔÚ°ó¶¨Íê³É
-            // µÄÊ±ºò±»ÉèÖÃ¡£Èç¹ûµÈ´ýµ½ÁË»òÕß³¬Ê±ÁË£¨5Ãë£©Ôò·µ»Ø¡£            
+            // éžå¸¸ç®€å•ã€‚ç­‰å¾…ä¸€ä¸ªå…¨å±€äº‹ä»¶ã€‚è¿™ä¸ªå…¨å±€å˜é‡ä¼šåœ¨ç»‘å®šå®Œæˆ
+            // çš„æ—¶å€™è¢«è®¾ç½®ã€‚å¦‚æžœç­‰å¾…åˆ°äº†æˆ–è€…è¶…æ—¶äº†ï¼ˆ5ç§’ï¼‰åˆ™è¿”å›žã€‚            
             if (NPROT_WAIT_EVENT(&Globals.BindsComplete, 5000))
             {
                 NtStatus = STATUS_SUCCESS;
@@ -671,9 +671,9 @@ Return Value:
 
 
 
-// pDeviceName Éè±¸¶ÔÏóÃû
-// DeviceNameLength Éè±¸¶ÔÏóµÄ³¤¶È
-// pFileObject ÎÄ¼þ¶ÔÏóÖ¸Õë
+// pDeviceName è®¾å¤‡å¯¹è±¡å
+// DeviceNameLength è®¾å¤‡å¯¹è±¡çš„é•¿åº¦
+// pFileObject æ–‡ä»¶å¯¹è±¡æŒ‡é’ˆ
 NTSTATUS
 ndisprotOpenDevice(
     __in_bcount(DeviceNameLength) IN PUCHAR pDeviceName,
@@ -695,14 +695,14 @@ ndisprotOpenDevice(
 
     do
     {
-        // ¸ù¾ÝÉè±¸ÃûÕÒµ½´ò¿ªÉÏÏÂÎÄ¡£Çë×¢ÒâÕâ¸öÖÐ¼ä»áµ÷ÓÃÔö¼Ó´ò¿ª
-        // ÉÏÏÂÎÄÒýÓÃ¼ÆÊý£¬ËùÒÔºóÃæÒª½âÒýÓÃ¡£
+        // æ ¹æ®è®¾å¤‡åæ‰¾åˆ°æ‰“å¼€ä¸Šä¸‹æ–‡ã€‚è¯·æ³¨æ„è¿™ä¸ªä¸­é—´ä¼šè°ƒç”¨å¢žåŠ æ‰“å¼€
+        // ä¸Šä¸‹æ–‡å¼•ç”¨è®¡æ•°ï¼Œæ‰€ä»¥åŽé¢è¦è§£å¼•ç”¨ã€‚
         pOpenContext = ndisprotLookupDevice(
                         pDeviceName,
                         DeviceNameLength
                         );
        
-        // Èç¹ûÕÒ²»µ½´ò¿ªÉÏÏÂÎÄ£¬ËµÃ÷Ã»°ó¶¨¹ý...
+        // å¦‚æžœæ‰¾ä¸åˆ°æ‰“å¼€ä¸Šä¸‹æ–‡ï¼Œè¯´æ˜Žæ²¡ç»‘å®šè¿‡...
         if (pOpenContext == NULL)
         {
             DEBUGP(DL_WARN, ("ndisprotOpenDevice: couldn't find device\n"));
@@ -712,7 +712,7 @@ ndisprotOpenDevice(
 
         NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
 
-        // Èç¹ûÕÒµ½ÁË£¬µ«ÊÇ²»ÊÇ´ò¿ª¿ÕÏÐ×´Ì¬£¬Ôò·µ»ØÉè±¸Ã¦¡£
+        // å¦‚æžœæ‰¾åˆ°äº†ï¼Œä½†æ˜¯ä¸æ˜¯æ‰“å¼€ç©ºé—²çŠ¶æ€ï¼Œåˆ™è¿”å›žè®¾å¤‡å¿™ã€‚
         if (!NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_OPEN_FLAGS, NUIOO_OPEN_IDLE))
         {
             NPROT_ASSERT(pOpenContext->pFileObject != NULL);
@@ -721,20 +721,20 @@ ndisprotOpenDevice(
                 pOpenContext, pOpenContext->Flags, pOpenContext->pFileObject));
             NPROT_RELEASE_LOCK(&pOpenContext->Lock);
 
-            // ×¢Òâ½âÒýÓÃ¡£
+            // æ³¨æ„è§£å¼•ç”¨ã€‚
             NPROT_DEREF_OPEN(pOpenContext); // ndisprotOpenDevice failure
             NtStatus = STATUS_DEVICE_BUSY;
             break;
         }
 
-        // ±È½Ï½»»»¡£Ê×ÏÈ±È½ÏpFileObject->FsContextºÍNULL.Èç¹ûÊÇNULL,ÔòÓÃ
-        // pFileObject->FsContextÉèÖÃÎªpOpenContext£¬È»ºó·µ»ØNULL¡£Èç¹û²»
-        // ÊÇNULL£¬Ôò²»½»»»£¬²¢·µ»ØpFileObject->FsContext
+        // æ¯”è¾ƒäº¤æ¢ã€‚é¦–å…ˆæ¯”è¾ƒpFileObject->FsContextå’ŒNULL.å¦‚æžœæ˜¯NULL,åˆ™ç”¨
+        // pFileObject->FsContextè®¾ç½®ä¸ºpOpenContextï¼Œç„¶åŽè¿”å›žNULLã€‚å¦‚æžœä¸
+        // æ˜¯NULLï¼Œåˆ™ä¸äº¤æ¢ï¼Œå¹¶è¿”å›žpFileObject->FsContext
         if ((pCurrentOpenContext = 
             InterlockedCompareExchangePointer (& (pFileObject->FsContext), pOpenContext, NULL)) != NULL)
         {
-            // µ½ÁËÕâÀï£¬ËµÃ÷ÁíÒ»¸ö´ò¿ªÒÑ¾­Ê¹ÓÃÁËÕâ¸öÎÄ¼þ¶ÔÏó¡£Õâ¸öÉè±¸
-            // ²»Ö§³ÖÁ½´Î´ò¿ª¡£µ½ÕâÀïÖ±½Ó·µ»ØÊ§°Ü¼´¿É¡£
+            // åˆ°äº†è¿™é‡Œï¼Œè¯´æ˜Žå¦ä¸€ä¸ªæ‰“å¼€å·²ç»ä½¿ç”¨äº†è¿™ä¸ªæ–‡ä»¶å¯¹è±¡ã€‚è¿™ä¸ªè®¾å¤‡
+            // ä¸æ”¯æŒä¸¤æ¬¡æ‰“å¼€ã€‚åˆ°è¿™é‡Œç›´æŽ¥è¿”å›žå¤±è´¥å³å¯ã€‚
             DEBUGP(DL_WARN, ("ndisprotOpenDevice: FileObject %p already associated"
                 " with another Open %p/%x\n", 
                 pFileObject, pCurrentOpenContext, pCurrentOpenContext->Flags));  //BUG
@@ -744,13 +744,13 @@ ndisprotOpenDevice(
             break;
         }
 
-        // Õâ¸ö´ò¿ªÉÏÏÂÎÄ±»´ò¿ªÁË£¬±£´æÔÚÕâ¸öÎÄ¼þ¶ÔÏóµÄFsContextÖÐ¡£Õâ
-        // ÀïÒ²±£´æ
+        // è¿™ä¸ªæ‰“å¼€ä¸Šä¸‹æ–‡è¢«æ‰“å¼€äº†ï¼Œä¿å­˜åœ¨è¿™ä¸ªæ–‡ä»¶å¯¹è±¡çš„FsContextä¸­ã€‚è¿™
+        // é‡Œä¹Ÿä¿å­˜
         pOpenContext->pFileObject = pFileObject;
         NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_OPEN_FLAGS, NUIOO_OPEN_ACTIVE);
         NPROT_RELEASE_LOCK(&pOpenContext->Lock);
 
-        // ÉèÖÃPacketFilter£¬Ê¹Ö®ÄÜÊÕµ½°ü¡£
+        // è®¾ç½®PacketFilterï¼Œä½¿ä¹‹èƒ½æ”¶åˆ°åŒ…ã€‚
         PacketFilter = NUIOO_PACKET_FILTER;
         NdisStatus = ndisprotValidateOpenAndDoRequest(
                         pOpenContext,
@@ -762,15 +762,15 @@ ndisprotOpenDevice(
                         TRUE    // Do wait for power on
                         );
     
-        // ²»³É¹¦µÄ»°
+        // ä¸æˆåŠŸçš„è¯
         if (NdisStatus != NDIS_STATUS_SUCCESS)
         {
             DEBUGP(DL_WARN, ("openDevice: Open %p: set packet filter (%x) failed: %x\n",
                     pOpenContext, PacketFilter, NdisStatus));
             NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
 
-            // ²»³É¹¦µÄ»°£¬È¥µôFileObject->FsContextÉèÖÃ£¬Èç¹ûpFileObject->FsContextÊÇ
-            // pOpenContext£¬ÔòÈ¥µô¡£
+            // ä¸æˆåŠŸçš„è¯ï¼ŒåŽ»æŽ‰FileObject->FsContextè®¾ç½®ï¼Œå¦‚æžœpFileObject->FsContextæ˜¯
+            // pOpenContextï¼Œåˆ™åŽ»æŽ‰ã€‚
             pCurrentOpenContext = InterlockedCompareExchangePointer(
                 & (pFileObject->FsContext), NULL, pOpenContext);
             NPROT_ASSERT(pCurrentOpenContext == pOpenContext);
@@ -782,7 +782,7 @@ ndisprotOpenDevice(
             break;
         }
 
-        // ·µ»Ø´ò¿ªÉÏÏÂÎÄ¡£
+        // è¿”å›žæ‰“å¼€ä¸Šä¸‹æ–‡ã€‚
         *ppOpenContext = pOpenContext;
         NtStatus = STATUS_SUCCESS;
     }

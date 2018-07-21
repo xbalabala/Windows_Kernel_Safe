@@ -69,12 +69,12 @@ Return Value:
         //  Allocate our context for this open.
         //
 
-        // ·ÖÅä¿Õ¼ä¸øÃ¿¸ö´ò¿ªÉÏÏÂÎÄ¡£ËùÎ½´ò¿ªÉÏÏÂÎÄ¾ÍÊÇÃ¿´Î°ó¶¨£¬
-        // ÓÃ»§·ÖÅäµÄÒ»Æ¬¿Õ¼ä£¬ÓÃÀ´±£´æÕâ´Î°ó¶¨Ïà¹ØµÄÐÅÏ¢¡£ÕâÀï
-        // ÓÃºêNPROT_ALLOC_MEM·ÖÅäÄÚ´æÊÇÎªÁËµ÷ÊÔµÄ·½±ã¡£Êµ¼ÊÉÏ±¾
-        // ÖÊÊÇÓÃNdisAllocateMemoryWithTag·ÖÅä¿Õ¼ä¡£¶ÁÕßÈç¹ûÓÃ
-        // ExAllocatePoolWithTag´úÌæÒ²ÊÇ¿ÉÐÐµÄ¡£Ö»ÊÇÒª×¢Òâ±ØÐëÊÇ
-        // Nonpaged¿Õ¼ä¡£
+        // åˆ†é…ç©ºé—´ç»™æ¯ä¸ªæ‰“å¼€ä¸Šä¸‹æ–‡ã€‚æ‰€è°“æ‰“å¼€ä¸Šä¸‹æ–‡å°±æ˜¯æ¯æ¬¡ç»‘å®šï¼Œ
+        // ç”¨æˆ·åˆ†é…çš„ä¸€ç‰‡ç©ºé—´ï¼Œç”¨æ¥ä¿å­˜è¿™æ¬¡ç»‘å®šç›¸å…³çš„ä¿¡æ¯ã€‚è¿™é‡Œ
+        // ç”¨å®NPROT_ALLOC_MEMåˆ†é…å†…å­˜æ˜¯ä¸ºäº†è°ƒè¯•çš„æ–¹ä¾¿ã€‚å®žé™…ä¸Šæœ¬
+        // è´¨æ˜¯ç”¨NdisAllocateMemoryWithTagåˆ†é…ç©ºé—´ã€‚è¯»è€…å¦‚æžœç”¨
+        // ExAllocatePoolWithTagä»£æ›¿ä¹Ÿæ˜¯å¯è¡Œçš„ã€‚åªæ˜¯è¦æ³¨æ„å¿…é¡»æ˜¯
+        // Nonpagedç©ºé—´ã€‚
         NPROT_ALLOC_MEM(pOpenContext, sizeof(NDISPROT_OPEN_CONTEXT));
         if (pOpenContext == NULL)
         {
@@ -82,14 +82,14 @@ Return Value:
             break;
         }
 
-        // ÄÚ´æÇå0¡£Í¬ÑùÓÃºê¡£Êµ¼ÊÉÏÓÃµÄNdisZeroMemory¡£ 
+        // å†…å­˜æ¸…0ã€‚åŒæ ·ç”¨å®ã€‚å®žé™…ä¸Šç”¨çš„NdisZeroMemoryã€‚ 
         NPROT_ZERO_MEM(pOpenContext, sizeof(NDISPROT_OPEN_CONTEXT));
 
-        // ¸øÕâ¸ö¿Õ¼äÐ´Ò»¸öÌØÕ÷Êý¾Ý±ãÓÚÊ¶±ðÅÐ´í¡£
+        // ç»™è¿™ä¸ªç©ºé—´å†™ä¸€ä¸ªç‰¹å¾æ•°æ®ä¾¿äºŽè¯†åˆ«åˆ¤é”™ã€‚
         NPROT_SET_SIGNATURE(pOpenContext, oc);
 
-        // ³õÊ¼»¯¼¸¸öÓÃµ½µÄÊý¾Ý³ÉÔ±¡£Ëø¡¢¶Á¶ÓÁÐ¡¢Ð´¶Ô¶ÓÁÐ¡¢°ü¶ÓÁÐ
-        // µçÔ´´ò¿ªÊÂ¼þ
+        // åˆå§‹åŒ–å‡ ä¸ªç”¨åˆ°çš„æ•°æ®æˆå‘˜ã€‚é”ã€è¯»é˜Ÿåˆ—ã€å†™å¯¹é˜Ÿåˆ—ã€åŒ…é˜Ÿåˆ—
+        // ç”µæºæ‰“å¼€äº‹ä»¶
         NPROT_INIT_LOCK(&pOpenContext->Lock);
         NPROT_INIT_LIST_HEAD(&pOpenContext->PendedReads);
         NPROT_INIT_LIST_HEAD(&pOpenContext->PendedWrites);
@@ -100,17 +100,17 @@ Return Value:
         //  Start off by assuming that the device below is powered up.
         //
 
-        // ÈÏÎª¿ªÊ¼µÄÊ±ºòµçÔ´ÊÇ´ò¿ªµÄ¡£
+        // è®¤ä¸ºå¼€å§‹çš„æ—¶å€™ç”µæºæ˜¯æ‰“å¼€çš„ã€‚
         NPROT_SIGNAL_EVENT(&pOpenContext->PoweredUpEvent);
 
         //
         //  Determine the platform we are running on.
         //
 
-        // ÏÂÃæ¿ªÊ¼¼ì²âÎÒÃÇÔËÐÐÔÚÊ²Ã´Æ½Ì¨¡£Ê×ÏÈ¼Ù¶¨ÊÇWin9x.
-        // µ«ÊÇÎªÁËÈ¥µô¶àÓàµÄ²¿·Ö£¬Êµ¼ÊÉÏÎÒÒÑ¾­È¥µôÁË¶ÔWin9x
-        // µÄÖ§³Ö¡£ËùÒÔÏÂÃæÕâÒ»¶ÎÒÑ¾­Ã»ÓÐÒâÒåÁË¡£µ«ÊÇÏÂÃæµÄ
-        // ´úÂëÒÀÈ»ÓÐ²Î¿¼¼ÛÖµ¡£Êµ¼ÊÉÏÊÇÔÚ¶ÁÈ¡×¢²á±íµÄÅäÖÃ¡£
+        // ä¸‹é¢å¼€å§‹æ£€æµ‹æˆ‘ä»¬è¿è¡Œåœ¨ä»€ä¹ˆå¹³å°ã€‚é¦–å…ˆå‡å®šæ˜¯Win9x.
+        // ä½†æ˜¯ä¸ºäº†åŽ»æŽ‰å¤šä½™çš„éƒ¨åˆ†ï¼Œå®žé™…ä¸Šæˆ‘å·²ç»åŽ»æŽ‰äº†å¯¹Win9x
+        // çš„æ”¯æŒã€‚æ‰€ä»¥ä¸‹é¢è¿™ä¸€æ®µå·²ç»æ²¡æœ‰æ„ä¹‰äº†ã€‚ä½†æ˜¯ä¸‹é¢çš„
+        // ä»£ç ä¾ç„¶æœ‰å‚è€ƒä»·å€¼ã€‚å®žé™…ä¸Šæ˜¯åœ¨è¯»å–æ³¨å†Œè¡¨çš„é…ç½®ã€‚
         //pOpenContext->bRunningOnWin9x = TRUE;
 
         //NdisOpenProtocolConfiguration(
@@ -147,15 +147,15 @@ Return Value:
         //  Add it to the global list.
         //
 
-        // ÒòÎª´ò¿ªÉÏÏÂÎÄÒÑ¾­±»·ÖÅäºÃ¡£ËùÒÔÕâÀï½«Õâ¸ö´ò¿ªÉÏÏÂÎÄ
-        // ±£´æµ½È«¾ÖÁ´±íÀïÒÔ±ãÈÕºó¼ìË÷¡£×¢ÒâÕâ¸ö²Ù×÷Òª¼ÓËø¡£Êµ
-         // ¼ÊÉÏÕâÀïÓÃµÄ¾ÍÊÇ¶ÁÕßÇ°ÃæÑ§¹ýµÄ×ÔÐýËø¡£
+        // å› ä¸ºæ‰“å¼€ä¸Šä¸‹æ–‡å·²ç»è¢«åˆ†é…å¥½ã€‚æ‰€ä»¥è¿™é‡Œå°†è¿™ä¸ªæ‰“å¼€ä¸Šä¸‹æ–‡
+        // ä¿å­˜åˆ°å…¨å±€é“¾è¡¨é‡Œä»¥ä¾¿æ—¥åŽæ£€ç´¢ã€‚æ³¨æ„è¿™ä¸ªæ“ä½œè¦åŠ é”ã€‚å®ž
+         // é™…ä¸Šè¿™é‡Œç”¨çš„å°±æ˜¯è¯»è€…å‰é¢å­¦è¿‡çš„è‡ªæ—‹é”ã€‚
         NPROT_ACQUIRE_LOCK(&Globals.GlobalLock);
         NPROT_INSERT_TAIL_LIST(&Globals.OpenList,
                              &pOpenContext->Link);
         NPROT_RELEASE_LOCK(&Globals.GlobalLock);
 
-        // ÕýÊ½µÄ°ó¶¨¹ý³Ì¡£
+        // æ­£å¼çš„ç»‘å®šè¿‡ç¨‹ã€‚
         Status = ndisprotCreateBinding(
                      pOpenContext,
                      (PUCHAR)pDeviceName->Buffer,
@@ -441,54 +441,54 @@ ndisprotCreateBinding(
     ULONG  BytesProcessed;
     ULONG GenericUlong = 0;
 
-    // Êä³öÒ»¾äµ÷ÊÔÐÅÏ¢¡£
+    // è¾“å‡ºä¸€å¥è°ƒè¯•ä¿¡æ¯ã€‚
     DEBUGP(DL_LOUD, ("CreateBinding: open %p/%x, device [%ws]\n",
                 pOpenContext, pOpenContext->Flags, pBindingInfo));
     Status = NDIS_STATUS_SUCCESS;
 
     do
     {
-        // ¼ì²é¿´¿´ÊÇ·ñÒÑ¾­°ó¶¨ÁËÕâ¸öÍø¿¨¡£Èç¹ûÒÑ¾­°ó¶¨µÄ»°£¬¾ÍÃ»ÓÐ±Ø
-        // ÒªÔÙ´Î°ó¶¨ÁË£¬Ö±½Ó·µ»Ø³É¹¦¼´¿É¡£Çë×¢Òâ£¬ndisprotLookupDevice
-        // »á¸øÕâ¸ö´ò¿ªÉÏÏÂÎÄÔö¼ÓÒ»¸öÒýÓÃ¡£
+        // æ£€æŸ¥çœ‹çœ‹æ˜¯å¦å·²ç»ç»‘å®šäº†è¿™ä¸ªç½‘å¡ã€‚å¦‚æžœå·²ç»ç»‘å®šçš„è¯ï¼Œå°±æ²¡æœ‰å¿…
+        // è¦å†æ¬¡ç»‘å®šäº†ï¼Œç›´æŽ¥è¿”å›žæˆåŠŸå³å¯ã€‚è¯·æ³¨æ„ï¼ŒndisprotLookupDevice
+        // ä¼šç»™è¿™ä¸ªæ‰“å¼€ä¸Šä¸‹æ–‡å¢žåŠ ä¸€ä¸ªå¼•ç”¨ã€‚
         pTmpOpenContext = ndisprotLookupDevice(pBindingInfo, BindingInfoLength);
 
-        // Èç¹ûÃ»ÓÐÕÒµ½µÄ»°£¬¾Í·µ»ØNULLÁË¡£
+        // å¦‚æžœæ²¡æœ‰æ‰¾åˆ°çš„è¯ï¼Œå°±è¿”å›žNULLäº†ã€‚
         if (pTmpOpenContext != NULL)
         {
             DEBUGP(DL_WARN,
                 ("CreateBinding: Binding to device %ws already exists on open %p\n",
                     pTmpOpenContext->DeviceName.Buffer, pTmpOpenContext));
 
-            // ¼õÉÙÕâ¸ö´ò¿ªÉÏÏÂÎÄµÄÒ»¸öÒýÓÃ¡£
+            // å‡å°‘è¿™ä¸ªæ‰“å¼€ä¸Šä¸‹æ–‡çš„ä¸€ä¸ªå¼•ç”¨ã€‚
             NPROT_DEREF_OPEN(pTmpOpenContext); 
             Status = NDIS_STATUS_FAILURE;
             break;
         }
 
-        // »ñµÃËø¡£ÎªÊ²Ã´ÕâÀïÒªÓÃËø£¿ÕâÊÇÒòÎªÖ»ÓÐ¶Ô¿ÕÏÐµÄ´ò¿ªÉÏÏÂÎÄ
+        // èŽ·å¾—é”ã€‚ä¸ºä»€ä¹ˆè¿™é‡Œè¦ç”¨é”ï¼Ÿè¿™æ˜¯å› ä¸ºåªæœ‰å¯¹ç©ºé—²çš„æ‰“å¼€ä¸Šä¸‹æ–‡
         NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
 
-        // Í¨¹ý±ê¼ÇÀ´¼ì²é...Èç¹û°ó¶¨±êÖ¾²»ÊÇ¿ÕÏÐ×´Ì¬£¬»òÕß½â³ý°ó¶¨ÐÅ
-        // Ï¢ÊÕµ½ÁË½â³ý°ó¶¨µÄÒªÇó£¬ÄÇ¾ÍÖ±½Ó·µ»ØÊ§°Ü¡£
+        // é€šè¿‡æ ‡è®°æ¥æ£€æŸ¥...å¦‚æžœç»‘å®šæ ‡å¿—ä¸æ˜¯ç©ºé—²çŠ¶æ€ï¼Œæˆ–è€…è§£é™¤ç»‘å®šä¿¡
+        // æ¯æ”¶åˆ°äº†è§£é™¤ç»‘å®šçš„è¦æ±‚ï¼Œé‚£å°±ç›´æŽ¥è¿”å›žå¤±è´¥ã€‚
         if (!NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_IDLE) ||
             NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_UNBIND_FLAGS, NUIOO_UNBIND_RECEIVED))
         {
             NPROT_RELEASE_LOCK(&pOpenContext->Lock);
 
             Status = NDIS_STATUS_NOT_ACCEPTED;
-            // ÉèÖÃÁË±ê¼Ç£¬±íÊ¾
+            // è®¾ç½®äº†æ ‡è®°ï¼Œè¡¨ç¤º
             fDoNotDisturb = TRUE;
             break;
         }
 
-        // ÉèÖÃ±ê¼Ç£¬±íÊ¾ÎÒÃÇÒÑ¾­¿ªÊ¼°ó¶¨ÁË¡£±ðÈËÎð²Ù×÷Ëü¡£
+        // è®¾ç½®æ ‡è®°ï¼Œè¡¨ç¤ºæˆ‘ä»¬å·²ç»å¼€å§‹ç»‘å®šäº†ã€‚åˆ«äººå‹¿æ“ä½œå®ƒã€‚
         NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_OPENING);
 
-        // ÊÍ·ÅËø¡£
+        // é‡Šæ”¾é”ã€‚
         NPROT_RELEASE_LOCK(&pOpenContext->Lock);
 
-        // ·ÖÅäÃû×Ö¡£µ½ÕâÀï¿ªÊ¼°ó¶¨ÁË¡£ÏÈ·ÖÅäÉè±¸Ãû×Ö·û´®¡£
+        // åˆ†é…åå­—ã€‚åˆ°è¿™é‡Œå¼€å§‹ç»‘å®šäº†ã€‚å…ˆåˆ†é…è®¾å¤‡åå­—ç¬¦ä¸²ã€‚
         NPROT_ALLOC_MEM(pOpenContext->DeviceName.Buffer, BindingInfoLength + sizeof(WCHAR));
         if (pOpenContext->DeviceName.Buffer == NULL)
         {
@@ -498,14 +498,14 @@ ndisprotCreateBinding(
             break;
         }
 
-        // ´ÓpBindingInfoÖÐ°Ñ×Ö·û´®¿½±´³öÀ´¡£
+        // ä»ŽpBindingInfoä¸­æŠŠå­—ç¬¦ä¸²æ‹·è´å‡ºæ¥ã€‚
         NPROT_COPY_MEM(pOpenContext->DeviceName.Buffer, pBindingInfo, BindingInfoLength);
 #pragma prefast(suppress: 12009, "DeviceName length will not cause overflow")                   
         *(PWCHAR)((PUCHAR)pOpenContext->DeviceName.Buffer + BindingInfoLength) = L'\0';        
         NdisInitUnicodeString(&pOpenContext->DeviceName, pOpenContext->DeviceName.Buffer);
 
 
-        // ·ÖÅä°ü³Ø¡£ÓÃÀ´×ö·¢ËÍ»º³åÇø£¬ÈÝÄÉ½«Òª·¢ËÍ³öÈ¥µÄ°ü¡£
+        // åˆ†é…åŒ…æ± ã€‚ç”¨æ¥åšå‘é€ç¼“å†²åŒºï¼Œå®¹çº³å°†è¦å‘é€å‡ºåŽ»çš„åŒ…ã€‚
         NdisAllocatePacketPoolEx(
             &Status,
             &pOpenContext->SendPacketPool,
@@ -520,7 +520,7 @@ ndisprotCreateBinding(
             break;
         }
 
-        // ·ÖÅä°ü³Ø£¬ÓÃÀ´ÈÝÄÉ
+        // åˆ†é…åŒ…æ± ï¼Œç”¨æ¥å®¹çº³
         NdisAllocatePacketPoolEx(
             &Status,
             &pOpenContext->RecvPacketPool,
@@ -535,7 +535,7 @@ ndisprotCreateBinding(
             break;
         }
 
-        // °ü³Ø¡£ÓÃÀ´×ö½ÓÊÕ»º³åÇø¡£
+        // åŒ…æ± ã€‚ç”¨æ¥åšæŽ¥æ”¶ç¼“å†²åŒºã€‚
         NdisAllocateBufferPool(
             &Status,
             &pOpenContext->RecvBufferPool,
@@ -548,10 +548,10 @@ ndisprotCreateBinding(
             break;
         }
 
-        // µçÔ´×´Ì¬ÊÇ´ò¿ª×ÅµÄ¡£
+        // ç”µæºçŠ¶æ€æ˜¯æ‰“å¼€ç€çš„ã€‚
         pOpenContext->PowerState = NetDeviceStateD0;
 
-        // ³õÊ¼»¯Ò»¸ö´ò¿ªÊÂ¼þ¡££¨´ò¿ª¾ÍÊÇ°ó¶¨£¡£©
+        // åˆå§‹åŒ–ä¸€ä¸ªæ‰“å¼€äº‹ä»¶ã€‚ï¼ˆæ‰“å¼€å°±æ˜¯ç»‘å®šï¼ï¼‰
         NPROT_INIT_EVENT(&pOpenContext->BindEvent);
 
         NdisOpenAdapter(
@@ -567,14 +567,14 @@ ndisprotCreateBinding(
             0,
             NULL);
     
-        // µÈ´ýÇëÇóÍê³É¡£
+        // ç­‰å¾…è¯·æ±‚å®Œæˆã€‚
         if (Status == NDIS_STATUS_PENDING)
         {
             NPROT_WAIT_EVENT(&pOpenContext->BindEvent, 0);
             Status = pOpenContext->BindStatus;
         }
 
-        // Èç¹û²»³É¹¦
+        // å¦‚æžœä¸æˆåŠŸ
         if (Status != NDIS_STATUS_SUCCESS)
         {
             DEBUGP(DL_WARN, ("CreateBinding: NdisOpenAdapter (%ws) failed: %x\n",
@@ -582,18 +582,18 @@ ndisprotCreateBinding(
             break;
         }
 
-        // ¼Ç×¡ÎÒÃÇÒÑ¾­³É¹¦µÄ°ó¶¨ÁË¡£µ«ÊÇÎÒÃÇ»¹Ã»ÓÐ¸üÐÂ´ò¿ª
-        // ×´Ì¬¡£ÕâÊÇÎªÁË±ÜÃâ±ðµÄÏß³Ì¿ªÊ¼¹Ø±ÕÕâ¸ö°ó¶¨¡£
+        // è®°ä½æˆ‘ä»¬å·²ç»æˆåŠŸçš„ç»‘å®šäº†ã€‚ä½†æ˜¯æˆ‘ä»¬è¿˜æ²¡æœ‰æ›´æ–°æ‰“å¼€
+        // çŠ¶æ€ã€‚è¿™æ˜¯ä¸ºäº†é¿å…åˆ«çš„çº¿ç¨‹å¼€å§‹å…³é—­è¿™ä¸ªç»‘å®šã€‚
         fOpenComplete = TRUE;
 
-        // ·¢ÇëÇó£¬»ñµÃÒ»¸ö¿ÉÔÄ¶ÁµÄÃû×Ö¡£²»¹ýÕâ²¢²»ÊÇ·Ç
-        // ³É¹¦²»¿ÉµÄ¡£ËùÒÔ²»¼ì²é·µ»ØÖµ¡£
+        // å‘è¯·æ±‚ï¼ŒèŽ·å¾—ä¸€ä¸ªå¯é˜…è¯»çš„åå­—ã€‚ä¸è¿‡è¿™å¹¶ä¸æ˜¯éž
+        // æˆåŠŸä¸å¯çš„ã€‚æ‰€ä»¥ä¸æ£€æŸ¥è¿”å›žå€¼ã€‚
         (VOID)NdisQueryAdapterInstanceName(
                 &pOpenContext->DeviceDescr,
                 pOpenContext->BindingHandle
                 );
 
-        // »ñµÃÏÂÃæÍø¿¨µÄMacµØÖ·
+        // èŽ·å¾—ä¸‹é¢ç½‘å¡çš„Macåœ°å€
         Status = ndisprotDoRequest(
                     pOpenContext,
                     NdisRequestQueryInformation,
@@ -610,7 +610,7 @@ ndisprotCreateBinding(
             break;
         }
         
-        // »ñµÃÍø¿¨Ñ¡Ïî
+        // èŽ·å¾—ç½‘å¡é€‰é¡¹
         Status = ndisprotDoRequest(
                     pOpenContext,
                     NdisRequestQueryInformation,
@@ -627,7 +627,7 @@ ndisprotCreateBinding(
             break;
         }
 
-        // »ñµÃ×î´óÖ¡³¤
+        // èŽ·å¾—æœ€å¤§å¸§é•¿
         Status = ndisprotDoRequest(
                     pOpenContext,
                     NdisRequestQueryInformation,
@@ -644,7 +644,7 @@ ndisprotCreateBinding(
             break;
         }
 
-        // »ñµÃÏÂ²ãÁ¬½Ó×´Ì¬¡£
+        // èŽ·å¾—ä¸‹å±‚è¿žæŽ¥çŠ¶æ€ã€‚
         Status = ndisprotDoRequest(
                     pOpenContext,
                     NdisRequestQueryInformation,
@@ -671,43 +671,43 @@ ndisprotCreateBinding(
         }
 
 
-        // ÉèÖÃ±ê¼Ç
+        // è®¾ç½®æ ‡è®°
         NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
 
         NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_ACTIVE);
 
-        // ¼ì²âÊÇ·ñÕâÊ±ºò³öÏÖÁËÒ»¸ö½â³ý°ó¶¨ÇëÇó
+        // æ£€æµ‹æ˜¯å¦è¿™æ—¶å€™å‡ºçŽ°äº†ä¸€ä¸ªè§£é™¤ç»‘å®šè¯·æ±‚
         if (NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_UNBIND_FLAGS, NUIOO_UNBIND_RECEIVED))
         {
-            // ³öÏÖÁËÔòÕâ´Î°ó¶¨Ê§°Ü
+            // å‡ºçŽ°äº†åˆ™è¿™æ¬¡ç»‘å®šå¤±è´¥
             Status = NDIS_STATUS_FAILURE;
         }
 
-        // ±ê¼Ç²âÊÔÍêÖ®ºó¾Í¿ÉÒÔ½âËøÁË¡£
+        // æ ‡è®°æµ‹è¯•å®Œä¹‹åŽå°±å¯ä»¥è§£é”äº†ã€‚
         NPROT_RELEASE_LOCK(&pOpenContext->Lock);
        
     }
     while (FALSE);
 
-    // Èç¹ûÃ»ÓÐ³É¹¦£¬¶øÇÒ
+    // å¦‚æžœæ²¡æœ‰æˆåŠŸï¼Œè€Œä¸”
     if ((Status != NDIS_STATUS_SUCCESS) && !fDoNotDisturb)
     {
         NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
 
-        // Èç¹ûÊÇÒÑ¾­³É¹¦µÄ°ó¶¨ÁË
+        // å¦‚æžœæ˜¯å·²ç»æˆåŠŸçš„ç»‘å®šäº†
         if (fOpenComplete)
         {
-            // Èç¹ûÒÑ¾­°ó¶¨½áÊøÁË£¬ÉèÖÃÒÑ¾­°ó¶¨±ê¼Ç¡£
+            // å¦‚æžœå·²ç»ç»‘å®šç»“æŸäº†ï¼Œè®¾ç½®å·²ç»ç»‘å®šæ ‡è®°ã€‚
             NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_ACTIVE);
         }
         else if (NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_OPENING))
         {
-            // Èç¹ûÊÇÕýÔÚ°ó¶¨¹ý³ÌÖÐ£¬ÉèÖÃ°ó¶¨Ê§°ÜÁË¡£
+            // å¦‚æžœæ˜¯æ­£åœ¨ç»‘å®šè¿‡ç¨‹ä¸­ï¼Œè®¾ç½®ç»‘å®šå¤±è´¥äº†ã€‚
             NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_FAILED);
         }
-        // ÊÍ·ÅËø¡£
+        // é‡Šæ”¾é”ã€‚
         NPROT_RELEASE_LOCK(&pOpenContext->Lock);
-        // µ÷ÓÃÍ£Ö¹°ó¶¨º¯Êý¡£ÕâÀï»áÊÍ·ÅËùÓÐ×ÊÔ´¡£
+        // è°ƒç”¨åœæ­¢ç»‘å®šå‡½æ•°ã€‚è¿™é‡Œä¼šé‡Šæ”¾æ‰€æœ‰èµ„æºã€‚
         ndisprotShutdownBinding(pOpenContext);
     }
 
@@ -729,17 +729,17 @@ ndisprotShutdownBinding(
     {
         NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
 
-        // ¼ì²é±ê¼Ç£¬Èç¹ûÊÇÕýÔÚ´ò¿ªµÄ»°£¬Á¢¿ÌÍË³ö¡£
-        // ·ÅÆú½â³ý°ó¶¨²Ù×÷¡£
+        // æ£€æŸ¥æ ‡è®°ï¼Œå¦‚æžœæ˜¯æ­£åœ¨æ‰“å¼€çš„è¯ï¼Œç«‹åˆ»é€€å‡ºã€‚
+        // æ”¾å¼ƒè§£é™¤ç»‘å®šæ“ä½œã€‚
         if (NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_OPENING))
         {
             NPROT_RELEASE_LOCK(&pOpenContext->Lock);
             break;
         }
 
-        // Èç¹ûÊÇ°ó¶¨ÒÑ¾­Íê³ÉµÄÇé¿ö£¬ÔòÉèÖÃÎª¿ªÊ¼½â³ý°ó¶¨¡£
-        // ÆäËûµÄÇé¿öÔò¸ù±¾²»ÓÃ×öÏÂÃæµÄ²Ù×÷¡£ÒòÎª°ó¶¨¼ÈÈ»
-        // Ã»ÓÐÍê³É£¬Ò²µ±È»²»ÓÃ½â³ý°ó¶¨¡£
+        // å¦‚æžœæ˜¯ç»‘å®šå·²ç»å®Œæˆçš„æƒ…å†µï¼Œåˆ™è®¾ç½®ä¸ºå¼€å§‹è§£é™¤ç»‘å®šã€‚
+        // å…¶ä»–çš„æƒ…å†µåˆ™æ ¹æœ¬ä¸ç”¨åšä¸‹é¢çš„æ“ä½œã€‚å› ä¸ºç»‘å®šæ—¢ç„¶
+        // æ²¡æœ‰å®Œæˆï¼Œä¹Ÿå½“ç„¶ä¸ç”¨è§£é™¤ç»‘å®šã€‚
         if (NPROT_TEST_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_ACTIVE))
         {
             NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_CLOSING);
@@ -750,12 +750,12 @@ ndisprotShutdownBinding(
 
         if (DoCloseBinding)
         {
-            // ´ÓÕâÀï¿ªÊ¼½â³ý°ó¶¨¡£
+            // ä»Žè¿™é‡Œå¼€å§‹è§£é™¤ç»‘å®šã€‚
             ULONG    PacketFilter = 0;
             ULONG    BytesRead = 0;
             
-            // °Ñ°ó¶¨ÁËµÄÍø¿¨µÄ°ü¹ýÂËÆ÷ÉèÖÃÎª0£¬»»¾ä»°Ëµ£¬¾ÍÊÇ´ÓÏÖÔÚ
-            // ¿ªÊ¼Í£Ö¹ÊÕ°ü¡£ÕâÊÇÎªÁË±ãÓÚÇåÀí×ÊÔ´¡£
+            // æŠŠç»‘å®šäº†çš„ç½‘å¡çš„åŒ…è¿‡æ»¤å™¨è®¾ç½®ä¸º0ï¼Œæ¢å¥è¯è¯´ï¼Œå°±æ˜¯ä»ŽçŽ°åœ¨
+            // å¼€å§‹åœæ­¢æ”¶åŒ…ã€‚è¿™æ˜¯ä¸ºäº†ä¾¿äºŽæ¸…ç†èµ„æºã€‚
             Status = ndisprotDoRequest(
                         pOpenContext,
                         NdisRequestSetInformation,
@@ -769,7 +769,7 @@ ndisprotShutdownBinding(
                 DEBUGP(DL_WARN, ("ShutDownBinding: set packet filter failed: %x\n", Status));
             }
             
-            // °ÑÕâ¸öÍø¿¨µÄ¹ã²¥ÁÐ±íÉèÖÃÎªNULL.
+            // æŠŠè¿™ä¸ªç½‘å¡çš„å¹¿æ’­åˆ—è¡¨è®¾ç½®ä¸ºNULL.
             Status = ndisprotDoRequest(
                         pOpenContext,
                         NdisRequestSetInformation,
@@ -783,27 +783,27 @@ ndisprotShutdownBinding(
                 DEBUGP(DL_WARN, ("ShutDownBinding: set multicast list failed: %x\n", Status));
             }
 
-            // È¡ÏûËùÓÐµÄÌá½»×´Ì¬IRP¡£
+            // å–æ¶ˆæ‰€æœ‰çš„æäº¤çŠ¶æ€IRPã€‚
             ndisServiceIndicateStatusIrp(pOpenContext,
                                 0,
                                 NULL,
                                 0,
                                 TRUE);
 
-            // µÈ´ýËùÓÐÎ´¾öIRPÍê³É¡£
+            // ç­‰å¾…æ‰€æœ‰æœªå†³IRPå®Œæˆã€‚
             ndisprotWaitForPendingIO(pOpenContext, TRUE);
 
-            // ÇåÀíµô½ÓÊÕ¶ÓÁÐÖÐËùÓÐµÄ°ü¡£
+            // æ¸…ç†æŽ‰æŽ¥æ”¶é˜Ÿåˆ—ä¸­æ‰€æœ‰çš„åŒ…ã€‚
             ndisprotFlushReceiveQueue(pOpenContext);
 
-            // ³õÊ¼»¯°ó¶¨ÊÂ¼þ£¬Õâ¸öÊ±¼ä½«ÓÃÀ´µÈ´ý½â³ý°ó¶¨Íê³É¡£
+            // åˆå§‹åŒ–ç»‘å®šäº‹ä»¶ï¼Œè¿™ä¸ªæ—¶é—´å°†ç”¨æ¥ç­‰å¾…è§£é™¤ç»‘å®šå®Œæˆã€‚
             NPROT_INIT_EVENT(&pOpenContext->BindEvent);
 
             DEBUGP(DL_INFO, ("ShutdownBinding: Closing OpenContext %p,"
                     " BindingHandle %p\n",
                     pOpenContext, pOpenContext->BindingHandle));
             
-            // ÕýÊ½µ÷ÓÃ½â³ý°ó¶¨¡£
+            // æ­£å¼è°ƒç”¨è§£é™¤ç»‘å®šã€‚
             NdisCloseAdapter(&Status, pOpenContext->BindingHandle);
             if (Status == NDIS_STATUS_PENDING)
             {
@@ -818,7 +818,7 @@ ndisprotShutdownBinding(
 
         if (DoCloseBinding)
         {
-            // ÉèÖÃÉÏÒÑ¾­½â³ý°ó¶¨µÄ±ê¼Ç¡£
+            // è®¾ç½®ä¸Šå·²ç»è§£é™¤ç»‘å®šçš„æ ‡è®°ã€‚
             NPROT_ACQUIRE_LOCK(&pOpenContext->Lock);
             NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_BIND_FLAGS, NUIOO_BIND_IDLE);
             NPROT_SET_FLAGS(pOpenContext->Flags, NUIOO_UNBIND_FLAGS, 0);
@@ -826,7 +826,7 @@ ndisprotShutdownBinding(
 
         }
 
-        // ÏÂÃæµÄ²Ù×÷Ö÷ÒªÊÇÊÍ·Å×ÊÔ´¡£
+        // ä¸‹é¢çš„æ“ä½œä¸»è¦æ˜¯é‡Šæ”¾èµ„æºã€‚
         NPROT_ACQUIRE_LOCK(&Globals.GlobalLock);
         NPROT_REMOVE_ENTRY_LIST(&pOpenContext->Link);
         NPROT_RELEASE_LOCK(&Globals.GlobalLock);
@@ -1048,15 +1048,15 @@ ndisprotDoRequest(
     PNDIS_REQUEST pNdisRequest = &ReqContext.Request;
     NDIS_STATUS Status;
 
-    // ³õÊ¼»¯Ò»¸öÊÂ¼þ¡£Õâ¸öÊÂ¼þ»áÔÚÇëÇóÍê³Éº¯ÊýÖÐ±»ÉèÖÃ£¬
-    // ÒÔ±ãÍ¨ÖªÇëÇóÍê³ÉÁË¡£
+    // åˆå§‹åŒ–ä¸€ä¸ªäº‹ä»¶ã€‚è¿™ä¸ªäº‹ä»¶ä¼šåœ¨è¯·æ±‚å®Œæˆå‡½æ•°ä¸­è¢«è®¾ç½®ï¼Œ
+    // ä»¥ä¾¿é€šçŸ¥è¯·æ±‚å®Œæˆäº†ã€‚
     NPROT_INIT_EVENT(&ReqContext.ReqEvent);
 
-    // ÇëÇóµÄÀàÐÍ¡£Èç¹ûÖ»ÊÇ²éÑ¯ÐÅÏ¢£¬Ö»ÒªÓÃNdisRequestQueryInformation
-    // ¾Í¿ÉÒÔÁË¡£
+    // è¯·æ±‚çš„ç±»åž‹ã€‚å¦‚æžœåªæ˜¯æŸ¥è¯¢ä¿¡æ¯ï¼Œåªè¦ç”¨NdisRequestQueryInformation
+    // å°±å¯ä»¥äº†ã€‚
     pNdisRequest->RequestType = RequestType;
 
-    // ¸ù¾Ý²»Í¬µÄÇëÇóÀàÐÍ£¬ÌîÐ´OIDºÍÊäÈëÊä³ö»º³åÇø¡£
+    // æ ¹æ®ä¸åŒçš„è¯·æ±‚ç±»åž‹ï¼Œå¡«å†™OIDå’Œè¾“å…¥è¾“å‡ºç¼“å†²åŒºã€‚
     switch (RequestType)
     {
         case NdisRequestQueryInformation:
@@ -1080,29 +1080,29 @@ ndisprotDoRequest(
             break;
     }
 
-    // ·¢ËÍÇëÇó
+    // å‘é€è¯·æ±‚
     NdisRequest(&Status,
                 pOpenContext->BindingHandle,
                 pNdisRequest);
     
-    // Èç¹ûÊÇÎ´¾ö£¬ÔòµÈ´ýÊÂ¼þ¡£Õâ¸öÊÂ¼þ»áÔÚÍê³Éº¯ÊýÖÐÉèÖÃ¡£
+    // å¦‚æžœæ˜¯æœªå†³ï¼Œåˆ™ç­‰å¾…äº‹ä»¶ã€‚è¿™ä¸ªäº‹ä»¶ä¼šåœ¨å®Œæˆå‡½æ•°ä¸­è®¾ç½®ã€‚
     if (Status == NDIS_STATUS_PENDING)
     {
         NPROT_WAIT_EVENT(&ReqContext.ReqEvent, 0);
         Status = ReqContext.Status;
     }
 
-    // Èç¹û³É¹¦ÁËµÄ»°...
+    // å¦‚æžœæˆåŠŸäº†çš„è¯...
     if (Status == NDIS_STATUS_SUCCESS)
     {
-        // »ñµÃ½á¹ûµÄ³¤¶È¡£Õâ¸ö½á¹ûµÄ³¤¶ÈÊÇÊµ¼ÊÐèÒªµÄ³¤¶È¡£¿É
-        // ÄÜ±ÈÎÒÃÇÊµ¼ÊÌá¹©µÄ³¤¶ÈÒª³¤¡£
+        // èŽ·å¾—ç»“æžœçš„é•¿åº¦ã€‚è¿™ä¸ªç»“æžœçš„é•¿åº¦æ˜¯å®žé™…éœ€è¦çš„é•¿åº¦ã€‚å¯
+        // èƒ½æ¯”æˆ‘ä»¬å®žé™…æä¾›çš„é•¿åº¦è¦é•¿ã€‚
         *pBytesProcessed = (RequestType == NdisRequestQueryInformation)?
                             pNdisRequest->DATA.QUERY_INFORMATION.BytesWritten:
                             pNdisRequest->DATA.SET_INFORMATION.BytesRead;
 
-        // Èç¹û½á¹û³¤¶È±ÈÊµ¼ÊÉÏÎÒÃÇÌá¹©µÄ»º³åÇøÒª³¤£¬ÄÇÃ´¾Í¼ò
-        // µ¥µÄÉèÖÃÎªÊäÈë²ÎÊýÖÐ»º³åÇøµÄ×î´ó³¤¶È¡£
+        // å¦‚æžœç»“æžœé•¿åº¦æ¯”å®žé™…ä¸Šæˆ‘ä»¬æä¾›çš„ç¼“å†²åŒºè¦é•¿ï¼Œé‚£ä¹ˆå°±ç®€
+        // å•çš„è®¾ç½®ä¸ºè¾“å…¥å‚æ•°ä¸­ç¼“å†²åŒºçš„æœ€å¤§é•¿åº¦ã€‚
         if (*pBytesProcessed > InformationBufferLength)
         {
             *pBytesProcessed = InformationBufferLength;
@@ -1259,18 +1259,18 @@ NdisProtRequestComplete(
     PNDISPROT_OPEN_CONTEXT       pOpenContext;
     PNDISPROT_REQUEST            pReqContext;
 
-    // ÕâÁ½¾ä»°ÆðÑéÖ¤µÄ×÷ÓÃ£¬È·±£ÊäÈë²ÎÊýProtocolBindingContext
-    // ÊÇºÏ·¨µÄ¡£µ«ÊÇ¶ÔºóÃæµÄ´¦ÀíÃ»Ó°Ïì¡£
+    // è¿™ä¸¤å¥è¯èµ·éªŒè¯çš„ä½œç”¨ï¼Œç¡®ä¿è¾“å…¥å‚æ•°ProtocolBindingContext
+    // æ˜¯åˆæ³•çš„ã€‚ä½†æ˜¯å¯¹åŽé¢çš„å¤„ç†æ²¡å½±å“ã€‚
     pOpenContext = (PNDISPROT_OPEN_CONTEXT)ProtocolBindingContext;
     NPROT_STRUCT_ASSERT(pOpenContext, oc);
 
-    // ´ÓpNdisRequestÖÐµÃµ½ÇëÇóÉÏÏÂÎÄ
+    // ä»ŽpNdisRequestä¸­å¾—åˆ°è¯·æ±‚ä¸Šä¸‹æ–‡
     pReqContext = CONTAINING_RECORD(pNdisRequest, NDISPROT_REQUEST, Request);
 
-    // ±£´æ½á¹û×´Ì¬
+    // ä¿å­˜ç»“æžœçŠ¶æ€
     pReqContext->Status = Status;
 
-    // ÉèÖÃÊÂ¼þ
+    // è®¾ç½®äº‹ä»¶
     NPROT_SIGNAL_EVENT(&pReqContext->ReqEvent);
 }
 

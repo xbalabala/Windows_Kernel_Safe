@@ -1175,7 +1175,7 @@ Return Value:
 
 #ifdef INTERFACE_WITH_NDISPROT
 
-        // ´ò¿ªĞ­ÒéµÄ½Ó¿Ú¡£
+        // æ‰“å¼€åè®®çš„æ¥å£ã€‚
         ntStatus = NICOpenNdisProtocolInterface(Adapter);
         if (!NT_SUCCESS(ntStatus)) {
             break;
@@ -1403,10 +1403,10 @@ Return Value:
     PWDF_MEMORY_DESCRIPTOR  pInputDesc = NULL, pOutputDesc = NULL;
     ULONG_PTR               bytesReturned;
 
-    // FileObjectÕâ¸ö²ÎÊıÎ´Ê¹ÓÃ¹ı¡£
+    // FileObjectè¿™ä¸ªå‚æ•°æœªä½¿ç”¨è¿‡ã€‚
     UNREFERENCED_PARAMETER(FileObject);
 
-    // Éú³ÉÊäÈë»º³åÃèÊö·û
+    // ç”Ÿæˆè¾“å…¥ç¼“å†²æè¿°ç¬¦
     if (InputBuffer) {
         WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&inputDesc,
                                     InputBuffer,
@@ -1414,7 +1414,7 @@ Return Value:
         pInputDesc = &inputDesc;
     }
 
-    // Éú³ÉÊä³ö»º³åÃèÊö·û
+    // ç”Ÿæˆè¾“å‡ºç¼“å†²æè¿°ç¬¦
     if (OutputBuffer) {
         WDF_MEMORY_DESCRIPTOR_INIT_BUFFER(&outputDesc,
                                     OutputBuffer,
@@ -1422,7 +1422,7 @@ Return Value:
         pOutputDesc = &outputDesc;
     }
 
-    // ·¢ËÍÇëÇó¡£
+    // å‘é€è¯·æ±‚ã€‚
     status = WdfIoTargetSendIoctlSynchronously(
                         IoTarget,
                         WDF_NO_HANDLE, // Request
@@ -1435,7 +1435,7 @@ Return Value:
         DEBUGP(MP_ERROR, ("WdfIoTargetSendIoctlSynchronously failed 0x%x\n", status));
     }
 
-    // ¼ÇÂ¼·µ»ØµÄ³¤¶È¡£
+    // è®°å½•è¿”å›çš„é•¿åº¦ã€‚
     *BytesReadOrWritten = (ULONG)bytesReturned;
 
     return status;

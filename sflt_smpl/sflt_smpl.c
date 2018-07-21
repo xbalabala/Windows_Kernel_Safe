@@ -2,11 +2,11 @@
 /// @file         sflt_smpl.c
 /// @author    crazy_chu
 /// @date       2009-2-20
-/// @brief      Ê¹ÓÃsfilter.libµÄÒ»¸öÀı×Ó¡£ 
+/// @brief      ä½¿ç”¨sfilter.libçš„ä¸€ä¸ªä¾‹å­ã€‚ 
 /// 
-/// ÃâÔğÉùÃ÷
-/// ±¾´úÂëÎªÊ¾Àı´úÂë¡£Î´¾­Ïê¾¡²âÊÔ£¬²»±£Ö¤¿É¿¿ĞÔ¡£×÷Õß¶Ô
-/// ÈÎºÎÈËÊ¹ÓÃ´Ë´úÂëµ¼ÖÂµÄÖ±½ÓºÍ¼ä½ÓËğÊ§²»¸ºÔğÈÎ¡£
+/// å…è´£å£°æ˜
+/// æœ¬ä»£ç ä¸ºç¤ºä¾‹ä»£ç ã€‚æœªç»è¯¦å°½æµ‹è¯•ï¼Œä¸ä¿è¯å¯é æ€§ã€‚ä½œè€…å¯¹
+/// ä»»ä½•äººä½¿ç”¨æ­¤ä»£ç å¯¼è‡´çš„ç›´æ¥å’Œé—´æ¥æŸå¤±ä¸è´Ÿè´£ä»»ã€‚
 /// 
 
 #include <ntifs.h>
@@ -20,11 +20,11 @@ SF_RET OnSfilterIrpPre(
 		OUT NTSTATUS *status,
 		PVOID *context)
 {
-    // »ñµÃµ±Ç°µ÷ÓÃÕ»
+    // è·å¾—å½“å‰è°ƒç”¨æ ˆ
 	PIO_STACK_LOCATION irpsp = IoGetCurrentIrpStackLocation(irp);
     PFILE_OBJECT file = irpsp->FileObject;
 
-	// ÎÒ½ö½ö¹ıÂËÎÄ¼şÇëÇó¡£ FileObject²»´æÔÚµÄÇé¿öÒ»ÂÉpassthru.
+	// æˆ‘ä»…ä»…è¿‡æ»¤æ–‡ä»¶è¯·æ±‚ã€‚ FileObjectä¸å­˜åœ¨çš„æƒ…å†µä¸€å¾‹passthru.
 	if(file == NULL)
 		return SF_IRP_PASS;
 
@@ -40,7 +40,7 @@ VOID OnSfilterIrpPost(
 		IN NTSTATUS status,
 		PVOID context)
 {
-    // Ê²Ã´¶¼²»ÓÃ×ö
+    // ä»€ä¹ˆéƒ½ä¸ç”¨åš
 }
 
 NTSTATUS OnSfilterDriverEntry(
@@ -53,13 +53,13 @@ NTSTATUS OnSfilterDriverEntry(
  	UNICODE_STRING user_name,syb_name;
 	NTSTATUS status = STATUS_SUCCESS;
 
-  	// È·¶¨¿ØÖÆÉè±¸µÄÃû×ÖºÍ·ûºÅÁ´½Ó¡£
+  	// ç¡®å®šæ§åˆ¶è®¾å¤‡çš„åå­—å’Œç¬¦å·é“¾æ¥ã€‚
 	RtlInitUnicodeString(&user_name,L"sflt_smpl_cdo");
 	RtlInitUnicodeString(&syb_name,L"sflt_smpl_cdo_syb");
 	RtlCopyUnicodeString(userNameString,&user_name);
 	RtlCopyUnicodeString(syblnkString,&syb_name);
 
-	// ÉèÖÃ¿ØÖÆÉè±¸ÎªËùÓĞÓÃ»§¿ÉÓÃ
+	// è®¾ç½®æ§åˆ¶è®¾å¤‡ä¸ºæ‰€æœ‰ç”¨æˆ·å¯ç”¨
 	sfilterSetCdoAccessForAll();
 
     return STATUS_SUCCESS;
@@ -67,7 +67,7 @@ NTSTATUS OnSfilterDriverEntry(
 
 VOID OnSfilterDriverUnload()
 {
-    // Ã»Ê²Ã´Òª×öµÄ...;
+    // æ²¡ä»€ä¹ˆè¦åšçš„...;
 }
 
 NTSTATUS OnSfilterCDODispatch(
@@ -83,7 +83,7 @@ BOOLEAN OnSfilterAttachPre(
 		IN PUNICODE_STRING DeviceName,
 		IN PVOID extension)
 {
-    // Ö±½Ó·µ»ØTRUE£¬ËùÓĞÉè±¸¶¼°ó¶¨
+    // ç›´æ¥è¿”å›TRUEï¼Œæ‰€æœ‰è®¾å¤‡éƒ½ç»‘å®š
     return TRUE;
 }
 
@@ -94,5 +94,5 @@ VOID OnSfilterAttachPost(
 		IN PVOID extension,
 		IN NTSTATUS status)
 {
-    // ²»ĞèÒª×öÊ²Ã´¡£
+    // ä¸éœ€è¦åšä»€ä¹ˆã€‚
 }

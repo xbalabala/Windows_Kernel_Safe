@@ -7,23 +7,23 @@
 #ifndef _COMCAP_HEADER_
 #define _COMCAP_HEADER_
 
-// ʹ�ܺ�����
+// 使能函数。
 void cppSetEnable(BOOLEAN enable);
 
-// ���˵����е�irp�������е�irp
+// 过滤掉所有的irp。对现有的irp
 BOOLEAN ccpIrpFilter(PDEVICE_OBJECT device,PIRP irp,NTSTATUS *status);
 
-// ��irp��ʱ����ˡ��������TRUE���ʾ�Ѿ���������irp.
+// 在irp的时候过滤。如果返回TRUE则表示已经处理过的irp.
 BOOLEAN ccpFileIrpFilter(
 	PDEVICE_OBJECT next_dev,
 	PIRP irp,
 	PIO_STACK_LOCATION irpsp,
 	NTSTATUS *status);
 
-// ж�ص�ʱ����á����Խ���󶨡�
+// 卸载的时候调用。可以解除绑定。
 void ccpUnload();
 
-// ���������DriverEntry�е��ã����԰����еĴ��ڡ�
+// 这个函数在DriverEntry中调用，可以绑定所有的串口。
 void ccpAttachAllComs(PDRIVER_OBJECT driver);
 
 enum {

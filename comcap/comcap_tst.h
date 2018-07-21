@@ -7,24 +7,24 @@
 #ifndef _COMCAP_TST_HEADER_
 #define _COMCAP_TST_HEADER_
 
-// »ñÈ¡°üÖ¸ÁîÂë
+// è·å–åŒ…æŒ‡ä»¤ç 
 #define CCPT_CMD_GETPCK	CTL_CODE(FILE_DEVICE_UNKNOWN, 0x801, METHOD_BUFFERED, FILE_ANY_ACCESS)
-// Ê¹ÄÜ
+// ä½¿èƒ½
 #define CCPT_CMD_ENABLE	CTL_CODE(FILE_DEVICE_UNKNOWN, 0x802, METHOD_BUFFERED, FILE_ANY_ACCESS)
-// ½ûÖ¹
+// ç¦æ­¢
 #define CCPT_CMD_DISABLE	CTL_CODE(FILE_DEVICE_UNKNOWN, 0x803, METHOD_BUFFERED, FILE_ANY_ACCESS)
 
-// Á½ÖÖ²Ù×÷ÀàĞÍ¡£
+// ä¸¤ç§æ“ä½œç±»å‹ã€‚
 #define CCPT_IN	1
 #define CCPT_OUT 2
 
-// »º³åÇøÖĞµÄ°ü½á¹¹
+// ç¼“å†²åŒºä¸­çš„åŒ…ç»“æ„
 typedef struct CCPT_PCK_ {
-	unsigned long com_id;			// com¿ÚĞòÁĞºÅ
-	unsigned long opr_type;			// ²Ù×÷ÀàĞÍ£¨¶ÁºÍĞ´£©
-	unsigned long pid;					// ²Ù×÷½ø³Ìpid
-	unsigned long data_length;		// Êı¾İ³¤¶È		
-	unsigned char buf[1];				// Êı¾İ»º³å
+	unsigned long com_id;			// comå£åºåˆ—å·
+	unsigned long opr_type;			// æ“ä½œç±»å‹ï¼ˆè¯»å’Œå†™ï¼‰
+	unsigned long pid;					// æ“ä½œè¿›ç¨‹pid
+	unsigned long data_length;		// æ•°æ®é•¿åº¦		
+	unsigned char buf[1];				// æ•°æ®ç¼“å†²
 } CCPT_PCK,*PCCPT_PCK;
 
 #endif // _COMCAP_TST_HEADER_

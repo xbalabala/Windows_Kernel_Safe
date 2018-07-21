@@ -4,7 +4,7 @@
 
 static tBitmap bitmapMask[8] =
 {
-	//ĞèÒªÓÃµ½µÄbitmapµÄÎ»ÑÚÂë
+	//éœ€è¦ç”¨åˆ°çš„bitmapçš„ä½æ©ç 
 	0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80
 };
 
@@ -13,7 +13,7 @@ void * DPBitmapAlloc(
 	unsigned long   length
 	)
 {
-	//¸ù¾İ²ÎÊıÀ´·ÖÅä²»Í¬ÀàĞÍµÄÄÚ´æ£¬ÕâÀïÈ«²¿·ÖÅäµÄÊÇ·Ç·ÖÒ³ÀàĞÍÄÚ´æ
+	//æ ¹æ®å‚æ•°æ¥åˆ†é…ä¸åŒç±»å‹çš„å†…å­˜ï¼Œè¿™é‡Œå…¨éƒ¨åˆ†é…çš„æ˜¯éåˆ†é¡µç±»å‹å†…å­˜
 	if (0 == poolType)
 	{
 		return ExAllocatePoolWithTag(NonPagedPool, length , 'mbpD');
@@ -30,7 +30,7 @@ void * DPBitmapAlloc(
 
 void DPBitmapFree(DP_BITMAP* bitmap)
 {
-	//ÊÍ·Åbitmap
+	//é‡Šæ”¾bitmap
 	DWORD i = 0;
 
 	if (NULL != bitmap)
@@ -41,14 +41,14 @@ void DPBitmapFree(DP_BITMAP* bitmap)
 			{
 				if (NULL != *(bitmap->Bitmap + i))
 				{
-					//´Ó×îµ×²ãµÄ¿é¿ªÊ¼ÊÍ·Å£¬ËùÓĞ¿é¶¼ÂÖÑ¯Ò»´Î				
+					//ä»æœ€åº•å±‚çš„å—å¼€å§‹é‡Šæ”¾ï¼Œæ‰€æœ‰å—éƒ½è½®è¯¢ä¸€æ¬¡				
 					ExFreePool(*(bitmap->Bitmap + i));
 				}
 			}
-			//ÊÍ·Å¿éµÄÖ¸Õë
+			//é‡Šæ”¾å—çš„æŒ‡é’ˆ
 			ExFreePool(bitmap->Bitmap);
 		}	
-		//ÊÍ·Åbitmap±¾Éí
+		//é‡Šæ”¾bitmapæœ¬èº«
 		ExFreePool(bitmap);
 	}
 }
@@ -71,7 +71,7 @@ NTSTATUS DPBitmapInit(
 	DP_BITMAP * myBitmap = NULL;
 	NTSTATUS status = STATUS_SUCCESS;
 
-	//¼ì²é²ÎÊı£¬ÒÔÃâÊ¹ÓÃÁË´íÎóµÄ²ÎÊıµ¼ÖÂ·¢Éú´¦Áã´íµÈ´íÎó
+	//æ£€æŸ¥å‚æ•°ï¼Œä»¥å…ä½¿ç”¨äº†é”™è¯¯çš„å‚æ•°å¯¼è‡´å‘ç”Ÿå¤„é›¶é”™ç­‰é”™è¯¯
 	if (NULL == bitmap || 0 == sectorSize ||
 		0 == byteSize || 0 == regionSize  || 0 == regionNumber)
 	{
@@ -79,28 +79,28 @@ NTSTATUS DPBitmapInit(
 	}
 	__try
 	{
-		//·ÖÅäÒ»¸öbitmap½á¹¹£¬ÕâÊÇÎŞÂÛÈçºÎ¶¼Òª·ÖÅäµÄ£¬Õâ¸ö½á¹¹Ïàµ±ÓÚÒ»¸öbitmapµÄhandle	
+		//åˆ†é…ä¸€ä¸ªbitmapç»“æ„ï¼Œè¿™æ˜¯æ— è®ºå¦‚ä½•éƒ½è¦åˆ†é…çš„ï¼Œè¿™ä¸ªç»“æ„ç›¸å½“äºä¸€ä¸ªbitmapçš„handle	
 		if (NULL == (myBitmap = (DP_BITMAP*)DPBitmapAlloc(0, sizeof(DP_BITMAP))))
 		{
 			status = STATUS_INSUFFICIENT_RESOURCES;
 			__leave;
 		}
-		//Çå¿Õ½á¹¹
+		//æ¸…ç©ºç»“æ„
 		memset(myBitmap, 0, sizeof(DP_BITMAP));
-		//¸ù¾İ²ÎÊı¶Ô½á¹¹ÖĞµÄ³ÉÔ±½øĞĞ¸³Öµ
+		//æ ¹æ®å‚æ•°å¯¹ç»“æ„ä¸­çš„æˆå‘˜è¿›è¡Œèµ‹å€¼
 		myBitmap->sectorSize = sectorSize;
 		myBitmap->byteSize = byteSize;
 		myBitmap->regionSize = regionSize;
 		myBitmap->regionNumber = regionNumber;
 		myBitmap->regionReferSize = sectorSize * byteSize * regionSize;
 		myBitmap->bitmapReferSize = (__int64)sectorSize * (__int64)byteSize * (__int64)regionSize * (__int64)regionNumber;
-		//·ÖÅä³öregionNumberÄÇÃ´¶à¸öÖ¸ÏòregionµÄÖ¸Õë£¬ÕâÊÇÒ»¸öÖ¸ÕëÊı×é
+		//åˆ†é…å‡ºregionNumberé‚£ä¹ˆå¤šä¸ªæŒ‡å‘regionçš„æŒ‡é’ˆï¼Œè¿™æ˜¯ä¸€ä¸ªæŒ‡é’ˆæ•°ç»„
 		if (NULL == (myBitmap->Bitmap = (tBitmap **)DPBitmapAlloc(0, sizeof(tBitmap*) * regionNumber)))
 		{
 			status = STATUS_INSUFFICIENT_RESOURCES;
 			__leave;
 		}
-		//Çå¿ÕÖ¸ÕëÊı×é
+		//æ¸…ç©ºæŒ‡é’ˆæ•°ç»„
 		memset(myBitmap->Bitmap, 0, sizeof(tBitmap*) * regionNumber);
 		* bitmap = myBitmap;
 		status = STATUS_SUCCESS;
@@ -136,7 +136,7 @@ NTSTATUS DPBitmapSet(
 
 	__try
 	{
-		//¼ì²é±äÁ¿
+		//æ£€æŸ¥å˜é‡
 		if (NULL == bitmap || offset.QuadPart < 0)
 		{
 			status = STATUS_INVALID_PARAMETER;
@@ -149,7 +149,7 @@ NTSTATUS DPBitmapSet(
 			__leave;
 		}
 
-		//¸ù¾İÒªÉèÖÃµÄÆ«ÒÆÁ¿ºÍ³¤¶ÈÀ´¼ÆËãĞèÒªÊ¹ÓÃµ½ÄÄĞ©region£¬Èç¹ûĞèÒªµÄ»°£¬¾Í·ÖÅäËûÃÇÖ¸ÏòµÄÄÚ´æ¿Õ¼ä
+		//æ ¹æ®è¦è®¾ç½®çš„åç§»é‡å’Œé•¿åº¦æ¥è®¡ç®—éœ€è¦ä½¿ç”¨åˆ°å“ªäº›regionï¼Œå¦‚æœéœ€è¦çš„è¯ï¼Œå°±åˆ†é…ä»–ä»¬æŒ‡å‘çš„å†…å­˜ç©ºé—´
 		myRegion = (unsigned long)(offset.QuadPart / (__int64)bitmap->regionReferSize);
 		myRegionEnd = (unsigned long)((offset.QuadPart + (__int64)length) / (__int64)bitmap->regionReferSize);
 		for (i = myRegion; i <= myRegionEnd; ++i)
@@ -168,8 +168,8 @@ NTSTATUS DPBitmapSet(
 			}
 		}
 
-		//¿ªÊ¼ÉèÖÃbitmap£¬Ê×ÏÈÎÒÃÇĞèÒª½«ÒªÉèÖÃµÄÇøÓò°´ÕÕbyte¶ÔÆë£¬ÕâÑù¿ÉÒÔ°´byteÉèÖÃ¶ø²»ĞèÒª°´bitÉèÖÃ£¬¼Ó¿ìÉèÖÃËÙ¶È
-		//¶ÔÓÚÃ»ÓĞbyte¶ÔÆëµÄÇøÓòÏÈÊÖ¹¤ÉèÖÃµôËûÃÇ
+		//å¼€å§‹è®¾ç½®bitmapï¼Œé¦–å…ˆæˆ‘ä»¬éœ€è¦å°†è¦è®¾ç½®çš„åŒºåŸŸæŒ‰ç…§byteå¯¹é½ï¼Œè¿™æ ·å¯ä»¥æŒ‰byteè®¾ç½®è€Œä¸éœ€è¦æŒ‰bitè®¾ç½®ï¼ŒåŠ å¿«è®¾ç½®é€Ÿåº¦
+		//å¯¹äºæ²¡æœ‰byteå¯¹é½çš„åŒºåŸŸå…ˆæ‰‹å·¥è®¾ç½®æ‰ä»–ä»¬
 		for (i = offset.QuadPart; i < offset.QuadPart + (__int64)length; i += bitmap->sectorSize)
 		{
 			myRegion = (unsigned long)(i / (__int64)bitmap->regionReferSize);
@@ -216,7 +216,7 @@ NTSTATUS DPBitmapSet(
 			myRegion = (unsigned long)(i / (__int64)bitmap->regionReferSize);
 			myRegionOffset = (unsigned long)(i % (__int64)bitmap->regionReferSize);
 			myByteOffset = myRegionOffset / bitmap->byteSize / bitmap->sectorSize;
-			//Èç¹ûÎÒÃÇÉèÖÃµÄÇøÓòÃ»ÓĞ¿çÁ½¸öregion£¬Ö»ĞèÒªÊ¹ÓÃmemsetÈ¥×ö°´byteµÄÉèÖÃÈ»ºóÌø³ö¼´¿É
+			//å¦‚æœæˆ‘ä»¬è®¾ç½®çš„åŒºåŸŸæ²¡æœ‰è·¨ä¸¤ä¸ªregionï¼Œåªéœ€è¦ä½¿ç”¨memsetå»åšæŒ‰byteçš„è®¾ç½®ç„¶åè·³å‡ºå³å¯
 			if (myRegion == myRegionEnd)
 			{
 				myRegionOffsetEnd = (unsigned long)(setEnd.QuadPart % (__int64)bitmap->regionReferSize);
@@ -224,7 +224,7 @@ NTSTATUS DPBitmapSet(
 				memset(*(bitmap->Bitmap + myRegion) + myByteOffset, 0xff, myByteOffsetEnd - myByteOffset + 1);
 				break;
 			}
-			//Èç¹ûÎÒÃÇÉèÖÃµÄÇøÓò¿çÁËÁ½¸öregion£¬ĞèÒªÉèÖÃÍêºóµİÔö
+			//å¦‚æœæˆ‘ä»¬è®¾ç½®çš„åŒºåŸŸè·¨äº†ä¸¤ä¸ªregionï¼Œéœ€è¦è®¾ç½®å®Œåé€’å¢
 			else
 			{
 				myRegionOffsetEnd = bitmap->regionReferSize;
@@ -264,7 +264,7 @@ NTSTATUS DPBitmapGet(
 
 	__try
 	{
-		//¼ì²é²ÎÊı
+		//æ£€æŸ¥å‚æ•°
 		if (NULL == bitmap || offset.QuadPart < 0 || NULL == bufInOut || NULL == bufIn)
 		{
 			status = STATUS_INVALID_PARAMETER;
@@ -276,7 +276,7 @@ NTSTATUS DPBitmapGet(
 			__leave;
 		}
 
-		//±éÀúĞèÒª»ñÈ¡µÄÎ»Í¼·¶Î§£¬Èç¹û³öÏÖÁËÎ»±»ÉèÖÃÎª1£¬¾ÍĞèÒªÓÃbufIn²ÎÊıÖĞÖ¸ÏòµÄÏàÓ¦Î»ÖÃµÄÊı¾İ¿½±´µ½bufInOutÖĞ
+		//éå†éœ€è¦è·å–çš„ä½å›¾èŒƒå›´ï¼Œå¦‚æœå‡ºç°äº†ä½è¢«è®¾ç½®ä¸º1ï¼Œå°±éœ€è¦ç”¨bufInå‚æ•°ä¸­æŒ‡å‘çš„ç›¸åº”ä½ç½®çš„æ•°æ®æ‹·è´åˆ°bufInOutä¸­
 		for (i = 0; i < length; i += bitmap->sectorSize)
 		{
 			myRegion = (unsigned long)((offset.QuadPart + (__int64)i) / (__int64)bitmap->regionReferSize);
@@ -319,7 +319,7 @@ long DPBitmapTest(
 
 	__try
 	{
-		//¼ì²é²ÎÊı
+		//æ£€æŸ¥å‚æ•°
 		if (NULL == bitmap || offset.QuadPart < 0 || offset.QuadPart + length > bitmap->bitmapReferSize)
 		{
 			ret = BITMAP_BIT_UNKNOW;
@@ -329,7 +329,7 @@ long DPBitmapTest(
 
 		for (i = 0; i < length; i += bitmap->sectorSize)
 		{
-			//Õë¶ÔĞèÒª²âÊÔµÄbitmap·¶Î§½øĞĞ²âÊÔ£¬Èç¹ûÈ«²¿Îª0Ôò·µ»ØBITMAP_RANGE_CLEAR£¬Èç¹ûÈ«²¿Îª1£¬Ôò·µ»ØBITMAP_RANGE_SET£¬Èç¹ûÎª0£¬1»ìºÏÔò·µ»ØBITMAP_RANGE_BLEND
+			//é’ˆå¯¹éœ€è¦æµ‹è¯•çš„bitmapèŒƒå›´è¿›è¡Œæµ‹è¯•ï¼Œå¦‚æœå…¨éƒ¨ä¸º0åˆ™è¿”å›BITMAP_RANGE_CLEARï¼Œå¦‚æœå…¨éƒ¨ä¸º1ï¼Œåˆ™è¿”å›BITMAP_RANGE_SETï¼Œå¦‚æœä¸º0ï¼Œ1æ··åˆåˆ™è¿”å›BITMAP_RANGE_BLEND
 			myRegion = (unsigned long)((offset.QuadPart + (__int64)i) / (__int64)bitmap->regionReferSize);
 
 			myRegionOffset = (unsigned long)((offset.QuadPart + (__int64)i) % (__int64)bitmap->regionReferSize);

@@ -21,21 +21,21 @@ typedef unsigned char tBitmap;
 
 typedef struct _DP_BITMAP_
 {
-	//Õâ¸ö¾íÖĞµÄÃ¿¸öÉÈÇøÓĞ¶àÉÙ×Ö½Ú£¬ÕâÍ¬ÑùÒ²ËµÃ÷ÁËbitmapÖĞÒ»¸öÎ»Ëù¶ÔÓ¦µÄ×Ö½ÚÊı
+	//è¿™ä¸ªå·ä¸­çš„æ¯ä¸ªæ‰‡åŒºæœ‰å¤šå°‘å­—èŠ‚ï¼Œè¿™åŒæ ·ä¹Ÿè¯´æ˜äº†bitmapä¸­ä¸€ä¸ªä½æ‰€å¯¹åº”çš„å­—èŠ‚æ•°
     unsigned long sectorSize; 
-	//Ã¿¸öbyteÀïÃæÓĞ¼¸¸öbit£¬Ò»°ãÇé¿öÏÂÊÇ8
+	//æ¯ä¸ªbyteé‡Œé¢æœ‰å‡ ä¸ªbitï¼Œä¸€èˆ¬æƒ…å†µä¸‹æ˜¯8
     unsigned long byteSize; 
-	//Ã¿¸ö¿éÊÇ¶à´óbyte£¬
+	//æ¯ä¸ªå—æ˜¯å¤šå¤§byteï¼Œ
     unsigned long regionSize;
-	//Õâ¸öbitmap×Ü¹²ÓĞ¶àÉÙ¸ö¿é
+	//è¿™ä¸ªbitmapæ€»å…±æœ‰å¤šå°‘ä¸ªå—
     unsigned long regionNumber;
-	//Õâ¸ö¿é¶ÔÓ¦ÁË¶àÉÙ¸öÊµ¼ÊµÄbyte£¬Õâ¸öÊı×ÖÓ¦¸ÃÊÇsectorSize*byteSize*regionSize
+	//è¿™ä¸ªå—å¯¹åº”äº†å¤šå°‘ä¸ªå®é™…çš„byteï¼Œè¿™ä¸ªæ•°å­—åº”è¯¥æ˜¯sectorSize*byteSize*regionSize
     unsigned long regionReferSize;
-	//Õâ¸öbitmap¶ÔÓ¦ÁË¶àÉÙ¸öÊµ¼ÊµÄbyte£¬Õâ¸öÊı×ÖÓ¦¸ÃÊÇsectorSize*byteSize*regionSize*regionNumber
+	//è¿™ä¸ªbitmapå¯¹åº”äº†å¤šå°‘ä¸ªå®é™…çš„byteï¼Œè¿™ä¸ªæ•°å­—åº”è¯¥æ˜¯sectorSize*byteSize*regionSize*regionNumber
     __int64 bitmapReferSize;
-	//Ö¸Ïòbitmap´æ´¢¿Õ¼äµÄÖ¸Õë
+	//æŒ‡å‘bitmapå­˜å‚¨ç©ºé—´çš„æŒ‡é’ˆ
     tBitmap** Bitmap; 
-	//ÓÃÓÚ´æÈ¡bitmapµÄËø
+	//ç”¨äºå­˜å–bitmapçš„é”
     void* lockBitmap; 
 } DP_BITMAP, * PDP_BITMAP;
 
